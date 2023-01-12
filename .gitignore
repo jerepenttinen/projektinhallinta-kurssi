@@ -1,0 +1,11 @@
+HELP.md
+
+frontend/node_modules
+.idea
+*.iws
+*.iml
+*.ipr
+### VS Code ###
+.vscode/
+
+
