@@ -1,0 +1,11 @@
+HELP.md
+.gitignore
+frontend/node_modules
+.idea
+*.iws
+*.iml
+*.ipr
+### VS Code ###
+.vscode/
+target
+
