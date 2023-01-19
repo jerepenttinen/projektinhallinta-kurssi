@@ -1,4 +1,11 @@
 package com.tamkstudents.cookbook.Controller;
 
-public class AbstractController {
+import java.lang.reflect.Type;
+
+public class AbstractController<T> {
+
+    boolean isDefined(Comparable val){
+        return !val.equals(null);
+    }
+
 }
