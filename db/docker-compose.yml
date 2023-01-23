@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - .data:/var/lib/postgresql/data
+    restart: always
+
