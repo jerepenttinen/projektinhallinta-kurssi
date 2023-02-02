@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,6 +25,13 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private UserDao creator;
+
+    @Column(name = "recipe_instruction", nullable = false)
+    @ElementCollection
+    private List<String> instruction;
+
+    @Column(name = "recipe_img")
+    private String image;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

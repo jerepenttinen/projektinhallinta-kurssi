@@ -1,7 +1,5 @@
 package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.FoodGroupDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.IngredientDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DtoEntity;
 import lombok.Getter;
@@ -17,6 +15,8 @@ public class RecipeDto implements DtoEntity {
         this.id = dao.getId();
         this.recipeName = dao.getRecipeName();
         this.creatorId = dao.getCreator().getUser_id();
+        this.image = dao.getImage();
+        this.instruction = dao.getInstruction();
         this.foodGroups = new ArrayList<>();
         this.ingredients = new ArrayList<>();
 
@@ -27,6 +27,8 @@ public class RecipeDto implements DtoEntity {
     private int id;
     private String recipeName;
     private int creatorId;
+    private String image;
+    private List<String> instruction;
     private List<IngredientDto> ingredients;
     private List<FoodGroupDto> foodGroups;
 }
