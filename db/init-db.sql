@@ -53,3 +53,11 @@ CREATE TABLE IF NOT EXISTS collection_has_recipes (
     , CONSTRAINT fk_recipe FOREIGN KEY (recipe_id) REFERENCES recipe(id)
     , CONSTRAINT fk_recipe_collection FOREIGN KEY (collection_id) REFERENCES recipe_collection(id)
 );
+
+CREATE TABLE IF NOT EXISTS login_user(
+    id SERIAL PRIMARY KEY
+    , login_user_name TEXT NOT NULL
+    , login_user_password TEXT NOT NULL
+    , user_profile INT NOT NULL UNIQUE REFERENCES usr(user_id)
+    , user_email TEXT NOT NULL
+);
