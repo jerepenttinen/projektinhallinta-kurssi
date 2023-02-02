@@ -1,6 +1,8 @@
 import React from "react";
 import { Navbar, Nav } from 'react-bootstrap';
 import {FaBook} from 'react-icons/fa';
+import "./css/Navbar.css";
+import { Link } from "react-router-dom";
 
 type MyNavbarProps = {
     right?: () => React.ReactElement
@@ -15,8 +17,8 @@ function MyNavbar({right}: MyNavbarProps) {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link className="list-item" href="#home">Etusivu</Nav.Link>
-                        <Nav.Link className="list-item" href="#link">Haku</Nav.Link>
+                        <Link to="/"  className="nav-link" >Etusivu</Link>
+                        <Link to="/search"  className="nav-link" >Haku</Link>
                     </Nav>
                     <Nav>
                         {right && right()}
