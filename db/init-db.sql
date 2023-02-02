@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS recipe (
     id SERIAL PRIMARY KEY
     , recipe_name TEXT NOT NULL
     , creator_id INT NOT NULL
+    , recipe_instruction TEXT NOT NULL
+    , recipe_img TEXT NOT NULL
     , CONSTRAINT fk_recipe FOREIGN KEY (creator_id) REFERENCES usr(user_id)
 );
 
