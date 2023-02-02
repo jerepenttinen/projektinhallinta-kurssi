@@ -32,7 +32,7 @@ public class RecipeService extends AbstractService{
         if(dao.isPresent()) {
             return new RecipeDto(dao.get());
         }else {
-            logger.severe("Recipe not found - id:" + dao.get().getId());
+            logger.severe("Recipe not found - id:" + id);
             return null;
         }
     }

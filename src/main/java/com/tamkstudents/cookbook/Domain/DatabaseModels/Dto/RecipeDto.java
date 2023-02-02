@@ -3,12 +3,13 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DtoEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
 public class RecipeDto implements DtoEntity {
     //constructor From Data acces object
     public RecipeDto(RecipeDao dao){
