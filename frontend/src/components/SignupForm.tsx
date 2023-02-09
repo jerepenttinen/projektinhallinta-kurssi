@@ -9,14 +9,17 @@ const SignupForm = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
     event.preventDefault();
+
     const user = {
-            firstname: firstNameRef.current?.value,
-            lastname: lastNameRef.current?.value,
-            email: emailRef.current?.value,
-            password: passwordRef.current?.value,
+        firstname: firstNameRef.current?.value,
+        lastname: lastNameRef.current?.value,
+        email: emailRef.current?.value,
+        password: passwordRef.current?.value,
     };
-    const url = "localhost8000/api/users/signup"
+
+    const url = "localhost8000/api/users/signup";
     try{
         // const res = await axios.post(url, user);
         // const data = await res.json();
