@@ -13,7 +13,7 @@ import lombok.Setter;
 public class IngredientDao extends AbstractClass implements DaoEntity {
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @Column(name = "ingredient_name")
     private String name;

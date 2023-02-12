@@ -25,9 +25,9 @@ public class RecipeDto implements DtoEntity {
         dao.getIngredients().forEach(ingredientDao -> this.ingredients.add(new IngredientDto(ingredientDao)));
     }
 
-    private int id;
+    private long id;
     private String recipeName;
-    private int creatorId;
+    private long creatorId;
     private String image;
     private List<String> instruction;
     private List<IngredientDto> ingredients;

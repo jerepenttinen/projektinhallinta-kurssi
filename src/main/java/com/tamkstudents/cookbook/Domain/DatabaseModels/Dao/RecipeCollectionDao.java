@@ -14,7 +14,7 @@ public class RecipeCollectionDao extends AbstractClass implements DaoEntity {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @Column(name = "recipe_collection_name")
     private String collectionName;

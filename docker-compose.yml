@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  tietokanta:
+  db:
     build:
-      context: db
-      dockerfile: db/db
+      context: ./db/
+      dockerfile: db
     ports:
       - "5432:5432"
     volumes:
-      - ./db/data:./db/var/lib/postgresql/data
+      - ./db/.data:/var/lib/postgresql/data
     restart: always
 

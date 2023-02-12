@@ -7,7 +7,7 @@ import java.sql.Date;
 
 @Getter @Setter
 public class ReviewDto {
-    private int id;
+    private long id;
     private int userId;
     private Date created;
     private Date editedLastTime;

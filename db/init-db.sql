@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS recipe (
     , creator_id INT NOT NULL
     , recipe_instruction TEXT[] NOT NULL
     , recipe_img TEXT NOT NULL
-    , CONSTRAINT fk_recipe FOREIGN KEY (creator_id) REFERENCES usr(user_id)
+    , CONSTRAINT fk_recipe FOREIGN KEY (creator_id) REFERENCES usr(id)
 );
 
 CREATE TABLE IF NOT EXISTS food_group (
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS recipe_collection (
     id SERIAL PRIMARY KEY
     , recipe_collection_name TEXT NOT NULL
     , creator_id INT NOT NULL
-    , CONSTRAINT fk_recipe FOREIGN KEY (creator_id) REFERENCES usr(user_id)
+    , CONSTRAINT fk_recipe FOREIGN KEY (creator_id) REFERENCES usr(id)
 );
 
 CREATE TABLE IF NOT EXISTS recipe_has_ingredients (
@@ -60,6 +60,6 @@ CREATE TABLE IF NOT EXISTS login_user(
     id SERIAL PRIMARY KEY
     , login_user_name TEXT NOT NULL
     , login_user_password TEXT NOT NULL
-    , user_profile INT NOT NULL UNIQUE REFERENCES usr(user_id)
+    , user_profile INT NOT NULL UNIQUE REFERENCES usr(id)
     , user_email TEXT NOT NULL
 );

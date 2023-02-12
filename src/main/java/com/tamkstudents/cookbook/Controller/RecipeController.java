@@ -19,9 +19,10 @@ public class RecipeController extends AbstractController{
 
     @ResponseBody
     public ResponseEntity<List<RecipeDto>> getRecipes() {
+        List<RecipeDto> recipes = recipeService.getAllRecipes();
 
-        //TODO returns all recipes
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        //returns all recipes
+        return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 
     @PostMapping
