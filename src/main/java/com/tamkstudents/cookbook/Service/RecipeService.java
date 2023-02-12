@@ -5,7 +5,6 @@ import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.FoodGroupDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.UserDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.RecipeRepository;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,7 @@ public class RecipeService extends AbstractService{
         long startTime = System.nanoTime();
         List<RecipeDto> recipes = new ArrayList<>();
         FoodGroupDao dao = new FoodGroupDao(dto);
-        List<RecipeDao> recipeDaos = recipeRepository.findAllByFoodGroup(dao);
+        List<RecipeDao> recipeDaos = recipeRepository.findAllByFoodGroupsContains(dao);
         if(!recipeDaos.isEmpty()){
            recipeDaos.forEach(recipe -> recipes.add(new RecipeDto(recipe)));
         }
@@ -72,7 +71,7 @@ public class RecipeService extends AbstractService{
         RecipeDto returnDto;
         Optional<UserDao> userDao = userRepository.findById(dto.getCreatorId());
         if (userDao.isPresent()) {
-            RecipeDao recipeDao = new RecipeDao(dto, new UserDto(userDao.get()));
+            RecipeDao recipeDao = new RecipeDao(dto, userDao.get());
             RecipeDao savedRecipeDao = recipeRepository.save(recipeDao);
             returnDto = new RecipeDto(savedRecipeDao);
         }else{
@@ -96,5 +95,23 @@ public class RecipeService extends AbstractService{
             logger.severe("Recipe not found - id:" + id);
             return null;
         }
+    }
+
+    public RecipeDto modifyRecipeById(RecipeDto recipeDto) {
+        Optional<RecipeDao> recipeDao = recipeRepository.findById(recipeDto.getId());
+        Optional<UserDao> userDao = userRepository.findById(recipeDto.getCreatorId());
+        if(recipeDao.isPresent() && userDao.isPresent()){
+            try{
+                recipeDao.get().modify(recipeDto, userDao.get());
+                RecipeDao modifiedDao = recipeRepository.save(recipeDao.get());
+                RecipeDto returnDto = new RecipeDto(modifiedDao);
+                return returnDto;
+            } catch (Throwable err){
+                logger.severe("Error on recipe modification");
+                return null;
+            }
+        }
+        logger.severe("User ("+recipeDto.getCreatorId()+") or Recipe ("+recipeDto.getId()+") are invalid");
+        return null;
     }
 }

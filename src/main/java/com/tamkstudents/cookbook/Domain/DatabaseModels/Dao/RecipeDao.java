@@ -3,17 +3,10 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 import com.tamkstudents.cookbook.Domain.AbstractClass;
 import com.tamkstudents.cookbook.Domain.DaoEntity;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.UserDto;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.RecipeRepository;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,9 +15,9 @@ import java.util.Set;
 @Entity(name="recipe") @Getter @Setter @NoArgsConstructor
 public class RecipeDao extends AbstractClass implements DaoEntity {
 
-    public RecipeDao(RecipeDto dto, UserDto user) {
+    public RecipeDao(RecipeDto dto, UserDao user) {
         this.recipeName = dto.getRecipeName();
-        this.creator = new UserDao(user, new ArrayList<>());
+        this.creator = user;
         this.instruction = dto.getInstruction();
         this.image = dto.getImage();
         this.ingredients = (HashSet) dto.getIngredients();
@@ -73,5 +66,13 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     )
     private Set<FoodGroupDao> foodGroups = new HashSet<>();
 
-
+    public boolean modify(RecipeDto dto,UserDao user){
+        this.recipeName = dto.getRecipeName();
+        this.creator = user;
+        this.instruction = dto.getInstruction();
+        this.image = dto.getImage();
+        this.ingredients = (HashSet) dto.getIngredients();
+        this.foodGroups = (HashSet) dto.getFoodGroups();
+        return true;
+    }
 }

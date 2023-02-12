@@ -9,52 +9,74 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/recipes")
 public class RecipeController extends AbstractController{
+
+    Logger logger = Logger.getLogger(RecipeController.class.getName());
 
     @Autowired
     RecipeService recipeService;
 
     @ResponseBody
     public ResponseEntity<List<RecipeDto>> getRecipes() {
-        List<RecipeDto> recipes = recipeService.getAllRecipes();
+        List<RecipeDto> recipes;
+        try {
+            recipes = recipeService.getAllRecipes();
+        } catch (Throwable err){
+            logger.severe("Unable to fetch all recipes");
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //returns all recipes
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 
     @PostMapping
     @ResponseBody
     public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto dto) {
-
-        //TODO returns created recipe
-        return new ResponseEntity<>(new RecipeDto(), HttpStatus.OK);
+        //luodaan tietokantaan uusi objekti
+        RecipeDto returnDto;
+        try {
+             returnDto = recipeService.createRecipe(dto);
+        } catch (Throwable err) {
+            logger.severe("Unable to create recipe");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        //palautetaan luotu objekti
+        return new ResponseEntity<>(returnDto, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     @ResponseBody
     public ResponseEntity<RecipeDto> changesToRecipe(@RequestBody RecipeDto dto){
-
-        //TODO returns altered recipe
-        return new ResponseEntity<>(new RecipeDto(), HttpStatus.OK);
+        RecipeDto returnDto = recipeService.modifyRecipeById(dto);
+        if(returnDto != null){
+            return new ResponseEntity<>(returnDto, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping("/{id}")
     @ResponseBody
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable String id){
-
-        //TODO returns specific recipe
-        return new ResponseEntity<>(new RecipeDto(), HttpStatus.OK);
+        RecipeDto dto;
+        try {
+           dto = recipeService.getRecipeById(Long.valueOf(id));
+        } catch (Throwable err) {
+            logger.warning("Recipe not found by id: " + id);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @RequestMapping("/user/{id}")
     @ResponseBody
     public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable String id){
-
-        //TODO returns users recipes
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        List<RecipeDto> recipes = recipeService.getUserRecipes(Long.valueOf(id));
+        return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 
 

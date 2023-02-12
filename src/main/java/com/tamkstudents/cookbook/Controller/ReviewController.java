@@ -36,8 +36,8 @@ public class ReviewController extends AbstractController{
 
     @PutMapping("/{recipeId}/{reviewId}")
     @ResponseBody
-    public ResponseEntity<List<ReviewDto>> editReview
-            (@PathVariable(name = "recipeId") Integer recipeId,
+    public ResponseEntity<List<ReviewDto>> editReview(
+             @PathVariable(name = "recipeId") Integer recipeId,
              @PathVariable(name = "reviewId") Integer reviewId){
 
         //TODO returns updated list of reviews of the recipe
