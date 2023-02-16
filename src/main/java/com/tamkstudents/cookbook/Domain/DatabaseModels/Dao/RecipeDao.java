@@ -2,21 +2,31 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 
 import com.tamkstudents.cookbook.Domain.AbstractClass;
 import com.tamkstudents.cookbook.Domain.DaoEntity;
+import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
 import jakarta.persistence.*;
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
-@Entity(name="recipe") @Getter @Setter
+@Entity(name="recipe") @Getter @Setter @NoArgsConstructor
 public class RecipeDao extends AbstractClass implements DaoEntity {
+
+    public RecipeDao(RecipeDto dto, UserDao user) {
+        this.recipeName = dto.getRecipeName();
+        this.creator = user;
+        this.instruction = dto.getInstruction();
+        this.image = dto.getImage();
+        this.ingredients = (HashSet) dto.getIngredients();
+        this.foodGroups = (HashSet) dto.getFoodGroups();
+    }
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @Column(name = "recipe_name")
     private String recipeName;
@@ -24,6 +34,13 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private UserDao creator;
+
+    @Column(name = "recipe_instruction", nullable = false)
+    @ElementCollection
+    private List<String> instruction;
+
+    @Column(name = "recipe_img")
+    private String image;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -49,5 +66,13 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     )
     private Set<FoodGroupDao> foodGroups = new HashSet<>();
 
-
+    public boolean modify(RecipeDto dto,UserDao user){
+        this.recipeName = dto.getRecipeName();
+        this.creator = user;
+        this.instruction = dto.getInstruction();
+        this.image = dto.getImage();
+        this.ingredients = (HashSet) dto.getIngredients();
+        this.foodGroups = (HashSet) dto.getFoodGroups();
+        return true;
+    }
 }

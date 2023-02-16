@@ -13,6 +13,6 @@ public class IngredientDto implements DtoEntity {
         this.name = dao.getName();
     }
 
-    private int id;
+    private long id;
     private String name;
 }
