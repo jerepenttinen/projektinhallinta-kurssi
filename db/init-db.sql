@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS recipe (
     , recipe_name TEXT NOT NULL
     , creator_id INT NOT NULL
     , recipe_instruction TEXT[] NOT NULL
-    , recipe_img TEXT NOT NULL
+    , recipe_img BYTEA NOT NULL  /* Postgresql blob type */
     , CONSTRAINT fk_recipe FOREIGN KEY (creator_id) REFERENCES usr(id)
 );
 
