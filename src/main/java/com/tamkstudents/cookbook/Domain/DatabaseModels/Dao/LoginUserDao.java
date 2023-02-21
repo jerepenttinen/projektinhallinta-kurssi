@@ -17,6 +17,8 @@ public class LoginUserDao implements DaoEntity {
     public LoginUserDao(LoginUserDto dto){
         this.id = dto.getId();
         this.username = dto.getUsername();
+        this.firstName = dto.getFirstName();
+        this.lastName = dto.getLastName();
         this.password = dto.getPassword();
         this.profileId = dto.getProfileId();
         this.email = dto.getEmail();
@@ -38,6 +40,12 @@ public class LoginUserDao implements DaoEntity {
 
     @Column(name = "login_user_password")
     private String password;
+
+    @Column(name = "login_user_firstname")
+    private String firstName;
+
+    @Column(name= "login_user_lastname")
+    private String lastName;
 
     @Column(name = "user_profile")
     private Long profileId;

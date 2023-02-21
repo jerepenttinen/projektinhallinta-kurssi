@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS login_user(
     id SERIAL PRIMARY KEY
     , login_user_name TEXT NOT NULL
     , login_user_password TEXT NOT NULL
+    , login_user_firstname TEXT NOT NULL
+    , login_user_lastname TEXT NOT NULL
     , user_profile INT NOT NULL UNIQUE REFERENCES usr(id)
     , user_email TEXT NOT NULL
 );
