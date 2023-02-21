@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 
 import com.tamkstudents.cookbook.Domain.DaoEntity;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
+import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,12 +14,19 @@ import lombok.Setter;
 @Entity @NoArgsConstructor @Getter @Setter
 public class LoginUserDao implements DaoEntity {
 
-    LoginUserDao(LoginUserDto dto){
+    public LoginUserDao(LoginUserDto dto){
         this.id = dto.getId();
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.profileId = dto.getProfileId();
         this.email = dto.getEmail();
+    }
+
+    public LoginUserDao(LoginCredentials credentials, String password, long profileId){
+        this.setUsername(credentials.getUsername());
+        this.setEmail(credentials.getEmail());
+        this.setPassword(password);
+        this.setProfileId(profileId);
     }
 
     @Id
