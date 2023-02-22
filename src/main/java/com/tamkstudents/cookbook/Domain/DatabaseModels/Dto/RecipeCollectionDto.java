@@ -21,8 +21,8 @@ public class RecipeCollectionDto implements DtoEntity {
         dao.getRecipes().forEach(recipeDao-> this.recipeIds.add(recipeDao.getId()));
     }
 
-    private int id;
+    private long id;
     private String collectionName;
-    private int creatorId;
-    private List<Integer> recipeIds;
+    private long creatorId;
+    private List<Long> recipeIds;
 }

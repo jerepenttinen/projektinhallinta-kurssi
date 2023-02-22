@@ -1,22 +1,23 @@
 package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.FoodGroupDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.IngredientDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DtoEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
 public class RecipeDto implements DtoEntity {
     //constructor From Data acces object
     public RecipeDto(RecipeDao dao){
         this.id = dao.getId();
         this.recipeName = dao.getRecipeName();
         this.creatorId = dao.getCreator().getUser_id();
+        this.image = dao.getImage();
+        this.instruction = dao.getInstruction();
         this.foodGroups = new ArrayList<>();
         this.ingredients = new ArrayList<>();
 
@@ -24,9 +25,11 @@ public class RecipeDto implements DtoEntity {
         dao.getIngredients().forEach(ingredientDao -> this.ingredients.add(new IngredientDto(ingredientDao)));
     }
 
-    private int id;
+    private long id;
     private String recipeName;
-    private int creatorId;
+    private long creatorId;
+    private byte[] image;
+    private List<String> instruction;
     private List<IngredientDto> ingredients;
     private List<FoodGroupDto> foodGroups;
 }

@@ -1,8 +1,6 @@
 package com.tamkstudents.cookbook.Controller;
 
-import java.lang.reflect.Type;
-
-public class AbstractController<T> {
+public class AbstractController {
 
     boolean isDefined(Comparable val){
         return !val.equals(null);

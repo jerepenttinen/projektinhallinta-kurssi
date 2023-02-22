@@ -21,10 +21,10 @@ public class UserDto implements DtoEntity {
         dao.getRecipes().forEach(recipe -> this.recipeIds.add(recipe.getId()));
     }
 
-    private int userId;
+    private long userId;
     private String userName;
     private Date createdAt;
-    private List<Integer> recipeIds;
+    private List<Long> recipeIds;
 
 
 }
