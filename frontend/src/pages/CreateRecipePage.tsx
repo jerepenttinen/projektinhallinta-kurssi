@@ -39,9 +39,18 @@ const CreateRecipePage = () => {
 
   const [images, setImages] = useState<{ id: string; blob: Blob }[]>([]);
 
+  const [categories, setCategories] = useState([
+    { id: uuid(), category: "Pääruuat" },
+    { id: uuid(), category: "Alkuruuat" },
+  ]);
+  const [selectCategories, setSelectedCategories] = useState<
+    { id: string; category: string }[]
+  >([]);
+
   const quantityRef = useRef<HTMLInputElement | null>(null);
   const ingredientRef = useRef<HTMLInputElement | null>(null);
   const stepRef = useRef<HTMLInputElement | null>(null);
+  const selectRef = useRef<HTMLSelectElement | null>(null);
 
   return (
     <Form
@@ -135,20 +144,50 @@ const CreateRecipePage = () => {
           </Button>
         </Stack>
       </Form.Group>
-      {/* TODO */}
+      {/* TODO: Keksi parempi tää on sekava */}
       <Form.Group>
         <Form.Label>Kategoriat</Form.Label>
-        <Form.Select>
-          <option></option>
-          <option>Välipalat</option>
+        <Form.Select
+          ref={selectRef}
+          onChange={(e) => {
+            if (selectRef.current!.selectedIndex === 0) {
+              return;
+            }
+
+            const category = e.currentTarget.value;
+            selectRef.current!.selectedIndex = 0;
+
+            setSelectedCategories((categories) =>
+              categories.concat({ id: uuid(), category }),
+            );
+            setCategories((categories) =>
+              categories.filter((c) => c.category !== category),
+            );
+          }}
+        >
+          <option>Lisää kategoria</option>
+          {categories.map((category, i) => (
+            <option key={i}>{category.category}</option>
+          ))}
         </Form.Select>
         <Stack direction="horizontal" gap={2} className="mt-3">
-          <Badge bg="secondary">
-            Alkuruuat <BsX />
-          </Badge>
-          <Badge bg="secondary">
-            Kalaruuat <BsX />
-          </Badge>
+          {selectCategories.map((category, i) => (
+            <Badge bg="secondary" key={i}>
+              {category.category}{" "}
+              <Button
+                variant="link"
+                className="text-white p-0 align-baseline"
+                onClick={() => {
+                  setCategories((categories) => categories.concat(category));
+                  setSelectedCategories((categories) =>
+                    categories.filter((c) => c !== category),
+                  );
+                }}
+              >
+                <BsX />
+              </Button>
+            </Badge>
+          ))}
         </Stack>
       </Form.Group>
       <Form.Group>
