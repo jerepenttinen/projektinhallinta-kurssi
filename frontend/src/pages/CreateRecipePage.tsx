@@ -2,21 +2,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { Button, Form, FormGroup, Stack } from "react-bootstrap";
 import { SortableList } from "../components/SortableList";
-import { BsGripHorizontal, BsTrash } from "react-icons/bs";
+import { BsGripHorizontal, BsPlus, BsTrash } from "react-icons/bs";
 
-function SortingRow(props: { text: string; onTrash: () => void }) {
+function SortingRow(props: {
+  render: () => React.ReactElement;
+  onTrash: () => void;
+}) {
   return (
     <Stack direction="horizontal" className="justify-content-between">
       <Stack direction="horizontal" gap={3} className="flex-grow-1 text-break">
         <BsGripHorizontal />
-        <span>{props.text}</span>
+        {props.render()}
       </Stack>
-      <Button
-        variant="link"
-        className="text-secondary"
-        style={{ zIndex: 1000 }}
-        onClick={props.onTrash}
-      >
+      <Button variant="link" className="text-secondary" onClick={props.onTrash}>
         <BsTrash />
       </Button>
     </Stack>
@@ -54,7 +52,11 @@ const CreateRecipePage = () => {
             setItems={setIngredients}
             renderItem={(item) => (
               <SortingRow
-                text={item.ingredient + item.quantity}
+                render={() => (
+                  <span className="user-select-none">
+                    {item.quantity} {item.ingredient}
+                  </span>
+                )}
                 onTrash={() => {
                   setIngredients((ingredients) =>
                     ingredients.filter((ig) => ig.id !== item.id),
@@ -64,16 +66,23 @@ const CreateRecipePage = () => {
             )}
           />
         </Stack>
+        <Stack direction="horizontal" className="my-3" gap={2}>
+          <Form.Control type="text" placeholder="Määrä" />
+          <Form.Control type="text" placeholder="Raaka-aine" />
+          <Button variant="success" className="hstack">
+            <BsPlus size={24} /> Lisää
+          </Button>
+        </Stack>
       </FormGroup>
       <FormGroup>
         <Form.Label>Ohjeet</Form.Label>
-        <Stack gap={3}>
+        <ol className="vstack gap-3 ps-0 mb-0">
           <SortableList
             items={instructions}
             setItems={setInstructions}
             renderItem={(item) => (
               <SortingRow
-                text={item.instruction}
+                render={() => <li className="ms-3">{item.instruction}</li>}
                 onTrash={() => {
                   setInstructions((instructions) =>
                     instructions.filter((ig) => ig.id !== item.id),
@@ -82,6 +91,12 @@ const CreateRecipePage = () => {
               />
             )}
           />
+        </ol>
+        <Stack direction="horizontal" className="my-3" gap={2}>
+          <Form.Control type="text" placeholder="Uusi vaihe" />
+          <Button variant="success" className="hstack gap-1">
+            <BsPlus size={24} /> Lisää
+          </Button>
         </Stack>
       </FormGroup>
     </Form>
