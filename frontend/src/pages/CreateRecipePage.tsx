@@ -1,8 +1,15 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRef, useState } from "react";
-import { Button, Form, FormGroup, Stack } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Form,
+  FormGroup,
+  FormLabel,
+  Stack,
+} from "react-bootstrap";
 import { SortableList } from "../components/SortableList";
-import { BsGripHorizontal, BsPlus, BsTrash } from "react-icons/bs";
+import { BsGripHorizontal, BsPlus, BsTrash, BsX } from "react-icons/bs";
 
 const uuid = () => URL.createObjectURL(new Blob([])).substring(-36);
 
@@ -72,7 +79,7 @@ const CreateRecipePage = () => {
             )}
           />
         </Stack>
-        <Stack direction="horizontal" className="my-3" gap={2}>
+        <Stack direction="horizontal" className="mt-3" gap={2}>
           <Form.Control type="text" placeholder="Määrä" ref={quantityRef} />
           <Form.Control
             type="text"
@@ -114,7 +121,7 @@ const CreateRecipePage = () => {
             )}
           />
         </ol>
-        <Stack direction="horizontal" className="my-3" gap={2}>
+        <Stack direction="horizontal" className="mt-3" gap={2}>
           <Form.Control type="text" placeholder="Uusi vaihe" ref={stepRef} />
           <Button
             variant="success"
@@ -130,6 +137,22 @@ const CreateRecipePage = () => {
           >
             <BsPlus size={24} /> Lisää
           </Button>
+        </Stack>
+      </FormGroup>
+      {/* TODO */}
+      <FormGroup>
+        <Form.Label>Kategoriat</Form.Label>
+        <Form.Select>
+          <option></option>
+          <option>Välipalat</option>
+        </Form.Select>
+        <Stack direction="horizontal" gap={2} className="mt-3">
+          <Badge bg="secondary">
+            Alkuruuat <BsX />
+          </Badge>
+          <Badge bg="secondary">
+            Kalaruuat <BsX />
+          </Badge>
         </Stack>
       </FormGroup>
     </Form>
