@@ -36,6 +36,11 @@ const CreateRecipePage = () => {
     { id: "3", instruction: "Lisää maito" },
   ]);
 
+  const [images, setImages] = useState<{ id: string; blob: Blob }[]>([
+    { id: "1", blob: new Blob() },
+    { id: "2", blob: new Blob() },
+  ]);
+
   const quantityRef = useRef<HTMLInputElement | null>(null);
   const ingredientRef = useRef<HTMLInputElement | null>(null);
   const stepRef = useRef<HTMLInputElement | null>(null);
@@ -148,6 +153,49 @@ const CreateRecipePage = () => {
           </Badge>
         </Stack>
       </Form.Group>
+      <Form.Group>
+        <Form.Label>Kuvat</Form.Label>
+        <Stack direction="horizontal" gap={3}>
+          <SortableList
+            items={images}
+            setItems={setImages}
+            renderItem={(image) => {
+              const url = URL.createObjectURL(image.blob);
+              return (
+                <div
+                  key={image.id}
+                  style={{ width: 100, height: 100 }}
+                  className="bg-secondary position-relative"
+                >
+                  <img src={url} alt={image.id} />
+                  <div className="position-absolute top-0 end-0 p-1">
+                    <BsX />
+                  </div>
+                </div>
+              );
+            }}
+          />
+        </Stack>
+        <div
+          className="rounded vstack mt-3 bg-white"
+          style={{
+            border: "1px dashed var(--bs-border-color)",
+            borderStyle: "dashed",
+          }}
+        >
+          <div className="mx-auto vstack py-5 gap-2">
+            <span>Raahaa kuva tai lisää painamalla nappia</span>
+            <div className="mx-auto">
+              <Button variant="outline-secondary">Lisää kuva</Button>
+            </div>
+          </div>
+        </div>
+      </Form.Group>
+      <div>
+        <Button variant="success" size="lg">
+          Julkaise
+        </Button>
+      </div>
     </Form>
   );
 };
