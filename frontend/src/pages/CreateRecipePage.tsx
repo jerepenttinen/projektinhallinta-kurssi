@@ -76,12 +76,12 @@ const CreateRecipePage = () => {
           />
         </Stack>
         <Stack direction="horizontal" className="mt-3" gap={2}>
-          <Form.Control type="text" placeholder="Määrä" ref={quantityRef} />
           <Form.Control
             type="text"
             placeholder="Raaka-aine"
             ref={ingredientRef}
           />
+          <Form.Control type="text" placeholder="Määrä" ref={quantityRef} />
           <Button
             variant="success"
             className="hstack"
