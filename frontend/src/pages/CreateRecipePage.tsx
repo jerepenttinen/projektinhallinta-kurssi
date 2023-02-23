@@ -1,8 +1,10 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Form, FormGroup, Stack } from "react-bootstrap";
 import { SortableList } from "../components/SortableList";
 import { BsGripHorizontal, BsPlus, BsTrash } from "react-icons/bs";
+
+const uuid = () => URL.createObjectURL(new Blob([])).substring(-36);
 
 function SortingRow(props: {
   render: () => React.ReactElement;
@@ -33,6 +35,10 @@ const CreateRecipePage = () => {
     { id: "2", instruction: "Paista liha" },
     { id: "3", instruction: "Lisää maito" },
   ]);
+
+  const quantityRef = useRef<HTMLInputElement | null>(null);
+  const ingredientRef = useRef<HTMLInputElement | null>(null);
+  const stepRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <Form
@@ -67,9 +73,25 @@ const CreateRecipePage = () => {
           />
         </Stack>
         <Stack direction="horizontal" className="my-3" gap={2}>
-          <Form.Control type="text" placeholder="Määrä" />
-          <Form.Control type="text" placeholder="Raaka-aine" />
-          <Button variant="success" className="hstack">
+          <Form.Control type="text" placeholder="Määrä" ref={quantityRef} />
+          <Form.Control
+            type="text"
+            placeholder="Raaka-aine"
+            ref={ingredientRef}
+          />
+          <Button
+            variant="success"
+            className="hstack"
+            onClick={() =>
+              setIngredients((ingredients) =>
+                ingredients.concat({
+                  id: uuid(),
+                  ingredient: ingredientRef.current?.value ?? "",
+                  quantity: quantityRef.current?.value ?? "",
+                }),
+              )
+            }
+          >
             <BsPlus size={24} /> Lisää
           </Button>
         </Stack>
@@ -82,7 +104,7 @@ const CreateRecipePage = () => {
             setItems={setInstructions}
             renderItem={(item) => (
               <SortingRow
-                render={() => <li className="ms-3">{item.instruction}</li>}
+                render={() => <li className="ms-3 ps-1">{item.instruction}</li>}
                 onTrash={() => {
                   setInstructions((instructions) =>
                     instructions.filter((ig) => ig.id !== item.id),
@@ -93,8 +115,19 @@ const CreateRecipePage = () => {
           />
         </ol>
         <Stack direction="horizontal" className="my-3" gap={2}>
-          <Form.Control type="text" placeholder="Uusi vaihe" />
-          <Button variant="success" className="hstack gap-1">
+          <Form.Control type="text" placeholder="Uusi vaihe" ref={stepRef} />
+          <Button
+            variant="success"
+            className="hstack gap-1"
+            onClick={() =>
+              setInstructions((instructions) =>
+                instructions.concat({
+                  id: uuid(),
+                  instruction: stepRef.current?.value ?? "",
+                }),
+              )
+            }
+          >
             <BsPlus size={24} /> Lisää
           </Button>
         </Stack>
