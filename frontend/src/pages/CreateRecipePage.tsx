@@ -2,8 +2,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useRef, useState } from "react";
 import { Badge, Button, Form, Stack } from "react-bootstrap";
 import { SortableList } from "../components/SortableList";
-import { BsGripHorizontal, BsPlus, BsTrash, BsX } from "react-icons/bs";
+import {
+  BsGripHorizontal,
+  BsGripVertical,
+  BsPlus,
+  BsTrash,
+  BsX,
+} from "react-icons/bs";
 import DropImages from "../components/DropImages";
+import "./CreateRecipePage.css";
 
 const uuid = () => URL.createObjectURL(new Blob([])).substring(-36);
 
@@ -205,18 +212,23 @@ const CreateRecipePage = () => {
                     alt={image.id}
                     style={{ objectFit: "cover", width: 100, height: 100 }}
                   />
-                  <Button
-                    variant="danger"
-                    className="position-absolute top-0 end-0 p-0"
-                    style={{ width: 24, height: 24 }}
-                    onClick={() =>
-                      setImages((images) =>
-                        images.filter(({ id }) => id !== image.id),
-                      )
-                    }
-                  >
-                    <BsX />
-                  </Button>
+
+                  <div className="hover">
+                    <div className="bg-light opacity-50 w-100 h-100 position-absolute top-0"></div>
+                    <BsGripVertical className="position-absolute start-50 top-50 translate-middle" />
+                    <Button
+                      variant="danger"
+                      className="position-absolute top-0 end-0 p-0"
+                      style={{ width: 24, height: 24 }}
+                      onClick={() =>
+                        setImages((images) =>
+                          images.filter(({ id }) => id !== image.id),
+                        )
+                      }
+                    >
+                      <BsX />
+                    </Button>
+                  </div>
                 </div>
               );
             }}
