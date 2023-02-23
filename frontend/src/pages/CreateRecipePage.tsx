@@ -1,13 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRef, useState } from "react";
-import {
-  Badge,
-  Button,
-  Form,
-  FormGroup,
-  FormLabel,
-  Stack,
-} from "react-bootstrap";
+import { Badge, Button, Form, Stack } from "react-bootstrap";
 import { SortableList } from "../components/SortableList";
 import { BsGripHorizontal, BsPlus, BsTrash, BsX } from "react-icons/bs";
 
@@ -53,11 +46,11 @@ const CreateRecipePage = () => {
       style={{ maxWidth: 768 }}
     >
       <h2 className="mb-0">Lisää uusi resepti</h2>
-      <FormGroup>
+      <Form.Group>
         <Form.Label>Reseptin nimi</Form.Label>
         <Form.Control type="text" placeholder="Reseptin nimi" />
-      </FormGroup>
-      <FormGroup>
+      </Form.Group>
+      <Form.Group>
         <Form.Label>Raaka-aineet</Form.Label>
         <Stack gap={3}>
           <SortableList
@@ -102,8 +95,8 @@ const CreateRecipePage = () => {
             <BsPlus size={24} /> Lisää
           </Button>
         </Stack>
-      </FormGroup>
-      <FormGroup>
+      </Form.Group>
+      <Form.Group>
         <Form.Label>Ohjeet</Form.Label>
         <ol className="vstack gap-3 ps-0 mb-0">
           <SortableList
@@ -138,9 +131,9 @@ const CreateRecipePage = () => {
             <BsPlus size={24} /> Lisää
           </Button>
         </Stack>
-      </FormGroup>
+      </Form.Group>
       {/* TODO */}
-      <FormGroup>
+      <Form.Group>
         <Form.Label>Kategoriat</Form.Label>
         <Form.Select>
           <option></option>
@@ -154,7 +147,7 @@ const CreateRecipePage = () => {
             Kalaruuat <BsX />
           </Badge>
         </Stack>
-      </FormGroup>
+      </Form.Group>
     </Form>
   );
 };
