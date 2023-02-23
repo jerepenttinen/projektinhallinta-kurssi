@@ -166,9 +166,18 @@ const CreateRecipePage = () => {
                     alt={image.id}
                     style={{ objectFit: "cover", width: 100, height: 100 }}
                   />
-                  <div className="position-absolute top-0 end-0 p-1">
+                  <Button
+                    variant="danger"
+                    className="position-absolute top-0 end-0 p-0"
+                    style={{ width: 24, height: 24 }}
+                    onClick={() =>
+                      setImages((images) =>
+                        images.filter(({ id }) => id !== image.id),
+                      )
+                    }
+                  >
                     <BsX />
-                  </div>
+                  </Button>
                 </div>
               );
             }}
