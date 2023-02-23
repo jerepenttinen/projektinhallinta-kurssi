@@ -31,7 +31,7 @@ const FileDropzone = () => {
 
     return(
         <div {...getRootProps()} className="p-2 border-secondary text-center"
-          style={{borderStyle:'dashed', borderWidth:2}}>
+          style={{minHeight:'100%', minWidth:'100%', borderStyle:'dashed', borderWidth:2}}>
               <input {...getInputProps()}/>
               {
                 isDragActive ?

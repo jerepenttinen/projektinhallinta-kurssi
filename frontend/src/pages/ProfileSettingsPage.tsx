@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 
 const ProfileSettingsPage = () => {
   return (
-    <div className="m-auto bg-white p-4 w-50" style={{minWidth:900}}>
+    <div className="m-auto bg-white p-4 w-50" style={{minWidth:850}}>
         <h2>Asetukset</h2>
         <Form className="">
             <div className="my-4 d-flex justify-content-between" style={{height:150}}>
