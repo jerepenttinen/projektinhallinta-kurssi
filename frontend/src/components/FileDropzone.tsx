@@ -1,9 +1,13 @@
-import {useCallback} from 'react'
+import {useCallback, useState} from 'react'
+import React from 'react'
 import Button from 'react-bootstrap/Button';
-
 import {useDropzone} from 'react-dropzone'
 
-const FileDropzone = () => {
+type Props = {
+    setImage?: React.Dispatch<React.SetStateAction<File[]>>;
+};
+
+const FileDropzone: React.FC<Props> = ({setImage}) => {
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         acceptedFiles.forEach((file) => {
@@ -13,8 +17,12 @@ const FileDropzone = () => {
             reader.onerror = () => console.log('file reading has failed');
             reader.onload = () => {
                 // Do whatever you want with the file contents
-                const binaryStr = reader.result
-                console.log(binaryStr)
+                const binaryStr = reader.result as string;;
+
+                setImage?.(acceptedFiles);
+                console.log(binaryStr);
+
+
             }
             reader.readAsArrayBuffer(file)
         })
