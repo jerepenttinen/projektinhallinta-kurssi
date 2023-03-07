@@ -23,10 +23,10 @@ const ProfileSettingsPage = () => {
           <h2>Asetukset</h2>
           <Form className="">
               <div className="my-4 d-flex justify-content-between " style={{height:150}}>
-                  <div style={{width:'15%'}}>
+                  <div style={{width:'150px', height:'150px'}}>
                       <img src={imageUrl ? imageUrl : "https://secure.gravatar.com/avatar/5586197d3539ebe07272af21926b496f?s=1920&d=mm&r=g"}
                          className="rounded-circle"
-                         style={{height:'100%'}} >
+                         style={{height:'100%', width:'100%'}} >
                        </img>
                   </div>
                   <div className="w-75 h-100" style={{minHeight:'100%'}}>
