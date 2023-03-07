@@ -41,7 +41,7 @@ public class RecipeController extends AbstractController{
         try {
              returnDto = recipeService.createRecipe(dto);
         } catch (Throwable err) {
-            logger.severe("Unable to create recipe");
+            logger.severe("Unable to create recipe!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         //palautetaan luotu objekti
@@ -55,6 +55,7 @@ public class RecipeController extends AbstractController{
         if(returnDto != null){
             return new ResponseEntity<>(returnDto, HttpStatus.OK);
         }else {
+            logger.severe("Recipe modify failed!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

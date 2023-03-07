@@ -13,11 +13,15 @@ public class LoginUserDto {
         this.password = dao.getPassword();
         this.profileId = dao.getProfileId();
         this.email = dao.getEmail();
+        this.firstName = dao.getFirstName();
+        this.lastName = dao.getLastName();
     }
 
     private final Long id;
     private final String username;
     private final String password;
+    private final String firstName;
+    private final String lastName;
     private final Long profileId;
     private final String email;
 }

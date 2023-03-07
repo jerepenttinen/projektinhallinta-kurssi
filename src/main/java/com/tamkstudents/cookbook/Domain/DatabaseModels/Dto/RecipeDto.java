@@ -28,7 +28,7 @@ public class RecipeDto implements DtoEntity {
     private long id;
     private String recipeName;
     private long creatorId;
-    private String image;
+    private byte[] image;
     private List<String> instruction;
     private List<IngredientDto> ingredients;
     private List<FoodGroupDto> foodGroups;

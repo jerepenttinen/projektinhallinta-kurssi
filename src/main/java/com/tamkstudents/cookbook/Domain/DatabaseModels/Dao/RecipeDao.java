@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +42,7 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     private List<String> instruction;
 
     @Column(name = "recipe_img")
-    private String image;
+    private byte[] image;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
