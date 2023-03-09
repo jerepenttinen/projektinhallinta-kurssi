@@ -43,9 +43,8 @@ public class UserService extends AbstractService{
 
     public UserDto saveNewProfile(LoginCredentials credentials){
         long startTime = System.nanoTime();
-        UserDao newProfile = new UserDao(credentials);
-        userRepository.save(newProfile);
-        UserDto dto = getUser(newProfile.getUser_id());
+        UserDao newProfile = userRepository.save(new UserDao(credentials));
+        UserDto dto = getUser(newProfile.getId());
         long stopTime = System.nanoTime();
         logger.info("Profile save: "+((stopTime-startTime)/1000000)+" ms");
         return dto;

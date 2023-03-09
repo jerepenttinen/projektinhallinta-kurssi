@@ -5,6 +5,7 @@ import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.UserDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.LoginUserRepository;
 import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
@@ -59,14 +60,14 @@ public class LoginService {
         return foundUser.map(LoginUserDto::new).orElse(null);
     }
 
+    @Transactional
     public LoginUserDto createNewUser(LoginCredentials credentials){
         Optional<LoginUserDao> checker = loginUserRepository
                 .findByEmailOrUsername(credentials.getEmail(), credentials.getUsername());
         if(checker.isEmpty()){
             String encryptPassword = passwordService.encrypt(credentials.getRawPassword());
-            UserDto dto = userService.saveNewProfile(credentials);
-            LoginUserDao newUserDao = new LoginUserDao(credentials, encryptPassword, dto.getUserId());
-            loginUserRepository.save(newUserDao);
+            UserDto userDto = userService.saveNewProfile(credentials);
+            loginUserRepository.save(new LoginUserDao(credentials, encryptPassword, userDto.getUserId()));
             try {
                 Optional<LoginUserDao> dao = loginUserRepository.findByEmailOrUsername(credentials.getEmail(), credentials.getUsername());
                 LoginUserDto newUserDto = null;

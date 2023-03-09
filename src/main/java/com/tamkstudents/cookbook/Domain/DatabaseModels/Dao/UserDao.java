@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,21 +24,21 @@ public class UserDao  extends AbstractClass implements DaoEntity {
     }
 
     public UserDao(LoginCredentials credentials){
-        java.util.Date utilDate = new java.util.Date();
         this.setUserName(credentials.getUsername());
-        this.setCreatedAt(new Date(utilDate.getTime()));
+        this.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         this.setRecipes(new HashSet<>());
     }
 
     @Id
-    @GeneratedValue
-    private Long user_id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usr_seq")
+    @SequenceGenerator(name = "usr_seq", sequenceName = "usr_id_seq", allocationSize = 1)
+    private Long id;
 
     @Column(name = "user_name")
     private String userName;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @OneToMany(mappedBy = "creator")
     private Set<RecipeDao> recipes;

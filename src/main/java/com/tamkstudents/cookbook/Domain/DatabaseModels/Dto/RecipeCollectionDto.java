@@ -15,7 +15,7 @@ public class RecipeCollectionDto implements DtoEntity {
     public RecipeCollectionDto(RecipeCollectionDao dao){
         this.id = dao.getId();
         this.collectionName = dao.getCollectionName();
-        this.creatorId = dao.getCreator().getUser_id();
+        this.creatorId = dao.getCreator().getId();
         this.recipeIds = new ArrayList<>();
 
         dao.getRecipes().forEach(recipeDao-> this.recipeIds.add(recipeDao.getId()));

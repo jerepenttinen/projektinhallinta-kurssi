@@ -2,34 +2,36 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DtoEntity;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter
 public class RecipeDto implements DtoEntity {
-    //constructor From Data acces object
+    //constructor From Data access object
     public RecipeDto(RecipeDao dao){
         this.id = dao.getId();
         this.recipeName = dao.getRecipeName();
-        this.creatorId = dao.getCreator().getUser_id();
+        this.creatorId = dao.getCreator().getId();
         this.image = dao.getImage();
         this.instruction = dao.getInstruction();
-        this.foodGroups = new ArrayList<>();
-        this.ingredients = new ArrayList<>();
-
-        dao.getFoodGroups().forEach(foodGroupDao -> this.foodGroups.add(new FoodGroupDto(foodGroupDao)));
-        dao.getIngredients().forEach(ingredientDao -> this.ingredients.add(new IngredientDto(ingredientDao)));
+        this.foodGroups = dao.getFoodGroups().stream().map(FoodGroupDto::new).toList();
+        this.ingredients = dao.getIngredients().stream().map(IngredientDto::new).toList();
     }
 
     private long id;
-    private String recipeName;
-    private long creatorId;
-    private byte[] image;
-    private List<String> instruction;
-    private List<IngredientDto> ingredients;
-    private List<FoodGroupDto> foodGroups;
+    @NotNull
+    private final String recipeName;
+    @NotNull
+    private final long creatorId;
+    @NotNull
+    private final byte[] image;
+    @NotNull
+    private final List<String> instruction;
+    @NotNull
+    private final List<IngredientDto> ingredients;
+    @NotNull
+    private final List<FoodGroupDto> foodGroups;
 }

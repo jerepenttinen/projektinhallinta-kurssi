@@ -3,15 +3,12 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 import com.tamkstudents.cookbook.Domain.DaoEntity;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
 import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @NoArgsConstructor @Getter @Setter
+@Entity(name = "login_user") @NoArgsConstructor @Getter @Setter
 public class LoginUserDao implements DaoEntity {
 
     public LoginUserDao(LoginUserDto dto){
@@ -26,13 +23,16 @@ public class LoginUserDao implements DaoEntity {
 
     public LoginUserDao(LoginCredentials credentials, String password, long profileId){
         this.setUsername(credentials.getUsername());
+        this.setFirstName(credentials.getFirstname());
+        this.setLastName(credentials.getLastname());
         this.setEmail(credentials.getEmail());
         this.setPassword(password);
         this.setProfileId(profileId);
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "login_user_seq")
+    @SequenceGenerator(name = "login_user_seq", sequenceName = "login_user_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "login_user_name")

@@ -13,7 +13,8 @@ import java.util.Set;
 public class RecipeCollectionDao extends AbstractClass implements DaoEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_collection_seq")
+    @SequenceGenerator(name = "recipe_collection_seq", sequenceName = "recipe_collection_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "recipe_collection_name")

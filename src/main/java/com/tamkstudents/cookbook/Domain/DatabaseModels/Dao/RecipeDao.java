@@ -3,12 +3,13 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 import com.tamkstudents.cookbook.Domain.AbstractClass;
 import com.tamkstudents.cookbook.Domain.DaoEntity;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
-import java.sql.Blob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,8 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_seq")
+    @SequenceGenerator(name = "recipe_seq", sequenceName = "recipe_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "recipe_name")
@@ -37,8 +39,8 @@ public class RecipeDao extends AbstractClass implements DaoEntity {
     @JoinColumn(name = "creator_id", nullable = false)
     private UserDao creator;
 
+    @Type(ListArrayType.class)
     @Column(name = "recipe_instruction", nullable = false)
-    @ElementCollection
     private List<String> instruction;
 
     @Column(name = "recipe_img")

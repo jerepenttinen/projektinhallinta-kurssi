@@ -20,7 +20,7 @@ public class FoodGroupDao extends AbstractClass implements DaoEntity {
     }
 
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private Long id;
 
     @Column(name = "food_group_name")
