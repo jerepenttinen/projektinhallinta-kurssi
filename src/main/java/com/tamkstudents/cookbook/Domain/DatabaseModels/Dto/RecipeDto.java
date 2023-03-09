@@ -2,13 +2,13 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DtoEntity;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RecipeDto implements DtoEntity {
     //constructor From Data access object
     public RecipeDto(RecipeDao dao){
@@ -22,16 +22,10 @@ public class RecipeDto implements DtoEntity {
     }
 
     private long id;
-    @NotNull
-    private final String recipeName;
-    @NotNull
-    private final long creatorId;
-    @NotNull
-    private final byte[] image;
-    @NotNull
-    private final List<String> instruction;
-    @NotNull
-    private final List<IngredientDto> ingredients;
-    @NotNull
-    private final List<FoodGroupDto> foodGroups;
+    private String recipeName;
+    private long creatorId;
+    private byte[] image;
+    private List<String> instruction;
+    private List<IngredientDto> ingredients;
+    private List<FoodGroupDto> foodGroups;
 }
