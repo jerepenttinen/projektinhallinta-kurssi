@@ -17,7 +17,7 @@ public class ReviewController extends AbstractController{
     @Autowired
     ReviewService reviewService;
 
-    @RequestMapping("/{recipeId}")
+    @GetMapping("/{recipeId}")
     @ResponseBody
     public ResponseEntity<List<ReviewDto>> getRecipeReviews(@PathVariable(name = "recipeId") Integer id){
         //TODO get reviews on recipe
