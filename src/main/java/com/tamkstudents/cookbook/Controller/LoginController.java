@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
 import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignupCredentials;
 import com.tamkstudents.cookbook.Service.LoginService;
 import com.tamkstudents.cookbook.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class LoginController extends AbstractController{
 
     @PostMapping("user/create")
     @ResponseBody
-    public ResponseEntity<LoginUserDto> createUser(@RequestBody LoginCredentials credentials){
+    public ResponseEntity<LoginUserDto> createUser(@RequestBody SignupCredentials credentials){
         if(!loginService.isLoggedIn()){
             try{
                 LoginUserDto dto = loginService.createNewUser(credentials);

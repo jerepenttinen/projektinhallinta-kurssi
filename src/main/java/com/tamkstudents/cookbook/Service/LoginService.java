@@ -4,7 +4,7 @@ import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.UserDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.LoginUserRepository;
-import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignupCredentials;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,7 @@ public class LoginService {
     }
 
     @Transactional
-    public LoginUserDto createNewUser(LoginCredentials credentials){
+    public LoginUserDto createNewUser(SignupCredentials credentials){
         Optional<LoginUserDao> checker = loginUserRepository
                 .findByEmailOrUsername(credentials.getEmail(), credentials.getUsername());
         if(checker.isEmpty()){

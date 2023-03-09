@@ -4,7 +4,7 @@ import com.tamkstudents.cookbook.Domain.AbstractClass;
 import com.tamkstudents.cookbook.Domain.DaoEntity;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.UserDto;
-import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignupCredentials;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class UserDao  extends AbstractClass implements DaoEntity {
         this.createdAt = user.getCreatedAt();
     }
 
-    public UserDao(LoginCredentials credentials){
+    public UserDao(SignupCredentials credentials){
         this.setUserName(credentials.getUsername());
         this.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         this.setRecipes(new HashSet<>());

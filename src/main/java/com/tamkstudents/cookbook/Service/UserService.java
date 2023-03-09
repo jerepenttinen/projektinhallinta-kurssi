@@ -3,7 +3,7 @@ package com.tamkstudents.cookbook.Service;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.UserDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
-import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignupCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,7 @@ public class UserService extends AbstractService{
         return dto;
     }
 
-    public UserDto saveNewProfile(LoginCredentials credentials){
+    public UserDto saveNewProfile(SignupCredentials credentials){
         long startTime = System.nanoTime();
         UserDao newProfile = userRepository.save(new UserDao(credentials));
         UserDto dto = getUser(newProfile.getId());

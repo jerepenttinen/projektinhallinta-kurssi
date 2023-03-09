@@ -2,7 +2,7 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 
 import com.tamkstudents.cookbook.Domain.DaoEntity;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
-import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignupCredentials;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class LoginUserDao implements DaoEntity {
         this.email = dto.getEmail();
     }
 
-    public LoginUserDao(LoginCredentials credentials, String password, long profileId){
+    public LoginUserDao(SignupCredentials credentials, String password, long profileId){
         this.setUsername(credentials.getUsername());
         this.setFirstName(credentials.getFirstname());
         this.setLastName(credentials.getLastname());
