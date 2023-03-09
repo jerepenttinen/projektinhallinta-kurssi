@@ -6,6 +6,8 @@ import { Button } from "react-bootstrap";
 import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/SearchPage";
 import RecipePage from "./pages/RecipePage";
+import ProfileSettingsPage from "./pages/ProfileSettingsPage"
+
 import CreateRecipePage from "./pages/CreateRecipePage";
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
         <Route path="/recipes" element={<RecipePage />} />
         <Route path="/recipes/create" element={<CreateRecipePage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/profile/settings" element={<ProfileSettingsPage />} />
       </Routes>
     </div>
   );
