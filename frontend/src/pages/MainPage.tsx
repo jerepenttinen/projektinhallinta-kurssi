@@ -27,7 +27,7 @@ const MainPage = () => {
     <Container>
       <h1 className="mt-5 mb-4">Reseptejä</h1>
       <Container>
-        <Stack className="flex-nowrap overflow-scroll" direction="horizontal">
+        <Stack className="flex-nowrap overflow-scroll gap-2" direction="horizontal">
             {recipeList}
         </Stack>
       </Container>
