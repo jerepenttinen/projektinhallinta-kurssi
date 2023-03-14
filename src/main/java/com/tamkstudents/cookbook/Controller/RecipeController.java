@@ -21,6 +21,7 @@ public class RecipeController extends AbstractController{
     RecipeService recipeService;
 
     @ResponseBody
+    @GetMapping
     public ResponseEntity<List<RecipeDto>> getRecipes() {
         List<RecipeDto> recipes;
         try {
@@ -60,7 +61,7 @@ public class RecipeController extends AbstractController{
         }
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     @ResponseBody
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable String id){
         RecipeDto dto;
@@ -73,7 +74,7 @@ public class RecipeController extends AbstractController{
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @RequestMapping("/user/{id}")
+    @GetMapping("/user/{id}")
     @ResponseBody
     public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable String id){
         List<RecipeDto> recipes = recipeService.getUserRecipes(Long.valueOf(id));

@@ -6,4 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FoodGroupRepository extends CrudRepository<FoodGroupDao, Long> {}
+public interface FoodGroupRepository extends CrudRepository<FoodGroupDao, Long> {
+    FoodGroupDao findFirstByName(String name);
+}

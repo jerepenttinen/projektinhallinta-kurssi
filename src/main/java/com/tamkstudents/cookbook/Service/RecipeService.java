@@ -1,17 +1,22 @@
 package com.tamkstudents.cookbook.Service;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.FoodGroupDao;
+import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.IngredientDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.FoodGroupDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
+import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.FoodGroupRepository;
+import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.IngredientRepository;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.RecipeRepository;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService extends AbstractService{
@@ -23,6 +28,12 @@ public class RecipeService extends AbstractService{
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FoodGroupRepository foodGroupRepository;
+
+    @Autowired
+    IngredientRepository ingredientRepository;
 
     public List<RecipeDto> getAllRecipes(){
         long startTime = System.nanoTime();
@@ -65,13 +76,37 @@ public class RecipeService extends AbstractService{
         return recipes;
     }
 
+    @Transactional
     public RecipeDto createRecipe(RecipeDto dto) {
         long startTime = System.nanoTime();
 
         RecipeDto returnDto;
         Optional<UserDao> userDao = userRepository.findById(dto.getCreatorId());
         if (userDao.isPresent()) {
-            RecipeDao recipeDao = new RecipeDao(dto, userDao.get());
+            var ingredients = dto.getIngredients().stream().map(i -> {
+                var ingredient = ingredientRepository.findFirstByName(i.getName());
+                if (ingredient != null) {
+                    return ingredient;
+                }
+                return ingredientRepository.save(IngredientDao.builder().name(i.getName()).build());
+            }).collect(Collectors.toSet());
+
+            var foodGroups = dto.getFoodGroups().stream().map(i -> {
+                var ingredient = foodGroupRepository.findFirstByName(i.getName());
+                if (ingredient != null) {
+                    return ingredient;
+                }
+                return foodGroupRepository.save(FoodGroupDao.builder().name(i.getName()).build());
+            }).collect(Collectors.toSet());
+
+            var recipeDao = RecipeDao.builder()
+                    .recipeName(dto.getRecipeName())
+                    .creator(userDao.get())
+                    .image(dto.getImage())
+                    .instruction(dto.getInstruction())
+                    .ingredients(ingredients)
+                    .foodGroups(foodGroups)
+                    .build();
             RecipeDao savedRecipeDao = recipeRepository.save(recipeDao);
             returnDto = new RecipeDto(savedRecipeDao);
         }else{

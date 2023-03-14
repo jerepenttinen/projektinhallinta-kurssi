@@ -5,7 +5,7 @@ import com.tamkstudents.cookbook.Domain.DtoEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class UserDto implements DtoEntity {
 
     public UserDto(UserDao dao) {
-        this.userId = dao.getUser_id();
+        this.userId = dao.getId();
         this.userName = dao.getUserName();
         this.createdAt = dao.getCreatedAt();
         this.recipeIds = new ArrayList<>();
@@ -23,7 +23,7 @@ public class UserDto implements DtoEntity {
 
     private long userId;
     private String userName;
-    private Date createdAt;
+    private Timestamp createdAt;
     private List<Long> recipeIds;
 
 

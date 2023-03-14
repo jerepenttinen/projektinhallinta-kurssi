@@ -2,10 +2,14 @@ package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.IngredientDao;
 import com.tamkstudents.cookbook.Domain.DtoEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter  @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class IngredientDto implements DtoEntity {
 
     public IngredientDto(IngredientDao dao) {
