@@ -1,84 +1,75 @@
 package com.tamkstudents.cookbook.Controller;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
-import com.tamkstudents.cookbook.Domain.login.LoginCredentials;
-import com.tamkstudents.cookbook.Domain.login.SignupCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignInCredentials;
+import com.tamkstudents.cookbook.Domain.login.SignUpCredentials;
 import com.tamkstudents.cookbook.Service.LoginService;
-import com.tamkstudents.cookbook.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
-
 @RestController
-@RequestMapping("/api/")
+@Slf4j
+@RequiredArgsConstructor
+@DependsOn("securityFilterChain")
 public class LoginController extends AbstractController{
-
-    Logger logger = Logger.getLogger(LoginController.class.getName());
-
-    @Autowired
-    LoginService loginService;
-
-    @Autowired
-    UserService userService;
-
-    @PostMapping("login")
-    @ResponseBody
-    public ResponseEntity<LoginUserDto> login(@RequestBody LoginCredentials credentials){
-        if(!loginService.isLoggedIn()){
-            LoginUserDto loginUserDto = loginService
-                    .validateAndGetUser(credentials.getEmail(), credentials.getUsername());
-            if(loginService.attemptLogin(credentials.getRawPassword(), loginUserDto)){
-                logger.info("Logged in as: " + credentials.getUsername());
-                return new ResponseEntity<>(loginUserDto, HttpStatus.ACCEPTED);
-            }else {
-                logger.severe("Login failed with credentials:" + credentials.getUsername() + " " + credentials.getEmail());
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
+    private final LoginService loginService;
+    private final RememberMeServices rememberMeServices;
+    @PostMapping("/signin")
+    public ResponseEntity<String> signIn(@RequestBody SignInCredentials signInCredentials, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+        if (request.getUserPrincipal() != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        logger.info("Login attempt while logged in");
-        return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            request.login(signInCredentials.getEmail(), signInCredentials.getPassword());
+        } catch (ServletException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        var authentication = (Authentication)request.getUserPrincipal();
+
+        rememberMeServices.loginSuccess(request, response, authentication);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("logout")
-    @ResponseBody
-    public ResponseEntity<Boolean> logout(@RequestBody LoginCredentials credentials){
-        if(loginService.isLoggedIn()){
-            LoginUserDto loginUserDto = loginService
-                    .validateAndGetUser(credentials.getEmail(), credentials.getUsername());
-            if(loginUserDto != null){
-                loginService.logOut();
-                logger.info("User: " + credentials.getUsername() + " logged out.");
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            }
-            logger.severe("Logout attempt with faulty credentials: " + credentials.getUsername() + " " + credentials.getEmail());
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody SignUpCredentials signUpCredentials, BindingResult bindingResult, HttpServletRequest request) {
+        if (request.getUserPrincipal() != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        logger.severe("Logout attempt while not logged in!");
-        return new ResponseEntity<>(false, HttpStatus.NOT_MODIFIED);
-    }
 
-    @PostMapping("user/create")
-    @ResponseBody
-    public ResponseEntity<LoginUserDto> createUser(@RequestBody SignupCredentials credentials){
-        if(!loginService.isLoggedIn()){
-            try{
-                LoginUserDto dto = loginService.createNewUser(credentials);
-                if(dto != null){
-                    logger.info("User created: " + credentials.getUsername() + " " + credentials.getEmail());
-                    return new ResponseEntity<>(dto , HttpStatus.OK);
-                }else {
-                    logger.severe("Cant create user: " + credentials.getUsername() + " " + credentials.getEmail());
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }catch (Throwable err){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            if (loginService.createNewUser(signUpCredentials) != null) {
+                return new ResponseEntity<>(HttpStatus.OK);
             }
-        } else {
-          return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            // ???
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @PostMapping("/signout")
+    public ResponseEntity<String> signOut(HttpServletRequest request) throws ServletException {
+        request.logout();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
