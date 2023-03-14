@@ -11,7 +11,7 @@ export interface Props{
 }
 const FrontPageRecipe = ({ header, xs }: Props) => {
     return(
-        <Col xs={xs} className="" style={{margin: 10, marginLeft: 0}}>
+        <Col xs={xs}>
             <Link to='/'>
                 <Figure>
                     <Figure.Image src='https://4.bp.blogspot.com/-ecGN1GaoT-g/Uz20paShlSI/AAAAAAAAAcc/mc7Or69LsNw/s1600/veghamp2.jpg'
