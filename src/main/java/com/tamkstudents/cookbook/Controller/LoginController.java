@@ -6,6 +6,7 @@ import com.tamkstudents.cookbook.Service.LoginService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
@@ -47,7 +48,7 @@ public class LoginController extends AbstractController{
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpCredentials signUpCredentials, BindingResult bindingResult, HttpServletRequest request) {
+    public ResponseEntity<String> signUp(@Valid @RequestBody SignUpCredentials signUpCredentials, BindingResult bindingResult, HttpServletRequest request) {
         if (request.getUserPrincipal() != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

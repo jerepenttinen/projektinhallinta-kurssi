@@ -1,6 +1,5 @@
 package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
 
-import com.tamkstudents.cookbook.Domain.DaoEntity;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
 import com.tamkstudents.cookbook.Domain.login.SignUpCredentials;
 import jakarta.persistence.*;
@@ -56,6 +55,11 @@ public class LoginUserDao implements UserDetails {
 
     @Column(name = "user_email")
     private String email;
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,82 +1,79 @@
 package com.tamkstudents.cookbook.Controller;
 
+import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
+import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
 import com.tamkstudents.cookbook.Service.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/recipes")
-public class RecipeController extends AbstractController{
+@Slf4j
+@RequiredArgsConstructor
+public class RecipeController extends AbstractController {
+    private final RecipeService recipeService;
+    private final UserRepository userRepository;
 
-    Logger logger = Logger.getLogger(RecipeController.class.getName());
-
-    @Autowired
-    RecipeService recipeService;
-
-    @ResponseBody
     @GetMapping
     public ResponseEntity<List<RecipeDto>> getRecipes() {
         List<RecipeDto> recipes;
         try {
             recipes = recipeService.getAllRecipes();
-        } catch (Throwable err){
-            logger.severe("Unable to fetch all recipes");
+        } catch (Throwable err) {
+            log.error("Unable to fetch all recipes");
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
-    @ResponseBody
-    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto dto) {
-        //luodaan tietokantaan uusi objekti
-        RecipeDto returnDto;
+    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto, LoginUserDao loginUserDao) {
         try {
-             returnDto = recipeService.createRecipe(dto);
+            log.info("User: {}", loginUserDao.getId());
+            var result = recipeService.createRecipe(recipeDto, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Throwable err) {
-            logger.severe("Unable to create recipe!");
+            log.error("Unable to create recipe!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        //palautetaan luotu objekti
-        return new ResponseEntity<>(returnDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<RecipeDto> changesToRecipe(@RequestBody RecipeDto dto){
+    public ResponseEntity<RecipeDto> changesToRecipe(@RequestBody RecipeDto dto) {
         RecipeDto returnDto = recipeService.modifyRecipeById(dto);
-        if(returnDto != null){
+        if (returnDto != null) {
             return new ResponseEntity<>(returnDto, HttpStatus.OK);
-        }else {
-            logger.severe("Recipe modify failed!");
+        } else {
+            log.error("Recipe modify failed!");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable String id){
+    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable String id) {
         RecipeDto dto;
         try {
-           dto = recipeService.getRecipeById(Long.valueOf(id));
+            dto = recipeService.getRecipeById(Long.valueOf(id));
         } catch (Throwable err) {
-            logger.warning("Recipe not found by id: " + id);
+            log.warn("Recipe not found by id: {}", id);
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
-    @ResponseBody
-    public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable String id){
+    public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable String id) {
         List<RecipeDto> recipes = recipeService.getUserRecipes(Long.valueOf(id));
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
