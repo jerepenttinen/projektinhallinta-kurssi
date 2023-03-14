@@ -4,6 +4,7 @@ import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
 import com.tamkstudents.cookbook.Service.RecipeService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class RecipeController extends AbstractController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto, LoginUserDao loginUserDao) {
+    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto, @Parameter(hidden = true) LoginUserDao loginUserDao) {
         try {
             log.info("User: {}", loginUserDao.getId());
             var result = recipeService.createRecipe(recipeDto, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
