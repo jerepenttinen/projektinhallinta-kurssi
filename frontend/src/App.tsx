@@ -7,6 +7,7 @@ import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/SearchPage";
 import RecipePage from "./pages/RecipePage";
 import ProfileSettingsPage from "./pages/ProfileSettingsPage"
+import ProfilePage from "./pages/ProfilePage"
 
 import CreateRecipePage from "./pages/CreateRecipePage";
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/recipes/create" element={<CreateRecipePage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/profile/settings" element={<ProfileSettingsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </div>
   );
