@@ -27,7 +27,7 @@ public class LoginController extends AbstractController{
     private final LoginService loginService;
     private final RememberMeServices rememberMeServices;
     @PostMapping("/signin")
-    public ResponseEntity<LoginUserDto> signIn(@RequestBody SignInCredentials signInCredentials, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> signIn(@RequestBody SignInCredentials signInCredentials, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
         if (request.getUserPrincipal() != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -46,9 +46,7 @@ public class LoginController extends AbstractController{
 
         rememberMeServices.loginSuccess(request, response, authentication);
 
-        var user = (LoginUserDao) authentication.getPrincipal();
-
-        return new ResponseEntity<>(new LoginUserDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/signup")
