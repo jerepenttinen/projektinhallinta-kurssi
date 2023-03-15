@@ -1,5 +1,7 @@
 package com.tamkstudents.cookbook.Controller;
 
+import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
 import com.tamkstudents.cookbook.Domain.login.SignInCredentials;
 import com.tamkstudents.cookbook.Domain.login.SignUpCredentials;
 import com.tamkstudents.cookbook.Service.LoginService;
@@ -25,7 +27,7 @@ public class LoginController extends AbstractController{
     private final LoginService loginService;
     private final RememberMeServices rememberMeServices;
     @PostMapping("/signin")
-    public ResponseEntity<String> signIn(@RequestBody SignInCredentials signInCredentials, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<LoginUserDto> signIn(@RequestBody SignInCredentials signInCredentials, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
         if (request.getUserPrincipal() != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -44,11 +46,13 @@ public class LoginController extends AbstractController{
 
         rememberMeServices.loginSuccess(request, response, authentication);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        var user = (LoginUserDao) authentication.getPrincipal();
+
+        return new ResponseEntity<>(new LoginUserDto(user), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@Valid @RequestBody SignUpCredentials signUpCredentials, BindingResult bindingResult, HttpServletRequest request) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpCredentials signUpCredentials, BindingResult bindingResult, HttpServletRequest request) {
         if (request.getUserPrincipal() != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -69,7 +73,7 @@ public class LoginController extends AbstractController{
     }
 
     @PostMapping("/signout")
-    public ResponseEntity<String> signOut(HttpServletRequest request) throws ServletException {
+    public ResponseEntity<Void> signOut(HttpServletRequest request) throws ServletException {
         request.logout();
         return new ResponseEntity<>(HttpStatus.OK);
     }

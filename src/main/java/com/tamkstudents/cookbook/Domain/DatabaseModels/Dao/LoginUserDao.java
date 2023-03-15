@@ -16,7 +16,7 @@ import java.util.Collections;
 public class LoginUserDao implements UserDetails {
     public LoginUserDao(LoginUserDto dto){
         this.id = dto.getId();
-        this.username = dto.getUsername();
+        this.loginUsername = dto.getUsername();
         this.firstName = dto.getFirstName();
         this.lastName = dto.getLastName();
         this.password = dto.getPassword();
@@ -25,7 +25,7 @@ public class LoginUserDao implements UserDetails {
     }
 
     public LoginUserDao(SignUpCredentials credentials, String password, long profileId){
-        this.setUsername(credentials.getUsername());
+        this.setLoginUsername(credentials.getUsername());
         this.setFirstName(credentials.getFirstname());
         this.setLastName(credentials.getLastname());
         this.setEmail(credentials.getEmail());
@@ -39,7 +39,7 @@ public class LoginUserDao implements UserDetails {
     private Long id;
 
     @Column(name = "login_user_name")
-    private String username;
+    private String loginUsername;
 
     @Column(name = "login_user_password")
     private String password;

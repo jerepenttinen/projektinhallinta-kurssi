@@ -27,7 +27,7 @@ public class LoginService implements UserDetailsService {
     @Transactional
     public LoginUserDto createNewUser(SignUpCredentials credentials) {
         Optional<LoginUserDao> checker = loginUserRepository
-                .findByEmailOrUsername(credentials.getEmail(), credentials.getUsername());
+                .findByEmailOrLoginUsername(credentials.getEmail(), credentials.getUsername());
         if (checker.isEmpty()) {
             String encryptPassword = passwordEncoder.encode(credentials.getPassword());
             UserDto userDto = userService.saveNewProfile(credentials);
