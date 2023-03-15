@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController extends AbstractController {
     @GetMapping("/current")
-    ResponseEntity<LoginUserDto> getCurrentUser(LoginUserDao loginUserDao) {
+    ResponseEntity<LoginUserDto> getCurrentUser(@Parameter(hidden = true) LoginUserDao loginUserDao) {
         if (loginUserDao == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
