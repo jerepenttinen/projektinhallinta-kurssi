@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 
 type LoginUser = {
   id: number;
@@ -21,15 +22,27 @@ type SignInRequest = {
   password: string;
 };
 
+type SignUpRequest = {
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+};
+
 type AuthenticationContextType = {
   user: LoginUser | null;
-  signIn: (credentials: SignInRequest) => void;
-  signOut: () => void;
+  signIn: (credentials: SignInRequest) => Promise<void>;
+  signUp: (signUpRequest: SignUpRequest) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 const AuthenticationContext = createContext<AuthenticationContextType>({
   user: null,
   signIn: () => {
+    throw new Error("Function not implemented.");
+  },
+  signUp: () => {
     throw new Error("Function not implemented.");
   },
   signOut: () => {
@@ -43,12 +56,18 @@ export function AuthenticationProvider({
   children: React.ReactElement;
 }) {
   const [user, setUser] = useState<LoginUser | null>(null);
+  const navigate = useNavigate();
 
-  const fetchCurrentUser = useCallback(() => {
-    fetch("/api/users/current")
-      .then((res) => res.json())
-      .then((user) => setUser(user as LoginUser))
-      .catch(() => setUser(null));
+  const fetchCurrentUser = useCallback(async () => {
+    try {
+      const res = await fetch("/api/users/current");
+      const user = (await res.json()) as LoginUser;
+      setUser(user);
+      return user;
+    } catch (e: unknown) {
+      setUser(null);
+      return null;
+    }
   }, []);
 
   useEffect(() => {
@@ -65,9 +84,11 @@ export function AuthenticationProvider({
         },
         body: JSON.stringify(credentials),
       });
-      fetchCurrentUser();
+      if ((await fetchCurrentUser()) !== null) {
+        navigate("/");
+      }
     },
-    [fetchCurrentUser],
+    [fetchCurrentUser, navigate],
   );
 
   const signOut = useCallback(async () => {
@@ -77,8 +98,25 @@ export function AuthenticationProvider({
     setUser(null);
   }, []);
 
+  const signUp = useCallback(
+    async (signUp: SignUpRequest) => {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signUp),
+      });
+
+      if (res.ok) {
+        navigate("/signin");
+      }
+    },
+    [navigate],
+  );
+
   return (
-    <AuthenticationContext.Provider value={{ user, signIn, signOut }}>
+    <AuthenticationContext.Provider value={{ user, signIn, signUp, signOut }}>
       {children}
     </AuthenticationContext.Provider>
   );
