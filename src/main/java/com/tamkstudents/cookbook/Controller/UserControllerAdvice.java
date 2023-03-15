@@ -25,10 +25,7 @@ public class UserControllerAdvice {
         }
 
         try {
-            log.info("loading {}", principal.getName());
-            var result = (LoginUserDao) loginService.loadUserByUsername(principal.getName());
-            log.info("wtf {}", result.getEmail());
-            return result;
+            return (LoginUserDao) loginService.loadUserByUsername(principal.getName());
         } catch (UsernameNotFoundException e) {
             request.getSession().invalidate();
             return null;
