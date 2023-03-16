@@ -18,7 +18,7 @@ const ProfileRecipeList = () => {
     const recipeList = recipes.map((recipe) => {
         return(
             <div key={recipe.id} className="d-inline-block me-4 align-middle" style={{width:"250px"}}>
-                <FrontPageRecipe header={recipe.header}/>
+                <FrontPageRecipe header={recipe.header} fontSize={25}/>
             </div>
         );
     });

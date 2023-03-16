@@ -1,13 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
-import { Stack } from "react-bootstrap";
 import FrontPageRecipe from "../components/FrontPageRecipe";
-
+import HorizontalRecipeList from "../components/HorizontalRecipeList"
 
 const dummyData: { id: number, header: string }[] = [
         { id:1, header: "Kinkkukiusaus" },
         { id:2, header: "Lihamureke" },
-        { id:3, header: "Makaroonilaatikko" },
+        { id:3, header: "Makaronilaatikko" },
         { id:4, header: "Hernekeitto" },
         { id:5, header: "Jauhelihakastike" },
         { id:7, header: "Jauhelihakastike2" },
@@ -17,19 +16,11 @@ const dummyData: { id: number, header: string }[] = [
 
 const MainPage = () => {
 
-  const recipeList = dummyData.map((recipe) => {
-      return(
-          <FrontPageRecipe key={recipe.id} header={recipe.header} xs={3}/>
-      );
-  });
-
   return (
     <Container>
       <h1 className="mt-5 mb-4">Reseptejä</h1>
       <Container>
-        <Stack className="flex-nowrap overflow-scroll" direction="horizontal">
-            {recipeList}
-        </Stack>
+        <HorizontalRecipeList imageSize={3} fontSize={25} data={dummyData}/>
       </Container>
     </Container>
   );
