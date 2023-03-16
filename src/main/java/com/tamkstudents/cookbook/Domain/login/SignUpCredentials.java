@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor @Getter
-public class SignupCredentials {
+public class SignUpCredentials {
     @NotNull
     private final String username;
     @NotNull
@@ -15,5 +15,5 @@ public class SignupCredentials {
     @NotNull
     private final String email;
     @NotNull
-    private final String rawPassword;
+    private final String password;
 }

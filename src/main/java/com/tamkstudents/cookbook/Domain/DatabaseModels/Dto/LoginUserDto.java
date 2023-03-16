@@ -9,7 +9,7 @@ public class LoginUserDto {
 
     public LoginUserDto(LoginUserDao dao){
         this.id = dao.getId();
-        this.username = dao.getUsername();
+        this.username = dao.getLoginUsername();
         this.password = dao.getPassword();
         this.profileId = dao.getProfileId();
         this.email = dao.getEmail();

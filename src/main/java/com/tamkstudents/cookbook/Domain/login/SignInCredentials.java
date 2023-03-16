@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor @Getter
-public class LoginCredentials {
-    @NotNull
-    private final String username;
+public class SignInCredentials {
     @NotNull
     private final String email;
     @NotNull
-    private final String rawPassword;
+    private final String password;
 }
