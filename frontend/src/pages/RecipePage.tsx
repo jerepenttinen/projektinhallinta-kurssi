@@ -1,5 +1,6 @@
 import { BsHandThumbsDown, BsHandThumbsUp, BsPrinter } from "react-icons/bs";
 import { Badge, Button, ButtonGroup, Carousel, CarouselItem, Form, Stack } from "react-bootstrap";
+import ReviewList from "../components/ReviewList"
 
 const IngredientRow = () => {
   return (
@@ -14,27 +15,10 @@ const IngredientRow = () => {
   );
 };
 
-const Review = () => {
-  return (
-    <Stack direction="horizontal" gap={2}>
-      <div className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-           style={{ width: 48, height: 48, fontSize: 12 }}>
-        <span>Kuva</span>
-      </div>
-
-      <Stack gap={2}>
-        <Stack direction="horizontal" className="justify-content-between">
-          <span>Etunimi Sukunimi</span>
-          <Stack direction="horizontal" gap={2}>
-            <BsHandThumbsUp />
-            <time>19.1.2023</time>
-          </Stack>
-        </Stack>
-        <span>Erittäin hyvää!</span>
-      </Stack>
-    </Stack>
-  )
-}
+const dummyReviewData: {id:number, name: string, comment: string, date: Date, }[]=[
+    {id:1, name: "Erkki Esimerkki", comment:"Suorastaan herkullista!", date:new Date(2017, 4, 4)},
+    {id:2, name: "Matti Möttönen", comment:"Suorastaan oksettavaa!", date:new Date(2022, 2, 7)}
+]
 
 const RecipePage = () => {
   return (
@@ -126,8 +110,7 @@ const RecipePage = () => {
       </div>
 
       <h3>Arvostelut</h3>
-      <Review />
-      <Review />
+      <ReviewList reviews={dummyReviewData}/>
     </Stack>
   );
 };
