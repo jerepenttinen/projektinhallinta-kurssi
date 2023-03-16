@@ -1,9 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useRef } from "react";
-import LoginUser from "../core/domain/loginUser";
-
-const env = import.meta.env;
+import { useAuthentication } from "../AuthenticationContext";
 
 const SignupForm = () => {
   const formInputElements = {
@@ -14,25 +12,18 @@ const SignupForm = () => {
     passwordRef: useRef<HTMLInputElement>(null),
   };
 
+  const { signUp } = useAuthentication();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    /*TODO
-       #1 check that none of the input values are null/empty/undefined
-    */
-
-    const user = new LoginUser(formInputElements);
-
-    const url = env.VITE_APP_BACKEND_URL + "/api/users/signup";
-
-    try {
-      // const res = await axios.post(url, user);
-      // const data = await res.json();
-      // Tai fetch, jos ei käytetä axiosta
-    } catch (err) {
-      // handle error
-      console.log(err);
-    }
+    await signUp({
+      username: formInputElements.usernameRef.current!.value,
+      firstname: formInputElements.firstNameRef.current!.value,
+      lastname: formInputElements.lastNameRef.current!.value,
+      email: formInputElements.emailRef.current!.value,
+      password: formInputElements.passwordRef.current!.value,
+    });
   };
   return (
     <Form className="d-grid gap-4" onSubmit={handleSubmit}>

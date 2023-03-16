@@ -14,15 +14,21 @@ const dummyData: { id: number, header: string }[] = [
         { id:9, header: "Jauhelihakastike4" },
     ]
 
+
+
+
 const MainPage = () => {
+
 
   return (
     <Container>
       <h1 className="mt-5 mb-4">Reseptejä</h1>
       <Container>
         <HorizontalRecipeList imageSize={3} fontSize={25} data={dummyData}/>
+
       </Container>
     </Container>
   );
 };
 export default MainPage;
+

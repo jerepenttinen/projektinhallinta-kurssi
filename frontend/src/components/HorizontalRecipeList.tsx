@@ -20,7 +20,7 @@ const HorizontalRecipeList = ({ header, imageSize, fontSize, data }: Props) => {
     return (
         <>
             <h3>{header}</h3>
-            <Stack className="flex-nowrap overflow-scroll" direction="horizontal">
+            <Stack className="flex-nowrap overflow-scroll gap-2" direction="horizontal">
               {recipeList}
             </Stack>
         </>
