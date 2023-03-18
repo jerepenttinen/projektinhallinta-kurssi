@@ -3,24 +3,23 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Figure from "react-bootstrap/Figure";
 import { Link } from "react-router-dom";
+import "./css/FrontPageRecipe.css"
 
 export interface Props{
     header?: string,
     fontSize: number,
-    xs?: number
-
+    marginX: string
 }
-const FrontPageRecipe = ({ header, fontSize, xs }: Props) => {
+const FrontPageRecipe = ({ header, fontSize, marginX }: Props) => {
     return(
-        <Col xs={xs} className="" style={{margin: 10, marginLeft: 0}}>
+        <div className="mx-3">
 
             <Link to='/'>
-                <Figure>
-                    <Figure.Image src='https://4.bp.blogspot.com/-ecGN1GaoT-g/Uz20paShlSI/AAAAAAAAAcc/mc7Or69LsNw/s1600/veghamp2.jpg'
+                <Figure className="selector">
+                    <Figure.Image className="selector" src='https://4.bp.blogspot.com/-ecGN1GaoT-g/Uz20paShlSI/AAAAAAAAAcc/mc7Or69LsNw/s1600/veghamp2.jpg'
                         rounded
                     />
                     <p className=" fw-bold text-center text-break text-dark" style={{fontSize:fontSize}} >
-
                         {header}
                     </p>
                 </Figure>
@@ -28,7 +27,7 @@ const FrontPageRecipe = ({ header, fontSize, xs }: Props) => {
 
 
 
-        </Col>
+        </div>
     );
 }
 

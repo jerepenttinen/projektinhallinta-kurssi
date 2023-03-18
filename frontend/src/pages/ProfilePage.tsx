@@ -22,10 +22,10 @@ const ProfilePage = () => {
     return(
         <div className="m-auto bg-white p-4" style={{width:"50%", minWidth:300}}>
             <ProfileContacts/>
-            <h2 className="mt-4">Reseptit</h2>
+            <h2 className="my-4">Reseptit</h2>
             <ProfileRecipeList/>
-            <h2 className="mt-4">Kokoelmat</h2>
-            <HorizontalRecipeList imageSize={2} fontSize={10} header={"Aamupalat"} data={dummyData}/>
+            <h2 className="my-4">Kokoelmat</h2>
+            <HorizontalRecipeList fontSize={15} header={"Aamupalat"} data={dummyData} showDots={true}/>
             <br/>
             <ReviewList reviews={dummyReviewData}/>
         </div>
