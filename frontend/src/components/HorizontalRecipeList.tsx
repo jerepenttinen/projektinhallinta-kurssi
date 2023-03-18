@@ -36,13 +36,16 @@ const HorizontalRecipeList = ({ header, fontSize, data, showDots }: Props) => {
     return(
         <>
             <h3 className="my-3">{header}</h3>
-            <Carousel className=""
-              swipeable={true}
-              draggable={true}
+            <Carousel
+              swipeable={false}
+              draggable={false}
               showDots={showDots}
               responsive={responsive}
               infinite={true}
-              autoPlaySpeed={0}
+              slidesToSlide={1}
+              autoPlay={true}
+              autoPlaySpeed={2500}
+              customTransition={"transform 400ms ease-in-out"}
               keyBoardControl={true}
               transitionDuration={0}
               containerClass="carousel-container"
