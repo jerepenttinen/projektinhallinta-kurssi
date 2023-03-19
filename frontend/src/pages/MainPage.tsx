@@ -1,33 +1,32 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
-import FrontPageRecipe from "../components/FrontPageRecipe";
-import HorizontalRecipeList from "../components/HorizontalRecipeList"
-const dummyData: { id: number, header: string }[] = [
-        { id:1, header: "Kinkkukiusaus" },
-        { id:2, header: "Lihamureke" },
-        { id:3, header: "Makaronilaatikko" },
-        { id:4, header: "Hernekeitto" },
-        { id:5, header: "Jauhelihakastike" },
-        { id:7, header: "Jauhelihakastike2" },
-        { id:8, header: "Jauhelihakastike3" },
-        { id:9, header: "Jauhelihakastike4" },
-    ]
+import RecipeCard from "../components/RecipeCard";
+import CarouselContainer from "../components/CarouselContainer";
+import PageContainer from "../components/PageContainer";
 
-
-
+const dummyData = [
+  { id: 1, header: "Kinkkukiusaus" },
+  { id: 2, header: "Lihamureke" },
+  { id: 3, header: "Makaronilaatikko" },
+  { id: 4, header: "Hernekeitto" },
+  { id: 5, header: "Jauhelihakastike" },
+  { id: 7, header: "Jauhelihakastike2" },
+  { id: 8, header: "Jauhelihakastike3" },
+  { id: 9, header: "Jauhelihakastike4" },
+];
 
 const MainPage = () => {
-
-
   return (
-    <Container>
-      <h1 className="mt-5 mb-4">Reseptejä</h1>
+    <PageContainer gap={3}>
+      <h3>Reseptejä</h3>
       <Container>
-        <HorizontalRecipeList fontSize={25} data={dummyData} showDots={true} marginX={"10px"}/>
-
+        <CarouselContainer showDots={true}>
+          {dummyData.map((recipe) => {
+            return <RecipeCard key={recipe.id} header={recipe.header} />;
+          })}
+        </CarouselContainer>
       </Container>
-    </Container>
+    </PageContainer>
   );
 };
 export default MainPage;
-
