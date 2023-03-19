@@ -1,5 +1,15 @@
 import { BsHandThumbsDown, BsHandThumbsUp, BsPrinter } from "react-icons/bs";
-import { Badge, Button, ButtonGroup, Carousel, CarouselItem, Form, Stack } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  Carousel,
+  CarouselItem,
+  Form,
+  Stack,
+} from "react-bootstrap";
+import ReviewList from "../components/ReviewList";
+import PageContainer from "../components/PageContainer";
 
 const IngredientRow = () => {
   return (
@@ -14,35 +24,35 @@ const IngredientRow = () => {
   );
 };
 
-const Review = () => {
-  return (
-    <Stack direction="horizontal" gap={2}>
-      <div className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-           style={{ width: 48, height: 48, fontSize: 12 }}>
-        <span>Kuva</span>
-      </div>
-
-      <Stack gap={2}>
-        <Stack direction="horizontal" className="justify-content-between">
-          <span>Etunimi Sukunimi</span>
-          <Stack direction="horizontal" gap={2}>
-            <BsHandThumbsUp />
-            <time>19.1.2023</time>
-          </Stack>
-        </Stack>
-        <span>Erittäin hyvää!</span>
-      </Stack>
-    </Stack>
-  )
-}
+const dummyReviewData: {
+  id: number;
+  name: string;
+  comment: string;
+  date: Date;
+}[] = [
+  {
+    id: 1,
+    name: "Erkki Esimerkki",
+    comment: "Suorastaan herkullista!",
+    date: new Date(2017, 4, 4),
+  },
+  {
+    id: 2,
+    name: "Matti Möttönen",
+    comment: "Suorastaan oksettavaa!",
+    date: new Date(2022, 2, 7),
+  },
+];
 
 const RecipePage = () => {
   return (
-    <Stack className="py-4 px-3 container" gap={3} style={{ maxWidth: 768 }}>
+    <PageContainer gap={3}>
       <h2 className="mb-0">Reseptin nimi</h2>
       <Stack direction="horizontal" gap={2}>
-        <div className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-             style={{ width: 32, height: 32, fontSize: 10 }}>
+        <div
+          className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+          style={{ width: 32, height: 32, fontSize: 10 }}
+        >
           <span>Kuva</span>
         </div>
         <span>Etunimi Sukunimi</span>
@@ -61,14 +71,18 @@ const RecipePage = () => {
 
       <Carousel>
         <CarouselItem>
-          <div className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
-               style={{ height: 400 }}>
+          <div
+            className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
+            style={{ height: 400 }}
+          >
             <h2>Kuvakaruselli</h2>
           </div>
         </CarouselItem>
         <CarouselItem>
-          <div className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
-               style={{ height: 400 }}>
+          <div
+            className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
+            style={{ height: 400 }}
+          >
             <h2>Toka kuva</h2>
           </div>
         </CarouselItem>
@@ -95,14 +109,18 @@ const RecipePage = () => {
 
       <h3>Ohjeet</h3>
       <ol>
-        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-          aliqua.
+        <li>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et aliqua.
         </li>
-        <li>Proin fermentum leo vel orci porta non. Id leo in vitae turpis. Fermentum et sollicitudin ac orci
-          phasellus.
+        <li>
+          Proin fermentum leo vel orci porta non. Id leo in vitae turpis.
+          Fermentum et sollicitudin ac orci phasellus.
         </li>
         <li>Tellus at urna condimentum mattis pellentesque id nibh tortor.</li>
-        <li>Nisl tincidunt eget nullam non. Senectus et netus et malesuada fames.</li>
+        <li>
+          Nisl tincidunt eget nullam non. Senectus et netus et malesuada fames.
+        </li>
         <li>Tortor vitae purus faucibus ornare suspendisse.</li>
         <li>Ut ornare lectus sit amet est placerat in.</li>
         <li>Sed vulputate odio ut enim blandit volutpat maecenas.</li>
@@ -112,11 +130,26 @@ const RecipePage = () => {
       <div>
         <ButtonGroup>
           {/* TODO: use some component? */}
-          <input type="radio" className="btn-check" name="like" id="like" defaultChecked />
-          <label className="btn btn-outline-primary" htmlFor="like"><BsHandThumbsUp /> Tykkäsin</label>
+          <input
+            type="radio"
+            className="btn-check"
+            name="like"
+            id="like"
+            defaultChecked
+          />
+          <label className="btn btn-outline-primary" htmlFor="like">
+            <BsHandThumbsUp /> Tykkäsin
+          </label>
 
-          <input type="radio" className="btn-check" name="dislike" id="dislike" />
-          <label className="btn btn-outline-primary" htmlFor="dislike"><BsHandThumbsDown /> En tykkänyt</label>
+          <input
+            type="radio"
+            className="btn-check"
+            name="dislike"
+            id="dislike"
+          />
+          <label className="btn btn-outline-primary" htmlFor="dislike">
+            <BsHandThumbsDown /> En tykkänyt
+          </label>
         </ButtonGroup>
       </div>
 
@@ -126,9 +159,8 @@ const RecipePage = () => {
       </div>
 
       <h3>Arvostelut</h3>
-      <Review />
-      <Review />
-    </Stack>
+      <ReviewList reviews={dummyReviewData} />
+    </PageContainer>
   );
 };
 

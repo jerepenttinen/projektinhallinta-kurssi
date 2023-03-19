@@ -1,7 +1,6 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { FaBook } from "react-icons/fa";
-import "./css/Navbar.css";
 import { Link } from "react-router-dom";
 
 type MyNavbarProps = {
