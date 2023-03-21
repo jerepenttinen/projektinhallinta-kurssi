@@ -1,5 +1,6 @@
 package com.tamkstudents.cookbook.Service;
 
+import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
 import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
 import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
 import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
@@ -43,40 +44,33 @@ public class RecipeService {
 //    }
 
     @Transactional
-    public RecipeDto createRecipe(RecipeDto dto, UserDao userDao) {
-        long startTime = System.nanoTime();
-
-        var ingredients = dto.getIngredients().stream().map(i -> {
-            var ingredient = ingredientRepository.findFirstByName(i.getName());
+    public RecipeDao createRecipe(CreateRecipeRequest createRecipeRequest, UserDao userDao) {
+        var ingredients = createRecipeRequest.getIngredients().stream().map(it -> {
+            var ingredient = ingredientRepository.findFirstByName(it.getIngredient());
             if (ingredient != null) {
                 return ingredient;
             }
-            return ingredientRepository.save(IngredientDao.builder().name(i.getName()).build());
+            return ingredientRepository.save(IngredientDao.builder().name(it.getIngredient()).build());
         }).collect(Collectors.toSet());
 
-        var foodGroups = dto.getFoodGroups().stream().map(i -> {
-            var ingredient = foodGroupRepository.findFirstByName(i.getName());
+        var foodGroups = createRecipeRequest.getCategories().stream().map(category -> {
+            var ingredient = foodGroupRepository.findFirstByName(category);
             if (ingredient != null) {
                 return ingredient;
             }
-            return foodGroupRepository.save(FoodGroupDao.builder().name(i.getName()).build());
+            return foodGroupRepository.save(FoodGroupDao.builder().name(category).build());
         }).collect(Collectors.toSet());
 
+        // TODO: Add image
         var recipeDao = RecipeDao.builder()
-                .recipeName(dto.getRecipeName())
+                .recipeName(createRecipeRequest.getRecipeName())
                 .creator(userDao)
-                .image(dto.getImage())
-                .instruction(dto.getInstruction())
+                .instruction(createRecipeRequest.getInstructions())
                 .ingredients(ingredients)
                 .foodGroups(foodGroups)
                 .build();
-        RecipeDao savedRecipeDao = recipeRepository.save(recipeDao);
-        var returnDto = new RecipeDto(savedRecipeDao);
 
-        long stopTime = System.nanoTime();
-        log.info("Recipe creation: " + ((stopTime - startTime) / 1000000) + " ms");
-
-        return returnDto;
+        return recipeRepository.save(recipeDao);
     }
 
 

@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Controller.Mapper.RecipeMapperService;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
+import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
@@ -9,6 +10,7 @@ import com.tamkstudents.cookbook.Service.Exceptions.RecipeNotFoundException;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import com.tamkstudents.cookbook.Service.RecipeService;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/recipes")
@@ -35,15 +38,10 @@ public class RecipeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto, @Parameter(hidden = true) LoginUserDao loginUserDao) {
-        try {
-            log.info("User: {}", loginUserDao.getId());
-            var result = recipeService.createRecipe(recipeDto, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Throwable err) {
-            log.error("Unable to create recipe!");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Long> createRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) Optional<LoginUserDao> loginUserDao) {
+        var loginUser = loginUserDao.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUser.getProfileId()).orElseThrow());
+        return ResponseEntity.ok(recipe.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
