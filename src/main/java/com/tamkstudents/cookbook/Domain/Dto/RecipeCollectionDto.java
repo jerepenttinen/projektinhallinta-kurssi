@@ -1,7 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
+package com.tamkstudents.cookbook.Domain.Dto;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeCollectionDao;
-import com.tamkstudents.cookbook.Domain.DtoEntity;
+import com.tamkstudents.cookbook.Domain.Dao.RecipeCollectionDao;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-public class RecipeCollectionDto implements DtoEntity {
-
-    //constructor
+public class RecipeCollectionDto {
     public RecipeCollectionDto(RecipeCollectionDao dao){
         this.id = dao.getId();
         this.collectionName = dao.getCollectionName();

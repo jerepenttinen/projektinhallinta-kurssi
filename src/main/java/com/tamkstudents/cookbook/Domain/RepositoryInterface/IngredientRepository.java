@@ -1,7 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface;
+package com.tamkstudents.cookbook.Domain.RepositoryInterface;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.IngredientDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.IngredientDto;
+import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

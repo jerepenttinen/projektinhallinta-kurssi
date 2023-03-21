@@ -2,7 +2,7 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Controller.Mapper.LoginMapperService;
 import com.tamkstudents.cookbook.Controller.Reply.CurrentUserReply;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController extends AbstractController {
+public class UserController {
     private final LoginMapperService loginMapperService;
 
     @GetMapping("/current")

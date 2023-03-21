@@ -1,7 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
+package com.tamkstudents.cookbook.Domain.Dao;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

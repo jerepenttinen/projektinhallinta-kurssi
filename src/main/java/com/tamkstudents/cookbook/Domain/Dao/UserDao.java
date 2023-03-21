@@ -1,7 +1,4 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
-
-import com.tamkstudents.cookbook.Domain.AbstractClass;
-import com.tamkstudents.cookbook.Domain.DaoEntity;
+package com.tamkstudents.cookbook.Domain.Dao;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name="usr") @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class UserDao  extends AbstractClass implements DaoEntity {
+public class UserDao {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usr_seq")
     @SequenceGenerator(name = "usr_seq", sequenceName = "usr_id_seq", allocationSize = 1)

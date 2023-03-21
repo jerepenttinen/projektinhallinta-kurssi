@@ -1,7 +1,7 @@
 package com.tamkstudents.cookbook.Controller.Mapper;
 
 import com.tamkstudents.cookbook.Controller.Request.SignUpRequest;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
+import com.tamkstudents.cookbook.Domain.Dao.UserDao;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

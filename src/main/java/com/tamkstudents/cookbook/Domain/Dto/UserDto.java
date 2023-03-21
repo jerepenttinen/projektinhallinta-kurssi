@@ -1,7 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
+package com.tamkstudents.cookbook.Domain.Dto;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
-import com.tamkstudents.cookbook.Domain.DtoEntity;
+import com.tamkstudents.cookbook.Domain.Dao.UserDao;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-public class UserDto implements DtoEntity {
+public class UserDto {
 
     public UserDto(UserDao dao) {
         this.userId = dao.getId();

@@ -1,7 +1,5 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
+package com.tamkstudents.cookbook.Domain.Dao;
 
-import com.tamkstudents.cookbook.Domain.AbstractClass;
-import com.tamkstudents.cookbook.Domain.DaoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IngredientDao extends AbstractClass implements DaoEntity {
+public class IngredientDao {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ingredient_seq")
     @SequenceGenerator(name = "ingredient_seq", sequenceName = "ingredient_id_seq", allocationSize = 1)

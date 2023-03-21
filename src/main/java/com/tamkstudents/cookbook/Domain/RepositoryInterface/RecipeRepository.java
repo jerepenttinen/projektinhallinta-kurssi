@@ -1,8 +1,8 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface;
+package com.tamkstudents.cookbook.Domain.RepositoryInterface;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.FoodGroupDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
+import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
+import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
+import com.tamkstudents.cookbook.Domain.Dao.UserDao;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

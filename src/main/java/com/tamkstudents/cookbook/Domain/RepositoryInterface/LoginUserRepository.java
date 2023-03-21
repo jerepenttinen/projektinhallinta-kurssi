@@ -1,6 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface;
+package com.tamkstudents.cookbook.Domain.RepositoryInterface;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

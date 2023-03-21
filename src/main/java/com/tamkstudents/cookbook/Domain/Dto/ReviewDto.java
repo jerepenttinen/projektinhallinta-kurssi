@@ -1,4 +1,4 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
+package com.tamkstudents.cookbook.Domain.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

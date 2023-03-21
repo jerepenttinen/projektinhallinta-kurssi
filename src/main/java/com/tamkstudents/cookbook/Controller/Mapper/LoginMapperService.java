@@ -2,8 +2,8 @@ package com.tamkstudents.cookbook.Controller.Mapper;
 
 import com.tamkstudents.cookbook.Controller.Reply.CurrentUserReply;
 import com.tamkstudents.cookbook.Controller.Request.SignUpRequest;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
+import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.Dao.UserDao;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 

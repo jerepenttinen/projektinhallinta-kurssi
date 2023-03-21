@@ -1,15 +1,15 @@
 package com.tamkstudents.cookbook.Service;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.FoodGroupDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.IngredientDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.UserDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.FoodGroupDto;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.FoodGroupRepository;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.IngredientRepository;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.RecipeRepository;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
+import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
+import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
+import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
+import com.tamkstudents.cookbook.Domain.Dao.UserDao;
+import com.tamkstudents.cookbook.Domain.Dto.FoodGroupDto;
+import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.FoodGroupRepository;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.IngredientRepository;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.RecipeRepository;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RecipeService extends AbstractService {
+public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final FoodGroupRepository foodGroupRepository;

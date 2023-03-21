@@ -1,7 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
+package com.tamkstudents.cookbook.Domain.Dto;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.RecipeDao;
-import com.tamkstudents.cookbook.Domain.DtoEntity;
+import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
 import lombok.*;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeDto implements DtoEntity {
+public class RecipeDto {
     //constructor From Data access object
     public RecipeDto(RecipeDao dao){
         this.id = dao.getId();

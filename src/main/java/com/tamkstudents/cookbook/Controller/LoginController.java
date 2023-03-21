@@ -6,8 +6,6 @@ import com.tamkstudents.cookbook.Service.Exceptions.EmailOrUsernameTakenExceptio
 import com.tamkstudents.cookbook.Service.Exceptions.FailedToCreateUserException;
 import com.tamkstudents.cookbook.Service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 @DependsOn("securityFilterChain")
-public class LoginController extends AbstractController {
+public class LoginController {
     private final LoginService loginService;
     private final RememberMeServices rememberMeServices;
 

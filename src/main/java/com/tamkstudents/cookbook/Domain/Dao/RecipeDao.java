@@ -1,8 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
+package com.tamkstudents.cookbook.Domain.Dao;
 
-import com.tamkstudents.cookbook.Domain.AbstractClass;
-import com.tamkstudents.cookbook.Domain.DaoEntity;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
+import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,22 +9,11 @@ import org.hibernate.annotations.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 
 @Entity(name="recipe") @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RecipeDao extends AbstractClass implements DaoEntity {
-    public RecipeDao(RecipeDto dto, UserDao user) {
-        this.recipeName = dto.getRecipeName();
-        this.creator = user;
-        this.instruction = dto.getInstruction();
-        this.image = dto.getImage();
-        this.ingredients =  dto.getIngredients().stream().map(d -> new IngredientDao(d.getId(), d.getName())).collect(Collectors.toSet());
-        this.foodGroups =  dto.getFoodGroups().stream().map(f -> new FoodGroupDao(f.getId(), f.getName())).collect(Collectors.toSet());
-    }
-
+public class RecipeDao {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_seq")
     @SequenceGenerator(name = "recipe_seq", sequenceName = "recipe_id_seq", allocationSize = 1)

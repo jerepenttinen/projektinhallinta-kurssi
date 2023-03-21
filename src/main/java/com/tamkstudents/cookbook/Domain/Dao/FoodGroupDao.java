@@ -1,9 +1,7 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dao;
+package com.tamkstudents.cookbook.Domain.Dao;
 
 
-import com.tamkstudents.cookbook.Domain.AbstractClass;
-import com.tamkstudents.cookbook.Domain.DaoEntity;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.FoodGroupDto;
+import com.tamkstudents.cookbook.Domain.Dto.FoodGroupDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FoodGroupDao extends AbstractClass implements DaoEntity {
+public class FoodGroupDao {
 
     public FoodGroupDao(FoodGroupDto dto){
         this.id = dto.getId();

@@ -1,8 +1,8 @@
 package com.tamkstudents.cookbook.Controller;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.RecipeDto;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.RepositoryInterface.UserRepository;
+import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
 import com.tamkstudents.cookbook.Service.RecipeService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/recipes")
 @Slf4j
 @RequiredArgsConstructor
-public class RecipeController extends AbstractController {
+public class RecipeController {
     private final RecipeService recipeService;
     private final UserRepository userRepository;
 

@@ -1,6 +1,6 @@
-package com.tamkstudents.cookbook.Domain.DatabaseModels.Dto;
+package com.tamkstudents.cookbook.Domain.Dto;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import lombok.Getter;
 import lombok.Setter;
 
