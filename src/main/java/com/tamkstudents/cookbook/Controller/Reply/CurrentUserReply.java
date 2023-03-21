@@ -1,21 +1,24 @@
 package com.tamkstudents.cookbook.Controller.Reply;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
-public record CurrentUserReply(
-        @NotNull
-        Long id,
-        @NotNull
-        String username,
-        @NotNull
-        String firstName,
-        @NotNull
-        String lastName,
-        @NotNull
-        Long profileId,
-        @NotNull
-        String email
-) {
+@Getter
+@AllArgsConstructor
+public class CurrentUserReply {
+    @NotBlank
+    private final Long id;
+    @NotBlank
+    private final String username;
+    @NotBlank
+    private final String firstName;
+    @NotBlank
+    private final String lastName;
+    @NotBlank
+    private final Long profileId;
+    @NotBlank
+    private final String email;
 }
