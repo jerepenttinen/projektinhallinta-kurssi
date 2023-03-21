@@ -4,12 +4,13 @@ import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
 import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
 import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Domain.Dao.UserDao;
-import com.tamkstudents.cookbook.Domain.Dto.FoodGroupDto;
 import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.FoodGroupRepository;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.IngredientRepository;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.RecipeRepository;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
+import com.tamkstudents.cookbook.Service.Exceptions.RecipeNotFoundException;
+import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,46 +28,19 @@ public class RecipeService {
     private final FoodGroupRepository foodGroupRepository;
     private final IngredientRepository ingredientRepository;
 
-    public List<RecipeDto> getAllRecipes() {
-        long startTime = System.nanoTime();
-        List<RecipeDto> dtoList = new ArrayList<>();
-        recipeRepository.findAll().forEach(recipeDao -> dtoList.add(new RecipeDto(recipeDao)));
-        long stopTime = System.nanoTime();
-        log.info("Recipes query: " + ((stopTime - startTime) / 1000000) + " ms");
-        return dtoList;
+    public List<RecipeDao> getAllRecipes() {
+        return recipeRepository.findAll();
     }
 
-    public List<RecipeDto> getUserRecipes(Long userId) {
-        long startTime = System.nanoTime();
-        List<RecipeDto> recipes = new ArrayList<>();
-        Optional<UserDao> userDao = userRepository.findById(userId);
-        if (userDao.isPresent()) {
-            List<RecipeDao> recipeDaos = recipeRepository.findAllByCreator(userDao.get());
-            if (!recipeDaos.isEmpty()) {
-                recipeDaos.forEach(recipe -> recipes.add(new RecipeDto(recipe)));
-            }
-        } else {
-            log.error("Error on finding user by id: " + userId);
-            return null;
-        }
+    public List<RecipeDao> getUserRecipes(Long userId) throws UserNotFoundException {
+        UserDao user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        long stopTime = System.nanoTime();
-        log.info("Recipes query: " + ((stopTime - startTime) / 1000000) + " ms");
-        return recipes;
+        return recipeRepository.findAllByCreator(user);
     }
 
-    public List<RecipeDto> getFoodGroupRecipes(FoodGroupDto dto) {
-        long startTime = System.nanoTime();
-        List<RecipeDto> recipes = new ArrayList<>();
-        FoodGroupDao dao = new FoodGroupDao(dto);
-        List<RecipeDao> recipeDaos = recipeRepository.findAllByFoodGroupsContains(dao);
-        if (!recipeDaos.isEmpty()) {
-            recipeDaos.forEach(recipe -> recipes.add(new RecipeDto(recipe)));
-        }
-        long stopTime = System.nanoTime();
-        log.info("Recipes query: " + ((stopTime - startTime) / 1000000) + " ms");
-        return recipes;
-    }
+//    public List<RecipeDao> getFoodGroupRecipes(String foodGroupId) {
+//        return recipeRepository.findAllByFoodGroupsContains(foodGroupRepository.findById(foodGroupId));
+//    }
 
     @Transactional
     public RecipeDto createRecipe(RecipeDto dto, UserDao userDao) {
@@ -106,15 +80,8 @@ public class RecipeService {
     }
 
 
-    public RecipeDto getRecipeById(Long id) {
-        Optional<RecipeDao> dao = recipeRepository.findById(id);
-
-        if (dao.isPresent()) {
-            return new RecipeDto(dao.get());
-        } else {
-            log.error("Recipe not found - id:" + id);
-            return null;
-        }
+    public RecipeDao getRecipeById(Long id) throws RecipeNotFoundException {
+        return recipeRepository.findById(id).orElseThrow(RecipeNotFoundException::new);
     }
 
     public RecipeDto modifyRecipeById(RecipeDto recipeDto) {

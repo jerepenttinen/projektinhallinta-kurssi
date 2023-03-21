@@ -3,12 +3,9 @@ package com.tamkstudents.cookbook.Domain.Dto;
 import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter  @Setter
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class IngredientDto {
     public IngredientDto(IngredientDao dao) {
         this.id = dao.getId();

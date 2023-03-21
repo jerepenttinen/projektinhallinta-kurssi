@@ -9,7 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeDto {
-    //constructor From Data access object
     public RecipeDto(RecipeDao dao){
         this.id = dao.getId();
         this.recipeName = dao.getRecipeName();
