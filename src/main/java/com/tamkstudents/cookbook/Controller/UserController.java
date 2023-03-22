@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -23,9 +21,11 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/current")
-    ResponseEntity<CurrentUserReply> getCurrentUser(@Parameter(hidden = true) Optional<LoginUserDao> loginUserDao) {
-        var loginUser = loginUserDao.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+    ResponseEntity<CurrentUserReply> getCurrentUser(@Parameter(hidden = true) LoginUserDao loginUserDao) {
+        if (loginUserDao == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
 
-        return ResponseEntity.ok(loginMapperService.loginUserDaoToCurrentUserReply(loginUser));
+        return ResponseEntity.ok(loginMapperService.loginUserDaoToCurrentUserReply(loginUserDao));
     }
 }

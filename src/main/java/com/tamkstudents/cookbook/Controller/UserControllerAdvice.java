@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.Principal;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestControllerAdvice
@@ -19,17 +18,17 @@ public class UserControllerAdvice {
     private final LoginService loginService;
 
     @ModelAttribute("loginUserDao")
-    public Optional<LoginUserDao> addLoginUserDaoToModel(Principal principal, HttpServletRequest request) {
+    public LoginUserDao addLoginUserDaoToModel(Principal principal, HttpServletRequest request) {
         if (principal == null) {
             request.getSession().invalidate();
-            return Optional.empty();
+            return null;
         }
 
         try {
-            return Optional.of((LoginUserDao) loginService.loadUserByUsername(principal.getName()));
+            return (LoginUserDao) loginService.loadUserByUsername(principal.getName());
         } catch (UsernameNotFoundException e) {
             request.getSession().invalidate();
-            return Optional.empty();
+            return null;
         }
     }
 }

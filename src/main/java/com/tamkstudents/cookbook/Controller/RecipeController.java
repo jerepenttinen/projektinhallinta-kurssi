@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/recipes")
@@ -38,9 +37,11 @@ public class RecipeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<Long> createRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) Optional<LoginUserDao> loginUserDao) {
-        var loginUser = loginUserDao.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUser.getProfileId()).orElseThrow());
+    public ResponseEntity<Long> createRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) LoginUserDao loginUserDao) {
+        if (loginUserDao == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
         return ResponseEntity.ok(recipe.getId());
     }
 
