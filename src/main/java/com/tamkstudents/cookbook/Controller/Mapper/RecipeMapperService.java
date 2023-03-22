@@ -1,5 +1,6 @@
 package com.tamkstudents.cookbook.Controller.Mapper;
 
+import com.tamkstudents.cookbook.Controller.Reply.CreateRecipeReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
 import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
@@ -23,5 +24,9 @@ public class RecipeMapperService {
                 .ingredients(recipeDao.getIngredients().stream().map(ingredient -> new IngredientDto(ingredient.getId(), ingredient.getName())).toList())
                 .foodGroups(recipeDao.getFoodGroups().stream().map(FoodGroupDao::getName).toList() )
                 .build();
+    }
+
+    public CreateRecipeReply createRecipeReplyFromRecipeDao(RecipeDao recipeDao) {
+        return new CreateRecipeReply(recipeDao.getId());
     }
 }

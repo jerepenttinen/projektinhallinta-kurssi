@@ -2,22 +2,25 @@ package com.tamkstudents.cookbook.Controller.Request;
 
 import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantity;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.constraints.NotNull;
+import lombok.Value;
 
 import java.util.List;
 
-@Getter
-@AllArgsConstructor
+@Value
 public class CreateRecipeRequest {
     @NotBlank
-    private final String recipeName;
+    String recipeName;
 
-    private final List<String> images;
+    @NotNull
+    List<String> images;
 
-    private final List<String> instructions;
+    @NotNull
+    List<String> instructions;
 
-    private final List<IngredientWithQuantity> ingredients;
+    @NotNull
+    List<IngredientWithQuantity> ingredients;
 
-    private final List<String> categories;
+    @NotNull
+    List<String> categories;
 }

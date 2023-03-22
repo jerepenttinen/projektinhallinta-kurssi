@@ -58,8 +58,8 @@ public class LoginTests {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        MockMvcResultMatchers.jsonPath("$.firstName").value(signUpRequest.getFirstname()),
-                        MockMvcResultMatchers.jsonPath("$.lastName").value(signUpRequest.getLastname())
+                        jsonPath("$.firstName").value(signUpRequest.getFirstname()),
+                        jsonPath("$.lastName").value(signUpRequest.getLastname())
                 )
                 .andDo(print());
     }

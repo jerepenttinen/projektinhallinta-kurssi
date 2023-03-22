@@ -1,6 +1,7 @@
 package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Controller.Mapper.RecipeMapperService;
+import com.tamkstudents.cookbook.Controller.Reply.CreateRecipeReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
@@ -37,12 +38,12 @@ public class RecipeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<Long> createRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) LoginUserDao loginUserDao) {
+    public ResponseEntity<CreateRecipeReply> createRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) LoginUserDao loginUserDao) {
         if (loginUserDao == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
-        return ResponseEntity.ok(recipe.getId());
+        return ResponseEntity.ok(recipeMapperService.createRecipeReplyFromRecipeDao(recipe));
     }
 
     @PreAuthorize("isAuthenticated()")

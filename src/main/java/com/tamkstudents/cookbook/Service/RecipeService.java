@@ -67,6 +67,7 @@ public class RecipeService {
                 .creator(userDao)
                 .instruction(createRecipeRequest.getInstructions())
                 .ingredients(ingredients)
+                .image(new byte[]{})
                 .foodGroups(foodGroups)
                 .build();
 
