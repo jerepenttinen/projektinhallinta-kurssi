@@ -1,10 +1,12 @@
 package com.tamkstudents.cookbook.Controller;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.LoginUserDto;
-import com.tamkstudents.cookbook.Domain.login.SignInCredentials;
-import com.tamkstudents.cookbook.Domain.login.SignUpCredentials;
+import com.tamkstudents.cookbook.Controller.Request.SignInRequest;
+import com.tamkstudents.cookbook.Controller.Request.SignUpRequest;
+import com.tamkstudents.cookbook.Service.Exceptions.EmailOrUsernameTakenException;
+import com.tamkstudents.cookbook.Service.Exceptions.FailedToCreateUserException;
 import com.tamkstudents.cookbook.Service.LoginService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,66 +15,66 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @DependsOn("securityFilterChain")
-public class LoginController extends AbstractController{
+public class LoginController {
     private final LoginService loginService;
     private final RememberMeServices rememberMeServices;
-    @PostMapping("/signin")
-    public ResponseEntity<Void> signIn(@RequestBody SignInCredentials signInCredentials, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
-        if (request.getUserPrincipal() != null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Operation(summary = "Sign in", responses = {
+            @ApiResponse(responseCode = "200", description = "User signed in successfully and authentication cookie should be set"),
+            @ApiResponse(responseCode = "400", description = "Request body validation failed"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "403", description = "Already signed in"),
+    })
+    @PostMapping("/signin")
+    public void signIn(@Valid @RequestBody SignInRequest signInRequest, HttpServletRequest request, HttpServletResponse response) {
+        if (request.getUserPrincipal() != null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Already signed in");
         }
 
         try {
-            request.login(signInCredentials.getEmail(), signInCredentials.getPassword());
+            request.login(signInRequest.getEmail(), signInRequest.getPassword());
         } catch (ServletException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        var authentication = (Authentication)request.getUserPrincipal();
-
+        var authentication = (Authentication) request.getUserPrincipal();
         rememberMeServices.loginSuccess(request, response, authentication);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "Sign up new user", responses = {
+            @ApiResponse(responseCode = "201", description = "User signed up successfully"),
+            @ApiResponse(responseCode = "400", description = "Request body validation failed"),
+            @ApiResponse(responseCode = "403", description = "Already signed in"),
+            @ApiResponse(responseCode = "409", description = "Email or username is already taken"),
+            @ApiResponse(responseCode = "500", description = "Failed to create user"),
+    })
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpCredentials signUpCredentials, BindingResult bindingResult, HttpServletRequest request) {
+    @ResponseStatus(value = HttpStatus.CREATED, reason = "User signed up successfully")
+    public void signUp(@Valid @RequestBody SignUpRequest signUpRequest, HttpServletRequest request) {
         if (request.getUserPrincipal() != null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Already signed in");
         }
 
         try {
-            if (loginService.createNewUser(signUpCredentials) != null) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            // ???
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            loginService.createNewUser(signUpRequest);
+        } catch (EmailOrUsernameTakenException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email or username is already taken", e);
+        } catch (FailedToCreateUserException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user", e);
         }
     }
 
     @PostMapping("/signout")
-    public ResponseEntity<Void> signOut(HttpServletRequest request) throws ServletException {
+    public void signOut(HttpServletRequest request) throws ServletException {
         request.logout();
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,6 +1,6 @@
 package com.tamkstudents.cookbook.Controller;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dto.ReviewDto;
+import com.tamkstudents.cookbook.Domain.Dto.ReviewDto;
 import com.tamkstudents.cookbook.Service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reviews")
-public class ReviewController extends AbstractController{
+public class ReviewController {
 
     @Autowired
     ReviewService reviewService;

@@ -1,6 +1,6 @@
 package com.tamkstudents.cookbook.Controller;
 
-import com.tamkstudents.cookbook.Domain.DatabaseModels.Dao.LoginUserDao;
+import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
