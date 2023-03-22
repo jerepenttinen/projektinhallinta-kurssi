@@ -4,14 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Value;
 
-@Getter
-@AllArgsConstructor
+@Value
 public class SignInRequest {
     @NotBlank
     @Email
-    private final String email;
+    String email;
 
     @NotBlank
-    private final String password;
+    String password;
 }

@@ -1,6 +1,7 @@
 package com.tamkstudents.cookbook;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tamkstudents.cookbook.Controller.Request.SignInRequest;
 import com.tamkstudents.cookbook.Controller.Request.SignUpRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Service.LoginService;
@@ -20,8 +21,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -165,6 +165,59 @@ public class LoginTests {
         mvc.perform(post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(fakeDataSignUpRequest()))
+                        .with(user(loginUser)))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
+    @Test
+    public void signInWithValidCredentials() throws Exception {
+        var signUpRequest = fakeDataSignUpRequest();
+        createLoginUser(signUpRequest);
+
+        var signInRequest = new SignInRequest(
+                signUpRequest.getEmail(), signUpRequest.getPassword()
+        );
+
+        mvc.perform(post("/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(signInRequest)))
+                .andExpectAll(
+                        status().isOk(),
+                        cookie().exists("remember-me"),
+                        cookie().httpOnly("remember-me", true)
+                )
+                .andDo(print());
+    }
+
+    @Test
+    public void signInWithInvalidCredentials() throws Exception {
+        var signUpRequest = fakeDataSignUpRequest();
+
+        var signInRequest = new SignInRequest(
+                signUpRequest.getEmail(), signUpRequest.getPassword()
+        );
+
+        mvc.perform(post("/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(signInRequest)))
+                .andExpectAll(
+                        status().isUnauthorized()
+                )
+                .andDo(print());
+    }
+
+    @Test
+    public void signInWithExistingSession() throws Exception {
+        var signUpRequest = fakeDataSignUpRequest();
+        var loginUser = createLoginUser(signUpRequest);
+
+        var signInRequest = new SignInRequest(
+                fakeDataSignUpRequest().getEmail(), fakeDataSignUpRequest().getPassword()
+        );
+        mvc.perform(post("/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(signInRequest))
                         .with(user(loginUser)))
                 .andExpect(status().isForbidden())
                 .andDo(print());
