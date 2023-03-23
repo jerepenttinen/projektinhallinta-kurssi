@@ -3,7 +3,7 @@ package com.tamkstudents.cookbook;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
-import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantity;
+import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantityRequest;
 import com.tamkstudents.cookbook.Controller.Request.SignUpRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Service.LoginService;
@@ -61,10 +61,10 @@ public class RecipeTests {
                 faker.food().dish(), // Recipe name
                 List.of(), // Images
                 List.of(faker.famousLastWords().lastWords(), faker.famousLastWords().lastWords(), faker.famousLastWords().lastWords()), // Instructions
-                List.of(new IngredientWithQuantity[]{
-                        new IngredientWithQuantity(faker.food().ingredient(), faker.food().measurement()),
-                        new IngredientWithQuantity(faker.food().ingredient(), faker.food().measurement()),
-                        new IngredientWithQuantity(faker.food().spice(), faker.food().measurement()),
+                List.of(new IngredientWithQuantityRequest[]{
+                        new IngredientWithQuantityRequest(faker.food().ingredient(), faker.food().measurement()),
+                        new IngredientWithQuantityRequest(faker.food().ingredient(), faker.food().measurement()),
+                        new IngredientWithQuantityRequest(faker.food().spice(), faker.food().measurement()),
                 }),
                 List.of() // Categories
         );

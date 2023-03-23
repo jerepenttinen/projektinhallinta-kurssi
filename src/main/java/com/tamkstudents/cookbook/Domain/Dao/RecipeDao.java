@@ -6,11 +6,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity(name="recipe") @Getter @Setter @NoArgsConstructor
+@Entity(name = "recipe")
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RecipeDao {
@@ -42,17 +46,12 @@ public class RecipeDao {
     )
     private Set<ImageDao> images = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "recipe_has_ingredients",
-            joinColumns = {
-                    @JoinColumn(name = "recipe_id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "ingredient_id")
-            }
+    @OneToMany(
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<IngredientDao> ingredients = new HashSet<>();
+    private List<RecipeHasIngredientDao> ingredients = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -66,11 +65,16 @@ public class RecipeDao {
     )
     private Set<FoodGroupDao> foodGroups = new HashSet<>();
 
-    public void modify(RecipeDto dto, UserDao user){
-        this.recipeName = dto.getRecipeName();
-        this.creator = user;
-        this.instruction = dto.getInstruction();
-        this.ingredients = (HashSet) dto.getIngredients();
-        this.foodGroups = (HashSet) dto.getFoodGroups();
+    public void addIngredient(IngredientDao ingredient, String quantity) {
+        var recipeHasIngredient = new RecipeHasIngredientDao(this, ingredient, quantity);
+        ingredients.add(recipeHasIngredient);
     }
+
+//    public void modify(RecipeDto dto, UserDao user) {
+//        this.recipeName = dto.getRecipeName();
+//        this.creator = user;
+//        this.instruction = dto.getInstruction();
+//        this.ingredients = (HashSet) dto.getIngredients();
+//        this.foodGroups = (HashSet) dto.getFoodGroups();
+//    }
 }

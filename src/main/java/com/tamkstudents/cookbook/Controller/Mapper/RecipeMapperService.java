@@ -5,7 +5,6 @@ import com.tamkstudents.cookbook.Controller.Reply.RecipeCardReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
 import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
-import com.tamkstudents.cookbook.Domain.Dto.IngredientDto;
 import com.tamkstudents.cookbook.Service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,15 +13,30 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecipeMapperService {
     private final MediaService mediaService;
+    private final IngredientMapperService ingredientMapperService;
 
     public RecipeReply recipeReplyFromRecipeDao(RecipeDao recipeDao) {
         return RecipeReply.builder()
                 .id(recipeDao.getId())
                 .recipeName(recipeDao.getRecipeName())
                 .creatorId(recipeDao.getCreator().getId())
-                .images(recipeDao.getImages().stream().map(imageDao -> mediaService.imageToBase64(imageDao.getImage())).toList())
+                .images(
+                        recipeDao
+                                .getImages()
+                                .stream()
+                                .map(imageDao -> mediaService
+                                        .imageToBase64(imageDao.getImage())
+                                )
+                                .toList()
+                )
                 .instructions(recipeDao.getInstruction())
-                .ingredients(recipeDao.getIngredients().stream().map(ingredient -> new IngredientDto(ingredient.getId(), ingredient.getName())).toList())
+                .ingredients(
+                        recipeDao
+                                .getIngredients()
+                                .stream()
+                                .map(ingredientMapperService::ingredientWithQuantityReplyFromRecipeHasIngredientsDao)
+                                .toList()
+                )
                 .foodGroups(recipeDao.getFoodGroups().stream().map(FoodGroupDao::getName).toList())
                 .build();
     }
