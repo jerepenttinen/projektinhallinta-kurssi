@@ -2,9 +2,7 @@ version: '3'
 
 services:
   db:
-    build:
-      context: ./db/
-      dockerfile: db
+    image: postgres:15
     ports:
       - "5432:5432"
     restart: always
