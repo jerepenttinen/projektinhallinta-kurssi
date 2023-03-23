@@ -5,6 +5,7 @@ import com.tamkstudents.cookbook.Domain.Dao.*;
 import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.*;
 import com.tamkstudents.cookbook.Service.Exceptions.RecipeNotFoundException;
+import com.tamkstudents.cookbook.Service.Exceptions.UnknownFoodGroupException;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -43,15 +44,15 @@ public class RecipeService {
 //    }
 
     @Transactional
-    public RecipeDao createRecipe(CreateRecipeRequest createRecipeRequest, UserDao userDao) {
-
-        var foodGroups = createRecipeRequest.getCategories().stream().map(category -> {
-            var ingredient = foodGroupRepository.findFirstByName(category);
-            if (ingredient != null) {
-                return ingredient;
+    public RecipeDao createRecipe(CreateRecipeRequest createRecipeRequest, UserDao userDao) throws UnknownFoodGroupException {
+        var foodGroups = new HashSet<FoodGroupDao>();
+        for (var category : createRecipeRequest.getCategories()) {
+            var foodGroup = foodGroupRepository.findFirstByName(category);
+            if (foodGroup == null) {
+                throw new UnknownFoodGroupException(category);
             }
-            return foodGroupRepository.save(FoodGroupDao.builder().name(category).build());
-        }).collect(Collectors.toSet());
+            foodGroups.add(foodGroup);
+        }
 
         var images = new HashSet<>(imageRepository.saveAll(createRecipeRequest
                 .getImages()

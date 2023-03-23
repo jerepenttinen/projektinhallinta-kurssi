@@ -96,6 +96,28 @@ public class RecipeTests {
                 .andDo(print());
     }
 
+    @Test
+    public void postNewRecipeWithUnknownCategory() throws Exception {
+        var signUpRequest = fakeDataSignUpRequest();
+        var loginUser = createLoginUser(signUpRequest);
+
+        var createRecipeRequest = new CreateRecipeRequest(
+                faker.food().dish(), // Recipe name
+                List.of(), // Images
+                List.of(), // Instructions
+                List.of(), // Ingredients
+                List.of(faker.food().vegetable()) // Categories
+        );
+
+        mvc.perform(post("/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(createRecipeRequest))
+                        .with(user(loginUser))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
     private SignUpRequest fakeDataSignUpRequest() {
         return new SignUpRequest(
                 faker.name().username(),
