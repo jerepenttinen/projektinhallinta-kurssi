@@ -30,8 +30,17 @@ public class RecipeDao {
     @Column(name = "recipe_instruction", nullable = false)
     private List<String> instruction;
 
-    @Column(name = "recipe_img")
-    private byte[] image;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "recipe_has_image",
+            joinColumns = {
+                    @JoinColumn(name = "recipe_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "image_id")
+            }
+    )
+    private Set<ImageDao> images = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -57,13 +66,11 @@ public class RecipeDao {
     )
     private Set<FoodGroupDao> foodGroups = new HashSet<>();
 
-    public boolean modify(RecipeDto dto,UserDao user){
+    public void modify(RecipeDto dto, UserDao user){
         this.recipeName = dto.getRecipeName();
         this.creator = user;
         this.instruction = dto.getInstruction();
-        this.image = dto.getImage();
         this.ingredients = (HashSet) dto.getIngredients();
         this.foodGroups = (HashSet) dto.getFoodGroups();
-        return true;
     }
 }

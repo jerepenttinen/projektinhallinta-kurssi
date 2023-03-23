@@ -1,15 +1,9 @@
 package com.tamkstudents.cookbook.Service;
 
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
-import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
-import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
-import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
-import com.tamkstudents.cookbook.Domain.Dao.UserDao;
+import com.tamkstudents.cookbook.Domain.Dao.*;
 import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.FoodGroupRepository;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.IngredientRepository;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.RecipeRepository;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.*;
 import com.tamkstudents.cookbook.Service.Exceptions.RecipeNotFoundException;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
@@ -17,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +24,8 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final FoodGroupRepository foodGroupRepository;
     private final IngredientRepository ingredientRepository;
+    private final ImageRepository imageRepository;
+    private final MediaService mediaService;
 
     public List<RecipeDao> getAllRecipes() {
         return recipeRepository.findAll();
@@ -61,13 +59,20 @@ public class RecipeService {
             return foodGroupRepository.save(FoodGroupDao.builder().name(category).build());
         }).collect(Collectors.toSet());
 
-        // TODO: Add image
+        var images = new HashSet<>(imageRepository.saveAll(createRecipeRequest
+                .getImages()
+                .stream()
+                .map(mediaService::base64ToImage)
+                .map(image -> ImageDao.builder().image(image).build())
+                .toList()
+        ));
+
         var recipeDao = RecipeDao.builder()
                 .recipeName(createRecipeRequest.getRecipeName())
                 .creator(userDao)
                 .instruction(createRecipeRequest.getInstructions())
                 .ingredients(ingredients)
-                .image(new byte[]{})
+                .images(images)
                 .foodGroups(foodGroups)
                 .build();
 
@@ -86,7 +91,9 @@ public class RecipeService {
             try {
                 recipeDao.get().modify(recipeDto, userDao.get());
                 RecipeDao modifiedDao = recipeRepository.save(recipeDao.get());
-                return new RecipeDto(modifiedDao);
+//                return new RecipeDto(modifiedDao);
+                throw new RuntimeException("TODO");
+
             } catch (Throwable err) {
                 log.error("Error on recipe modification");
                 return null;

@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Controller.Mapper.RecipeMapperService;
 import com.tamkstudents.cookbook.Controller.Reply.CreateRecipeReply;
+import com.tamkstudents.cookbook.Controller.Reply.RecipeCardReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
@@ -32,8 +33,8 @@ public class RecipeController {
     private final RecipeMapperService recipeMapperService;
 
     @GetMapping
-    public ResponseEntity<List<RecipeReply>> getRecipes() {
-        return ResponseEntity.ok(recipeService.getAllRecipes().stream().map(recipeMapperService::recipeReplyFromRecipeDao).toList());
+    public ResponseEntity<List<RecipeCardReply>> getRecipes() {
+        return ResponseEntity.ok(recipeService.getAllRecipes().stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -68,10 +69,10 @@ public class RecipeController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<RecipeReply>> getRecipesByUserId(@PathVariable Long id) {
+    public ResponseEntity<List<RecipeCardReply>> getRecipesByUserId(@PathVariable Long id) {
         try {
             var recipes = recipeService.getUserRecipes(id);
-            return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeReplyFromRecipeDao).toList());
+            return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
         }
