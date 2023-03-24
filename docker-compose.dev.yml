@@ -2,8 +2,11 @@ version: '3'
 
 services:
   db:
-    image: postgres:15
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=cookbook
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=CookbookAdmin
     ports:
       - "5432:5432"
     restart: always
-
