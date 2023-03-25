@@ -1,8 +1,0 @@
-FROM library/postgres:13
-RUN apt-get update
-RUN apt-get install -y nano
-ENV POSTGRES_USER admin
-ENV POSTGRES_PASSWORD CookbookAdmin
-ENV POSTGRES_DB cookbook
-COPY init-db.sql /docker-entrypoint-initdb.d/
-

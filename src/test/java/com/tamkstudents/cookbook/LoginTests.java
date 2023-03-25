@@ -54,7 +54,7 @@ public class LoginTests {
         var signUpRequest = fakeDataSignUpRequest();
         var loginUser = createLoginUser(signUpRequest);
 
-        mvc.perform(get("/users/current").with(user(loginUser)))
+        mvc.perform(get("/api/users/current").with(user(loginUser)))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
@@ -66,14 +66,14 @@ public class LoginTests {
 
     @Test
     public void getCurrentUserWithoutSession() throws Exception {
-        mvc.perform(get("/users/current"))
+        mvc.perform(get("/api/users/current"))
                 .andExpect(status().isUnauthorized())
                 .andDo(print());
     }
 
     @Test
     public void signUpWithValidRequest() throws Exception {
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(fakeDataSignUpRequest())))
                 .andExpect(status().isCreated())
@@ -88,7 +88,7 @@ public class LoginTests {
                 validRequest.getEmail().replace('@', 'a')
         );
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(missingEmailAtRequest)))
                 .andExpect(status().isBadRequest())
@@ -98,7 +98,7 @@ public class LoginTests {
                 validRequest.getEmail().substring(validRequest.getEmail().indexOf('@'))
         );
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(missingEmailPostfixRequest)))
                 .andExpect(status().isBadRequest())
@@ -107,7 +107,7 @@ public class LoginTests {
         var missingEmailPrefixRequest = validRequest.withEmail(
                 validRequest.getEmail().substring(0, validRequest.getEmail().indexOf('@') + 1)
         );
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(missingEmailPrefixRequest)))
                 .andExpect(status().isBadRequest())
@@ -123,7 +123,7 @@ public class LoginTests {
                 validRequest.getPassword().substring(0, 6)
         );
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(tooShortPasswordRequest)))
                 .andExpect(status().isBadRequest())
@@ -133,7 +133,7 @@ public class LoginTests {
                 faker.internet().password(73, 100)
         );
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(tooLongPasswordRequest)))
                 .andExpect(status().isBadRequest())
@@ -144,13 +144,13 @@ public class LoginTests {
     public void signUpTwiceWithSameCredentials() throws Exception {
         var validRequest = fakeDataSignUpRequest();
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(validRequest)))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(validRequest)))
                 .andExpect(status().isConflict())
@@ -162,7 +162,7 @@ public class LoginTests {
         var signUpRequest = fakeDataSignUpRequest();
         var loginUser = createLoginUser(signUpRequest);
 
-        mvc.perform(post("/signup")
+        mvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(fakeDataSignUpRequest()))
                         .with(user(loginUser)))
@@ -179,7 +179,7 @@ public class LoginTests {
                 signUpRequest.getEmail(), signUpRequest.getPassword()
         );
 
-        mvc.perform(post("/signin")
+        mvc.perform(post("/api/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(signInRequest)))
                 .andExpectAll(
@@ -198,7 +198,7 @@ public class LoginTests {
                 signUpRequest.getEmail(), signUpRequest.getPassword()
         );
 
-        mvc.perform(post("/signin")
+        mvc.perform(post("/api/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(signInRequest)))
                 .andExpectAll(
@@ -215,7 +215,7 @@ public class LoginTests {
         var signInRequest = new SignInRequest(
                 fakeDataSignUpRequest().getEmail(), fakeDataSignUpRequest().getPassword()
         );
-        mvc.perform(post("/signin")
+        mvc.perform(post("/api/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(signInRequest))
                         .with(user(loginUser)))
