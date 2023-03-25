@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class IngredientWithQuantity {
+public class IngredientWithQuantityRequest {
     @NotBlank
     private final String ingredient;
     @NotBlank

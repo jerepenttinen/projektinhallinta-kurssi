@@ -3,7 +3,7 @@ package com.tamkstudents.cookbook;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
-import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantity;
+import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantityRequest;
 import com.tamkstudents.cookbook.Controller.Request.SignUpRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Service.LoginService;
@@ -56,15 +56,17 @@ public class RecipeTests {
     public void createNewRecipe() throws Exception {
         var signUpRequest = fakeDataSignUpRequest();
         var loginUser = createLoginUser(signUpRequest);
+        // 1px * 1px png image
+        String recipe_image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAAtJREFUCJlj+A8EAAn7A/3jVfKcAAAAAElFTkSuQmCC";
 
         var createRecipeRequest = new CreateRecipeRequest(
                 faker.food().dish(), // Recipe name
-                List.of(), // Images
+                List.of(recipe_image), // Images
                 List.of(faker.famousLastWords().lastWords(), faker.famousLastWords().lastWords(), faker.famousLastWords().lastWords()), // Instructions
-                List.of(new IngredientWithQuantity[]{
-                        new IngredientWithQuantity(faker.food().ingredient(), faker.food().measurement()),
-                        new IngredientWithQuantity(faker.food().ingredient(), faker.food().measurement()),
-                        new IngredientWithQuantity(faker.food().spice(), faker.food().measurement()),
+                List.of(new IngredientWithQuantityRequest[]{
+                        new IngredientWithQuantityRequest(faker.food().ingredient(), faker.food().measurement()),
+                        new IngredientWithQuantityRequest(faker.food().ingredient(), faker.food().measurement()),
+                        new IngredientWithQuantityRequest(faker.food().spice(), faker.food().measurement()),
                 }),
                 List.of() // Categories
         );
@@ -91,8 +93,31 @@ public class RecipeTests {
                         content().contentType(MediaType.APPLICATION_JSON),
                         jsonPath("$.id").value(recipeId),
                         jsonPath("$.creatorId").value(loginUser.getProfileId()),
-                        jsonPath("$.recipeName").value(createRecipeRequest.getRecipeName())
+                        jsonPath("$.recipeName").value(createRecipeRequest.getRecipeName()),
+                        jsonPath("$.images[0]").value(recipe_image)
                 )
+                .andDo(print());
+    }
+
+    @Test
+    public void postNewRecipeWithUnknownCategory() throws Exception {
+        var signUpRequest = fakeDataSignUpRequest();
+        var loginUser = createLoginUser(signUpRequest);
+
+        var createRecipeRequest = new CreateRecipeRequest(
+                faker.food().dish(), // Recipe name
+                List.of(), // Images
+                List.of(), // Instructions
+                List.of(), // Ingredients
+                List.of(faker.food().vegetable()) // Categories
+        );
+
+        mvc.perform(post("/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(createRecipeRequest))
+                        .with(user(loginUser))
+                )
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 

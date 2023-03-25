@@ -2,15 +2,22 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Controller.Mapper.RecipeMapperService;
 import com.tamkstudents.cookbook.Controller.Reply.CreateRecipeReply;
+import com.tamkstudents.cookbook.Controller.Reply.RecipeCardReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
 import com.tamkstudents.cookbook.Service.Exceptions.RecipeNotFoundException;
+import com.tamkstudents.cookbook.Service.Exceptions.UnknownFoodGroupException;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import com.tamkstudents.cookbook.Service.RecipeService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,18 +39,30 @@ public class RecipeController {
     private final RecipeMapperService recipeMapperService;
 
     @GetMapping
-    public ResponseEntity<List<RecipeReply>> getRecipes() {
-        return ResponseEntity.ok(recipeService.getAllRecipes().stream().map(recipeMapperService::recipeReplyFromRecipeDao).toList());
+    public ResponseEntity<List<RecipeCardReply>> getRecipes() {
+        return ResponseEntity.ok(recipeService.getAllRecipes().stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
     }
 
+    @Operation(description = "Images have to be base64 encoded. Categories given here have to be retrieved from /api/categories (TODO).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Recipe created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateRecipeReply.class))),
+            @ApiResponse(responseCode = "400", description = "Request body validation failed or a given category is unknown", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Not signed in", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Unexpected", content = @Content),
+    })
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<CreateRecipeReply> createRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) LoginUserDao loginUserDao) {
+    public ResponseEntity<CreateRecipeReply> postNewRecipe(@Valid @RequestBody CreateRecipeRequest createRecipeRequest, @Parameter(hidden = true) LoginUserDao loginUserDao) {
         if (loginUserDao == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
-        return ResponseEntity.ok(recipeMapperService.createRecipeReplyFromRecipeDao(recipe));
+        try {
+            var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
+            return ResponseEntity.ok(recipeMapperService.createRecipeReplyFromRecipeDao(recipe));
+        } catch (UnknownFoodGroupException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Unknown food category: %s", e.getFoodGroup()));
+        }
+
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -68,10 +87,10 @@ public class RecipeController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<RecipeReply>> getRecipesByUserId(@PathVariable Long id) {
+    public ResponseEntity<List<RecipeCardReply>> getRecipesByUserId(@PathVariable Long id) {
         try {
             var recipes = recipeService.getUserRecipes(id);
-            return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeReplyFromRecipeDao).toList());
+            return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
         }
