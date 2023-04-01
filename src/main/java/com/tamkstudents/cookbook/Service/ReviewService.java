@@ -37,7 +37,7 @@ public class ReviewService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public Long addReviewForRecipe(long recipeId, long userId, CreateReviewRequest createReviewRequest) throws ReviewExistsForRecipeByUserException, RecipeNotFoundException, UserNotFoundException {
         if (reviewRepository.existsReviewDaoByReviewerIdAndRecipeId(userId, recipeId)) {
             throw new ReviewExistsForRecipeByUserException();

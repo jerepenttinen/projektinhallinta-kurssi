@@ -43,7 +43,7 @@ public class RecipeService {
 //        return recipeRepository.findAllByFoodGroupsContains(foodGroupRepository.findById(foodGroupId));
 //    }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public RecipeDao createRecipe(CreateRecipeRequest createRecipeRequest, UserDao userDao) throws UnknownFoodGroupException {
         var foodGroups = new HashSet<FoodGroupDao>();
         for (var category : createRecipeRequest.getCategories()) {

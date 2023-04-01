@@ -30,7 +30,7 @@ public class LoginService implements UserDetailsService {
     private final LoginMapperService loginMapperService;
     private final UserMapperService userMapperService;
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public LoginUserDao createNewUser(SignUpRequest signUpRequest) throws EmailOrUsernameTakenException, FailedToCreateUserException {
         Optional<LoginUserDao> checker = loginUserRepository
                 .findByEmailOrLoginUsername(signUpRequest.getEmail(), signUpRequest.getUsername());
