@@ -10,10 +10,8 @@ const ProfileSettingsPage = () => {
   const [image, setImage] = useState<File[]>([]);
   const [imageUrl, setImageUrl] = useState<string>();
   const onImageDropped = (buffer: Uint8Array) => {
-    console.log(buffer);
     const blob = new Blob([buffer]);
     setImageUrl(URL.createObjectURL(blob));
-    console.log(blob);
   };
 
   return (
@@ -23,6 +21,7 @@ const ProfileSettingsPage = () => {
         <div
           className="my-4 d-flex justify-content-between "
           style={{ height: 150 }}
+          data-testid="top-container"
         >
           <div style={{ width: "150px", height: "150px" }}>
             <img

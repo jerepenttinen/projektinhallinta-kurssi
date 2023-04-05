@@ -20,7 +20,7 @@ const MainPage = () => {
     <PageContainer gap={3}>
       <h3>Reseptejä</h3>
       <Container>
-        <CarouselContainer showDots={true}>
+        <CarouselContainer showDots={true} >
           {dummyData.map((recipe) => {
             return <RecipeCard key={recipe.id} header={recipe.header} />;
           })}

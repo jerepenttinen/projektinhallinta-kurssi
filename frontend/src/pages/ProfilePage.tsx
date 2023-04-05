@@ -37,7 +37,7 @@ const ProfileRecipeList = () => {
   ];
 
   return (
-    <div className="row row-cols-3">
+    <div className="row row-cols-3 justify-content-md-center">
       {recipes.map((recipe) => (
         <RecipeCard key={recipe.id} header={recipe.header} />
       ))}
