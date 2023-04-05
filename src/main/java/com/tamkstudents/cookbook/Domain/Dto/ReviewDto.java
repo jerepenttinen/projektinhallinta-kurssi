@@ -1,15 +1,16 @@
 package com.tamkstudents.cookbook.Domain.Dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter @Setter
+@Builder
 public class ReviewDto {
     private long id;
     private int userId;
-    private Date created;
-    private Date editedLastTime;
+    private Timestamp created;
     private String content;
 }
