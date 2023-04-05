@@ -2,6 +2,7 @@ import CarouselContainer from "../components/CarouselContainer";
 import ReviewList from "../components/ReviewList";
 import RecipeCard from "../components/RecipeCard";
 import PageContainer from "../components/PageContainer";
+import RecipeList from "../components/RecipeList";
 import { Figure } from "react-bootstrap";
 
 const ProfileContacts = () => {
@@ -20,27 +21,6 @@ const ProfileContacts = () => {
         <h3>Etunimi Sukunimi</h3>
         <p>Kuvaus</p>
       </div>
-    </div>
-  );
-};
-
-const ProfileRecipeList = () => {
-  const recipes = [
-    { id: 1, header: "Kinkkukiusaus" },
-    { id: 2, header: "Lihamureke" },
-    { id: 3, header: "Makaroonilaatikko" },
-    { id: 4, header: "Hernekeitto" },
-    { id: 5, header: "Jauhelihakastike" },
-    { id: 7, header: "Jauhelihakastike2" },
-    { id: 8, header: "Jauhelihakastike3" },
-    { id: 9, header: "Jauhelihakastike4" },
-  ];
-
-  return (
-    <div className="row row-cols-3">
-      {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} header={recipe.header} />
-      ))}
     </div>
   );
 };
@@ -76,7 +56,7 @@ const ProfilePage = () => {
     <PageContainer gap={3}>
       <ProfileContacts />
       <h4>Reseptit</h4>
-      <ProfileRecipeList />
+      <RecipeList />
       <h4>Kokoelmat</h4>
       <h5>Aamupalat</h5>
       <CarouselContainer showDots={true}>

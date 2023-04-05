@@ -49,6 +49,18 @@ const CreateRecipePage = () => {
   const [categories, setCategories] = useState([
     { id: uuid(), category: "Pääruuat" },
     { id: uuid(), category: "Alkuruuat" },
+    { id: uuid(), category: "Jälkiruoat" },
+    { id: uuid(), category: "Juomat" },
+    { id: uuid(), category: "Keitot" },
+    { id: uuid(), category: "Pastat ja nuudelit" },
+    { id: uuid(), category: "Pizzat" },
+    { id: uuid(), category: "Pastat ja nuudelit" },
+    { id: uuid(), category: "Makeat leivonnaiset" },
+    { id: uuid(), category: "Välipalat" },
+    { id: uuid(), category: "Salaatit" },
+    { id: uuid(), category: "Leivät ja sämpylät" },
+    { id: uuid(), category: "Suolaiset leivonnaiset" },
+    { id: uuid(), category: "Lisukkeet" },
   ]);
   const [selectCategories, setSelectedCategories] = useState<
     { id: string; category: string }[]
