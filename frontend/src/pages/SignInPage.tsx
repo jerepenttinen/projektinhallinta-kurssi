@@ -14,7 +14,7 @@ const signInValidator = z.object({
 export default function SignInPage() {
   const { signIn } = useAuthentication();
 
-  const { register, handleSubmit, formState } = useForm<
+  const { register, handleSubmit, formState, setError } = useForm<
     z.infer<typeof signInValidator>
   >({
     resolver: zodResolver(signInValidator),
@@ -23,17 +23,23 @@ export default function SignInPage() {
   return (
     <Form
       className="vstack py-4 gap-4 narrow-container"
-      onSubmit={handleSubmit((data) => {
-        signIn(data);
+      onSubmit={handleSubmit(async (data) => {
+        try {
+          await signIn(data);
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            setError("root", { type: "custom", message: e.message });
+          }
+        }
       })}
     >
       <h2>Kirjaudu</h2>
       <Form.Group controlId="email">
         <Form.Control placeholder="Sähköposti" {...register("email")} />
         {formState.errors.email && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.email.message}
-          </p>
+          </span>
         )}
       </Form.Group>
 
@@ -44,11 +50,17 @@ export default function SignInPage() {
           {...register("password")}
         />
         {formState.errors.email && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.email.message}
-          </p>
+          </span>
         )}
       </Form.Group>
+
+      {formState.errors.root && (
+        <span role="alert" className="text-danger">
+          {formState.errors.root.message}
+        </span>
+      )}
 
       <Button variant="primary" type="submit" size="lg">
         Kirjaudu

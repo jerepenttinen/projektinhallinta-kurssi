@@ -17,7 +17,7 @@ const signUpValidator = z.object({
 const SignupPage = () => {
   const { signUp } = useAuthentication();
 
-  const { register, handleSubmit, formState } = useForm<
+  const { register, handleSubmit, formState, setError } = useForm<
     z.infer<typeof signUpValidator>
   >({
     resolver: zodResolver(signUpValidator),
@@ -26,8 +26,14 @@ const SignupPage = () => {
   return (
     <Form
       className="vstack py-4 gap-4 narrow-container"
-      onSubmit={handleSubmit((data) => {
-        signUp(data);
+      onSubmit={handleSubmit(async (data) => {
+        try {
+          await signUp(data);
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            setError("root", { type: "custom", message: e.message });
+          }
+        }
       })}
     >
       <h2>Rekisteröidy</h2>
@@ -38,9 +44,9 @@ const SignupPage = () => {
           {...register("username")}
         />
         {formState.errors.username && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.username.message}
-          </p>
+          </span>
         )}
       </Form.Group>
       <Form.Group controlId="firstname">
@@ -50,9 +56,9 @@ const SignupPage = () => {
           {...register("firstname")}
         />
         {formState.errors.firstname && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.firstname.message}
-          </p>
+          </span>
         )}
       </Form.Group>
       <Form.Group controlId="lastname">
@@ -62,9 +68,9 @@ const SignupPage = () => {
           {...register("lastname")}
         />
         {formState.errors.lastname && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.lastname.message}
-          </p>
+          </span>
         )}
       </Form.Group>
       <Form.Group controlId="email">
@@ -74,9 +80,9 @@ const SignupPage = () => {
           {...register("email")}
         />
         {formState.errors.email && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.email.message}
-          </p>
+          </span>
         )}
       </Form.Group>
 
@@ -87,12 +93,17 @@ const SignupPage = () => {
           {...register("password")}
         />
         {formState.errors.password && (
-          <p role="alert" className="text-danger">
+          <span role="alert" className="text-danger">
             {formState.errors.password.message}
-          </p>
+          </span>
         )}
       </Form.Group>
 
+      {formState.errors.root && (
+        <span role="alert" className="text-danger">
+          {formState.errors.root.message}
+        </span>
+      )}
       <Button variant="primary" type="submit" size="lg">
         Rekisteröidy
       </Button>
