@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
+import "./SignupPage.css";
 
 const signInValidator = z.object({
   email: z.string().email("Tarkista oikeinkirjoitus"),
@@ -20,40 +21,40 @@ export default function SignInPage() {
   });
 
   return (
-    <div className="signupFormContainer">
-      <Form
-        className="vstack gap-4"
-        onSubmit={handleSubmit((data) => {
-          signIn(data);
-        })}
-      >
-        <h2>Kirjaudu</h2>
-        <Form.Group controlId="email">
-          <Form.Control placeholder="Sähköposti" {...register("email")} />
-          {formState.errors.email && (
-            <p role="alert" className="text-danger">
-              {formState.errors.email.message}
-            </p>
-          )}
-        </Form.Group>
+    <Form
+      className="vstack py-4 gap-4 narrow-container"
+      onSubmit={handleSubmit((data) => {
+        signIn(data);
+      })}
+    >
+      <h2>Kirjaudu</h2>
+      <Form.Group controlId="email">
+        <Form.Control placeholder="Sähköposti" {...register("email")} />
+        {formState.errors.email && (
+          <p role="alert" className="text-danger">
+            {formState.errors.email.message}
+          </p>
+        )}
+      </Form.Group>
 
-        <Form.Group controlId="password">
-          <Form.Control
-            type="password"
-            placeholder="Salasana"
-            {...register("password")}
-          />
-          {formState.errors.email && (
-            <p role="alert" className="text-danger">
-              {formState.errors.email.message}
-            </p>
-          )}
-        </Form.Group>
+      <Form.Group controlId="password">
+        <Form.Control
+          type="password"
+          placeholder="Salasana"
+          {...register("password")}
+        />
+        {formState.errors.email && (
+          <p role="alert" className="text-danger">
+            {formState.errors.email.message}
+          </p>
+        )}
+      </Form.Group>
 
-        <Button variant="primary" type="submit" size="lg">
-          Kirjaudu
-        </Button>
-      </Form>
-    </div>
+      <Button variant="primary" type="submit" size="lg">
+        Kirjaudu
+      </Button>
+
+      <Link to="/signup">Rekisteröidy</Link>
+    </Form>
   );
 }
