@@ -37,13 +37,13 @@ public class LoginController {
     @PostMapping("/signin")
     public void signIn(@Valid @RequestBody SignInRequest signInRequest, HttpServletRequest request, HttpServletResponse response) {
         if (request.getUserPrincipal() != null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Already signed in");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Olet jo kirjautunut sisään");
         }
 
         try {
             request.login(signInRequest.getEmail(), signInRequest.getPassword());
         } catch (ServletException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Virheelliset kirjautumistiedot");
         }
 
         var authentication = (Authentication) request.getUserPrincipal();
@@ -61,15 +61,15 @@ public class LoginController {
     @ResponseStatus(value = HttpStatus.CREATED, reason = "User signed up successfully")
     public void signUp(@Valid @RequestBody SignUpRequest signUpRequest, HttpServletRequest request) {
         if (request.getUserPrincipal() != null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Already signed in");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Olet jo kirjautunut sisään");
         }
 
         try {
             loginService.createNewUser(signUpRequest);
         } catch (EmailOrUsernameTakenException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email or username is already taken", e);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Sähköposti tai käyttäjänimi on jo otettu", e);
         } catch (FailedToCreateUserException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Käyttäjän luominen epäonnistui", e);
         }
     }
 

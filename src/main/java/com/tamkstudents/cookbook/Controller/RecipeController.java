@@ -60,7 +60,7 @@ public class RecipeController {
             var recipe = recipeService.createRecipe(createRecipeRequest, userRepository.findById(loginUserDao.getProfileId()).orElseThrow());
             return ResponseEntity.ok(recipeMapperService.createRecipeReplyFromRecipeDao(recipe));
         } catch (UnknownFoodGroupException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Unknown food category: %s", e.getFoodGroup()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Tuntematon kategoria: %s", e.getFoodGroup()));
         }
 
     }
@@ -82,7 +82,7 @@ public class RecipeController {
         try {
             return ResponseEntity.ok(recipeMapperService.recipeReplyFromRecipeDao(recipeService.getRecipeById(id)));
         } catch (RecipeNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reseptiä ei löytynyt", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class RecipeController {
             var recipes = recipeService.getUserRecipes(id);
             return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Käyttäjää ei löytynyt", e);
         }
     }
 }
