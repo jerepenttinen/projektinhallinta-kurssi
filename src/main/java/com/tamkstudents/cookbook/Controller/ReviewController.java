@@ -19,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,7 +36,7 @@ public class ReviewController {
         try {
             return new ResponseEntity<>(reviewService.getRecipeReviews(recipeId), HttpStatus.OK);
         } catch (RecipeNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reseptiä ei löytynyt");
         }
     }
 
@@ -57,7 +56,7 @@ public class ReviewController {
             reviewService.addReviewForRecipe(recipeId, loginUserDao.getProfileId(), createReviewRequest);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ReviewExistsForRecipeByUserException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "You have already reviewed this recipe");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Olet jo arvostellut tämän reseptin");
         } catch (RecipeNotFoundException | UserNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

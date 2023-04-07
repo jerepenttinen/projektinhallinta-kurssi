@@ -6,16 +6,19 @@ import {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "./api";
+import { z } from "zod";
 
-type LoginUser = {
-  id: number;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  profileId: string;
-  email: string;
-};
+const loginUserValidator = z.object({
+  id: z.number(),
+  username: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  profileId: z.number(),
+  email: z.string(),
+});
+
+type LoginUser = z.infer<typeof loginUserValidator>;
 
 type SignInRequest = {
   email: string;
@@ -60,8 +63,8 @@ export function AuthenticationProvider({
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const res = await fetch("/api/users/current");
-      const user = (await res.json()) as LoginUser;
+      const res = await api.get("/api/users/current");
+      const user = loginUserValidator.parse(res.data);
       setUser(user);
       return user;
     } catch (e: unknown) {
@@ -77,12 +80,8 @@ export function AuthenticationProvider({
 
   const signIn = useCallback(
     async (credentials: SignInRequest) => {
-      await fetch("/api/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
+      await api.post("/api/signin", credentials).catch((e) => {
+        throw new Error(e.response.data.message);
       });
       if ((await fetchCurrentUser()) !== null) {
         navigate("/");
@@ -92,25 +91,16 @@ export function AuthenticationProvider({
   );
 
   const signOut = useCallback(async () => {
-    await fetch("/api/signout", {
-      method: "POST",
-    });
+    await api.post("/api/signout");
     setUser(null);
   }, []);
 
   const signUp = useCallback(
     async (signUp: SignUpRequest) => {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signUp),
+      await api.post("/api/signup", signUp).catch((e) => {
+        throw new Error(e.response.data.message);
       });
-
-      if (res.ok) {
-        navigate("/signin");
-      }
+      navigate("/signin");
     },
     [navigate],
   );
