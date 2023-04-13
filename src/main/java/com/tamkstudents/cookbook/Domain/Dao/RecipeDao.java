@@ -34,7 +34,7 @@ public class RecipeDao {
     @Column(name = "recipe_instruction", nullable = false)
     private List<String> instruction;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "recipe_has_image",
             joinColumns = {

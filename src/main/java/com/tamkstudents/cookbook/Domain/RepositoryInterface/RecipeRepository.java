@@ -13,4 +13,5 @@ public interface RecipeRepository extends JpaRepository<RecipeDao, Long> {
     List<RecipeDao> findAllByCreator(UserDao creator);
     List<RecipeDao> findAllByFoodGroupsContains(FoodGroupDao foodGroupDao);
 
+    List<RecipeDao> findRecipeDaosByRecipeNameLikeIgnoreCase(String recipeName);
 }
