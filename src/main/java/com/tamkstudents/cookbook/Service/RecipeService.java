@@ -39,6 +39,10 @@ public class RecipeService {
         return recipeRepository.findAllByCreator(user);
     }
 
+    public List<RecipeDao> search(String term) {
+        return recipeRepository.findRecipeDaosByRecipeNameLikeIgnoreCase(term);
+    }
+
 //    public List<RecipeDao> getFoodGroupRecipes(String foodGroupId) {
 //        return recipeRepository.findAllByFoodGroupsContains(foodGroupRepository.findById(foodGroupId));
 //    }

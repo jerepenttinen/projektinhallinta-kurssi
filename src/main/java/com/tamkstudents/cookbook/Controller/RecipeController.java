@@ -95,4 +95,10 @@ public class RecipeController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Käyttäjää ei löytynyt", e);
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<RecipeCardReply>> getRecipesBySearchTerm(@RequestParam String q) {
+        var recipes = recipeService.search(q);
+        return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
+    }
 }
