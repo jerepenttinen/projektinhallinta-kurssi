@@ -23,4 +23,10 @@ public class UserDao {
 
     @OneToMany(mappedBy = "creator")
     private Set<RecipeDao> recipes;
+
+    @ManyToOne
+    @JoinColumn(name = "image", nullable = true)
+    private ImageDao image;
+
+    private String description;
 }

@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Service;
 
 import com.tamkstudents.cookbook.Domain.Dao.UserDao;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
+import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +15,9 @@ public class UserService {
 
     public List<UserDao> getAll(List<Long> userIds) {
         return userRepository.findAllById(userIds);
+    }
+
+    public UserDao getById(Long userId) throws UserNotFoundException {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 }
