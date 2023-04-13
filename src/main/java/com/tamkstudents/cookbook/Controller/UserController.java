@@ -4,6 +4,7 @@ import com.tamkstudents.cookbook.Controller.Mapper.LoginMapperService;
 import com.tamkstudents.cookbook.Controller.Mapper.UserMapperService;
 import com.tamkstudents.cookbook.Controller.Reply.CurrentUserReply;
 import com.tamkstudents.cookbook.Controller.Reply.GetUserReply;
+import com.tamkstudents.cookbook.Controller.Request.UpdateUserDetailsRequest;
 import com.tamkstudents.cookbook.Domain.Dao.LoginUserDao;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import com.tamkstudents.cookbook.Service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -57,4 +59,26 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(summary = "Update users details", responses = {
+            @ApiResponse(responseCode = "200", description = "User details, description and image can be null"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    @PutMapping("/{userId}")
+    public ResponseEntity<GetUserReply> putUser(@PathVariable Long userId, @RequestBody UpdateUserDetailsRequest updateUserDetailsRequest, @Parameter(hidden = true) LoginUserDao loginUserDao) {
+        if (loginUserDao == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        if (!Objects.equals(userId, loginUserDao.getProfileId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        try {
+            var user = userService.updateDetails(userId, updateUserDetailsRequest);
+            return new ResponseEntity<>(userMapperService.getUserReplyFromUserDao(user), HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
