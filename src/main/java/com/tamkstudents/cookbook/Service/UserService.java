@@ -6,10 +6,10 @@ import com.tamkstudents.cookbook.Domain.Dao.UserDao;
 import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @Service
@@ -27,13 +27,17 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public UserDao updateDetails(Long userId, UpdateUserDetailsRequest updateUserDetailsRequest) throws UserNotFoundException {
         var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.setDescription(updateUserDetailsRequest.getDescription());
-        var image = new ImageDao();
-        image.setImage(mediaService.base64ToImage(updateUserDetailsRequest.getImage()));
-        entityManager.persist(image);
-        user.setImage(image);
+
+        if (updateUserDetailsRequest.getImage() != null) {
+            var image = new ImageDao();
+            image.setImage(mediaService.base64ToImage(updateUserDetailsRequest.getImage()));
+            entityManager.persist(image);
+            user.setImage(image);
+        }
         entityManager.persist(user);
 
         return user;
