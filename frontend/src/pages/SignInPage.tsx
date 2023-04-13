@@ -62,7 +62,7 @@ export default function SignInPage() {
         </span>
       )}
 
-      <Button variant="primary" type="submit" size="lg">
+      <Button id="signin" variant="primary" type="submit" size="lg">
         Kirjaudu
       </Button>
 

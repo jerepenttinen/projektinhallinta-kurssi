@@ -104,7 +104,7 @@ const SignupPage = () => {
           {formState.errors.root.message}
         </span>
       )}
-      <Button variant="primary" type="submit" size="lg">
+      <Button id="signup" variant="primary" type="submit" size="lg">
         Rekisteröidy
       </Button>
       <Link to="/signin">Kirjaudu sisään</Link>
