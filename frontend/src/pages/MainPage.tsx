@@ -3,28 +3,39 @@ import Container from "react-bootstrap/Container";
 import RecipeCard from "../components/RecipeCard";
 import CarouselContainer from "../components/CarouselContainer";
 import PageContainer from "../components/PageContainer";
-
-const dummyData = [
-  { id: 1, header: "Kinkkukiusaus" },
-  { id: 2, header: "Lihamureke" },
-  { id: 3, header: "Makaronilaatikko" },
-  { id: 4, header: "Hernekeitto" },
-  { id: 5, header: "Jauhelihakastike" },
-  { id: 7, header: "Jauhelihakastike2" },
-  { id: 8, header: "Jauhelihakastike3" },
-  { id: 9, header: "Jauhelihakastike4" },
-];
+import { useEffect, useState } from "react";
+import { RecipeType } from "../Types";
+import { GetRecipes } from "../api/Recipes";
 
 const MainPage = () => {
+  const [recipes, setRecipes] = useState<RecipeType[]>([]);
+
+  const updateRecipes = async () => {
+    setRecipes(await GetRecipes());
+  };
+
+  useEffect(() => {
+    updateRecipes();
+  }, []);
   return (
     <PageContainer gap={3}>
       <h3>Reseptejä</h3>
       <Container>
-        <CarouselContainer showDots={true} >
-          {dummyData.map((recipe) => {
-            return <RecipeCard key={recipe.id} header={recipe.header} />;
-          })}
-        </CarouselContainer>
+        {recipes[0] ? (
+          <CarouselContainer showDots={true}>
+            {recipes.map((recipe) => {
+              return (
+                <RecipeCard
+                  key={recipe.id}
+                  header={recipe.recipeName}
+                  id={recipe.id}
+                />
+              );
+            })}
+          </CarouselContainer>
+        ) : (
+          <p>Reseptejä ei löytynyt!</p>
+        )}
       </Container>
     </PageContainer>
   );

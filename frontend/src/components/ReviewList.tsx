@@ -1,8 +1,9 @@
 import ReviewItem from "./ReviewItem";
 import { Stack } from "react-bootstrap";
+import { ReviewType } from "../Types";
 
 interface Props {
-  reviews: { id: number; name: string; comment: string; date: Date }[];
+  reviews: ReviewType[] | null;
 }
 
 const ReviewList = ({ reviews }: Props) => {
@@ -10,7 +11,7 @@ const ReviewList = ({ reviews }: Props) => {
     <>
       <h4>Kommentit</h4>
       <Stack direction="vertical" gap={3}>
-        {reviews.map((review) => {
+        {reviews?.map((review) => {
           return <ReviewItem key={review.id} review={review} />;
         })}
       </Stack>

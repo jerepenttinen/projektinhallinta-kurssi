@@ -11,6 +11,8 @@ import {
 } from "react-icons/bs";
 import DropImages from "../components/DropImages";
 import "./CreateRecipePage.css";
+import axios from "axios";
+import { PostRecipe } from "../api/Recipes";
 
 const uuid = () => URL.createObjectURL(new Blob([])).substring(-36);
 
@@ -70,6 +72,21 @@ const CreateRecipePage = () => {
   const ingredientRef = useRef<HTMLInputElement | null>(null);
   const stepRef = useRef<HTMLInputElement | null>(null);
   const selectRef = useRef<HTMLSelectElement | null>(null);
+  const nameRef = useRef<HTMLInputElement | null>(null);
+
+  const handleSubmit = async () => {
+    const newRecipe = {
+      recipeName: nameRef.current?.value,
+      images: images.map((i) => i.id),
+      instructions: instructions.map((i) => i.instruction),
+      ingredients: ingredients.map((i) => {
+        return { ingredient: i.ingredient, quantity: i.quantity };
+      }),
+      categories: selectCategories.map((c) => c.category),
+    };
+    console.log(newRecipe);
+    PostRecipe(newRecipe);
+  };
 
   return (
     <Form
@@ -79,7 +96,7 @@ const CreateRecipePage = () => {
       <h2 className="mb-0">Lisää uusi resepti</h2>
       <Form.Group>
         <Form.Label>Reseptin nimi</Form.Label>
-        <Form.Control type="text" placeholder="Reseptin nimi" />
+        <Form.Control ref={nameRef} type="text" placeholder="Reseptin nimi" />
       </Form.Group>
       <Form.Group>
         <Form.Label>Raaka-aineet</Form.Label>
@@ -255,7 +272,7 @@ const CreateRecipePage = () => {
         />
       </Form.Group>
       <div>
-        <Button variant="success" size="lg">
+        <Button variant="success" size="lg" onClick={handleSubmit}>
           Julkaise
         </Button>
       </div>

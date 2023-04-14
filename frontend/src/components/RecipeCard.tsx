@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 
 export interface Props {
   header: string;
+  id: number;
 }
 
-const RecipeCard = ({ header }: Props) => {
+const RecipeCard = ({ header, id }: Props) => {
+  const url = "/recipes/" + id;
   return (
-    <Link to="/recipes" className="text-black">
+    <Link to={url} className="text-black">
       <Figure className="mb-0">
         <Figure.Image
           src="https://4.bp.blogspot.com/-ecGN1GaoT-g/Uz20paShlSI/AAAAAAAAAcc/mc7Or69LsNw/s1600/veghamp2.jpg"

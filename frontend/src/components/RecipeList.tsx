@@ -1,24 +1,26 @@
 import RecipeCard from "./RecipeCard";
+import { RecipeType } from "../Types";
+import { useState } from "react";
 
-const RecipeList = () => {
-    const recipes = [
-        { id: 1, header: "Kinkkukiusaus" },
-        { id: 2, header: "Lihamureke" },
-        { id: 3, header: "Makaroonilaatikko" },
-        { id: 4, header: "Hernekeitto" },
-        { id: 5, header: "Jauhelihakastike" },
-        { id: 7, header: "Jauhelihakastike2" },
-        { id: 8, header: "Jauhelihakastike3" },
-        { id: 9, header: "Jauhelihakastike4" },
-    ];
-
-    return (
-        <div className="row row-cols-3">
-            {recipes.map((recipe) => (
-                <RecipeCard key={recipe.id} header={recipe.header} />
-            ))}
-        </div>
-    );
+interface Props {
+  recipes: RecipeType[] | null;
+}
+const RecipeList = ({ recipes }: Props) => {
+  return (
+    <div className="row row-cols-3">
+      {recipes ? (
+        recipes.map((recipe) => (
+          <RecipeCard
+            key={recipe.id}
+            header={recipe.recipeName}
+            id={recipe.id}
+          />
+        ))
+      ) : (
+        <p>Ei reseptejä!</p>
+      )}
+    </div>
+  );
 };
 
 export default RecipeList;

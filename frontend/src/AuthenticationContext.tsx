@@ -60,7 +60,6 @@ export function AuthenticationProvider({
 }) {
   const [user, setUser] = useState<LoginUser | null>(null);
   const navigate = useNavigate();
-
   const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await api.get("/api/users/current");

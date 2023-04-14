@@ -6,9 +6,8 @@ import { Button, Stack } from "react-bootstrap";
 import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/SearchPage";
 import RecipePage from "./pages/RecipePage";
-import ProfileSettingsPage from "./pages/ProfileSettingsPage"
-import ProfilePage from "./pages/ProfilePage"
-
+import ProfileSettingsPage from "./pages/ProfileSettingsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 import CreateRecipePage from "./pages/CreateRecipePage";
 import SignInPage from "./pages/SignInPage";
@@ -37,12 +36,12 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/recipes" element={<RecipePage />} />
+        <Route path="/recipes/:id" element={<RecipePage />} />
         <Route path="/recipes/create" element={<CreateRecipePage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/profile/settings" element={<ProfileSettingsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:uid" element={<ProfilePage />} />
       </Routes>
     </div>
   );

@@ -8,7 +8,7 @@ import { useState } from "react";
 
 const ProfileSettingsPage = () => {
   const [image, setImage] = useState<File[]>([]);
-  const [imageUrl, setImageUrl] = useState<string>();
+  const [imageUrl, setImageUrl] = useState<string>("");
   const onImageDropped = (buffer: Uint8Array) => {
     const blob = new Blob([buffer]);
     setImageUrl(URL.createObjectURL(blob));

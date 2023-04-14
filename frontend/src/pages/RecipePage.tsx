@@ -10,15 +10,23 @@ import {
 } from "react-bootstrap";
 import ReviewList from "../components/ReviewList";
 import PageContainer from "../components/PageContainer";
+import { useState, useEffect } from "react";
+import { RecipeType, ReviewType } from "../Types";
+import { GetRecipeById } from "../api/Recipes";
+import { GetReviewByRecipeId } from "../api/Reviews";
+interface IngredientRowProps {
+  quantity: string;
+  name: string;
+}
 
-const IngredientRow = () => {
+const IngredientRow = ({ name, quantity }: IngredientRowProps) => {
   return (
     <Stack gap={2}>
       <Stack direction="horizontal" gap={3}>
         <div style={{ minWidth: 150 }}>
-          <span style={{ float: "right" }}>Määrä</span>
+          <span style={{ float: "right" }}> {quantity} </span>
         </div>
-        <span>Nimi</span>
+        <span>{name}</span>
       </Stack>
     </Stack>
   );
@@ -45,6 +53,36 @@ const dummyReviewData: {
 ];
 
 const RecipePage = () => {
+  const [recipe, setRecipe] = useState<RecipeType | null>(null);
+  const [reviews, setReviews] = useState<ReviewType[] | null>(null);
+
+  const getId = () => {
+    const siteUrl = window.location.href;
+    const urlArray = siteUrl.split("/");
+    return urlArray[urlArray.length - 1];
+  };
+
+  const update = async () => {
+    setRecipe(await GetRecipeById(getId()));
+    setReviews(await GetReviewByRecipeId(getId()));
+  };
+
+  useEffect(() => {
+    update();
+  }, []);
+  const ingredientList = recipe?.ingredients.map((ingredient) => {
+    return (
+      <IngredientRow
+        key={ingredient.id}
+        name={ingredient.name}
+        quantity={ingredient.quantity}
+      />
+    );
+  });
+  const instructions = recipe?.instructions.map((instruction) => {
+    return <li>{instruction}</li>;
+  });
+
   return (
     <PageContainer gap={3}>
       <h2 className="mb-0">Reseptin nimi</h2>
@@ -100,31 +138,9 @@ const RecipePage = () => {
       </Stack>
 
       <h3>Raaka-aineet</h3>
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-
+      <div>{ingredientList}</div>
       <h3>Ohjeet</h3>
-      <ol>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et aliqua.
-        </li>
-        <li>
-          Proin fermentum leo vel orci porta non. Id leo in vitae turpis.
-          Fermentum et sollicitudin ac orci phasellus.
-        </li>
-        <li>Tellus at urna condimentum mattis pellentesque id nibh tortor.</li>
-        <li>
-          Nisl tincidunt eget nullam non. Senectus et netus et malesuada fames.
-        </li>
-        <li>Tortor vitae purus faucibus ornare suspendisse.</li>
-        <li>Ut ornare lectus sit amet est placerat in.</li>
-        <li>Sed vulputate odio ut enim blandit volutpat maecenas.</li>
-      </ol>
+      <ol>{instructions}</ol>
 
       <h3>Lisää arvostelu</h3>
       <div>
@@ -159,7 +175,7 @@ const RecipePage = () => {
       </div>
 
       <h3>Arvostelut</h3>
-      <ReviewList reviews={dummyReviewData} />
+      <ReviewList reviews={reviews} />
     </PageContainer>
   );
 };
