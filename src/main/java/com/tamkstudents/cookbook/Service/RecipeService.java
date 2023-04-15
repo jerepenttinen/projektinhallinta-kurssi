@@ -107,4 +107,8 @@ public class RecipeService {
         log.error("User (" + recipeDto.getCreatorId() + ") or Recipe (" + recipeDto.getId() + ") are invalid");
         return null;
     }
+
+    public List<FoodGroupDao> getRecipeCategories() {
+        return foodGroupRepository.findAll();
+    }
 }

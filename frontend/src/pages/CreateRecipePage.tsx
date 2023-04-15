@@ -11,10 +11,9 @@ import {
 } from "react-icons/bs";
 import DropImages from "../components/DropImages";
 import "./CreateRecipePage.css";
-import axios from "axios";
 import { PostRecipe } from "../api/Recipes";
 
-const uuid = () => URL.createObjectURL(new Blob([])).substring(-36);
+const uuid = () => crypto.randomUUID();
 
 function SortingRow(props: {
   render: () => React.ReactElement;
@@ -48,22 +47,8 @@ const CreateRecipePage = () => {
 
   const [images, setImages] = useState<{ id: string; blob: Blob }[]>([]);
 
-  const [categories, setCategories] = useState([
-    { id: uuid(), category: "Pääruuat" },
-    { id: uuid(), category: "Alkuruuat" },
-    { id: uuid(), category: "Jälkiruoat" },
-    { id: uuid(), category: "Juomat" },
-    { id: uuid(), category: "Keitot" },
-    { id: uuid(), category: "Pastat ja nuudelit" },
-    { id: uuid(), category: "Pizzat" },
-    { id: uuid(), category: "Pastat ja nuudelit" },
-    { id: uuid(), category: "Makeat leivonnaiset" },
-    { id: uuid(), category: "Välipalat" },
-    { id: uuid(), category: "Salaatit" },
-    { id: uuid(), category: "Leivät ja sämpylät" },
-    { id: uuid(), category: "Suolaiset leivonnaiset" },
-    { id: uuid(), category: "Lisukkeet" },
-  ]);
+  // TODO: Hae endpoint'ista
+  const [categories, setCategories] = useState([]);
   const [selectCategories, setSelectedCategories] = useState<
     { id: string; category: string }[]
   >([]);

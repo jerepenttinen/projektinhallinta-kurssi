@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Controller;
 
 import com.tamkstudents.cookbook.Controller.Mapper.RecipeMapperService;
 import com.tamkstudents.cookbook.Controller.Reply.CreateRecipeReply;
+import com.tamkstudents.cookbook.Controller.Reply.GetCategoriesReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeCardReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
@@ -100,5 +101,10 @@ public class RecipeController {
     public ResponseEntity<List<RecipeCardReply>> getRecipesBySearchTerm(@RequestParam String q) {
         var recipes = recipeService.search(q);
         return ResponseEntity.ok(recipes.stream().map(recipeMapperService::recipeCardReplyFromRecipeDao).toList());
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<GetCategoriesReply>> getCategories() {
+        return ResponseEntity.ok(recipeService.getRecipeCategories().stream().map(recipeMapperService::getCategoriesReplyFromFoodGroupDao).toList());
     }
 }
