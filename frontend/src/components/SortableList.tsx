@@ -8,7 +8,6 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  arrayMove,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -38,17 +37,11 @@ function SortableItem(props: SortableItemProps) {
   );
 }
 
-type SortableListProps<T extends Identifiable> = {
+export function SortableList<T extends Identifiable>(props: {
+  render: (item: T, index: number) => React.ReactElement;
+  move: (indexA: number, indexB: number) => void;
   items: T[];
-  setItems: React.Dispatch<React.SetStateAction<T[]>>;
-  renderItem: (item: T) => React.ReactElement;
-};
-
-export function SortableList<T extends Identifiable>({
-  items,
-  setItems,
-  renderItem,
-}: SortableListProps<T>) {
+}) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -63,10 +56,13 @@ export function SortableList<T extends Identifiable>({
       onDragEnd={handleDragEnd}
       sensors={sensors}
     >
-      <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        {items.map((item) => (
+      <SortableContext
+        items={props.items}
+        strategy={verticalListSortingStrategy}
+      >
+        {props.items.map((item, index) => (
           <SortableItem key={item.id} id={item.id}>
-            {renderItem(item)}
+            {props.render(item, index)}
           </SortableItem>
         ))}
       </SortableContext>
@@ -77,12 +73,10 @@ export function SortableList<T extends Identifiable>({
     const { active, over } = event;
 
     if (over !== null && active.id !== over?.id) {
-      setItems((items) => {
-        const ids = items.map((item) => item.id);
-        const activeIndex = ids.indexOf(active.id.toString());
-        const overIndex = ids.indexOf(over.id.toString());
-        return arrayMove(items, activeIndex, overIndex);
-      });
+      const ids = props.items.map((item) => item.id);
+      const activeIndex = ids.indexOf(active.id.toString());
+      const overIndex = ids.indexOf(over.id.toString());
+      props.move(activeIndex, overIndex);
     }
   }
 }
