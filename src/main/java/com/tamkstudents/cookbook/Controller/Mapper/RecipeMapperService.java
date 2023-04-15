@@ -1,6 +1,7 @@
 package com.tamkstudents.cookbook.Controller.Mapper;
 
 import com.tamkstudents.cookbook.Controller.Reply.CreateRecipeReply;
+import com.tamkstudents.cookbook.Controller.Reply.GetCategoriesReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeCardReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
@@ -54,5 +55,12 @@ public class RecipeMapperService {
 
     public CreateRecipeReply createRecipeReplyFromRecipeDao(RecipeDao recipeDao) {
         return new CreateRecipeReply(recipeDao.getId());
+    }
+
+    public GetCategoriesReply getCategoriesReplyFromFoodGroupDao(FoodGroupDao foodGroupDao) {
+        return GetCategoriesReply.builder()
+                .id(foodGroupDao.getId())
+                .name(foodGroupDao.getName())
+                .build();
     }
 }

@@ -49,11 +49,12 @@ public class RecipeDao {
     @OneToMany(
             mappedBy = "recipe",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private List<RecipeHasIngredientDao> ingredients = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "recipe_has_food_groups",
             joinColumns = {

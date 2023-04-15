@@ -14,11 +14,11 @@ public class RecipeHasIngredientDao {
     @EmbeddedId
     private RecipeHasIngredientId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("recipeId")
     private RecipeDao recipe;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("ingredientId")
     private IngredientDao ingredient;
 
