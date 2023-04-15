@@ -32,26 +32,6 @@ const IngredientRow = ({ name, quantity }: IngredientRowProps) => {
   );
 };
 
-const dummyReviewData: {
-  id: number;
-  name: string;
-  comment: string;
-  date: Date;
-}[] = [
-  {
-    id: 1,
-    name: "Erkki Esimerkki",
-    comment: "Suorastaan herkullista!",
-    date: new Date(2017, 4, 4),
-  },
-  {
-    id: 2,
-    name: "Matti Möttönen",
-    comment: "Suorastaan oksettavaa!",
-    date: new Date(2022, 2, 7),
-  },
-];
-
 const RecipePage = () => {
   const [recipe, setRecipe] = useState<RecipeType | null>(null);
   const [reviews, setReviews] = useState<ReviewType[] | null>(null);
@@ -62,14 +42,13 @@ const RecipePage = () => {
     return urlArray[urlArray.length - 1];
   };
 
-  const update = async () => {
-    setRecipe(await GetRecipeById(getId()));
-    setReviews(await GetReviewByRecipeId(getId()));
-  };
-
   useEffect(() => {
-    update();
+    void (async () => {
+      setRecipe(await GetRecipeById(getId()));
+      setReviews(await GetReviewByRecipeId(getId()));
+    })();
   }, []);
+
   const ingredientList = recipe?.ingredients.map((ingredient) => {
     return (
       <IngredientRow
@@ -79,8 +58,8 @@ const RecipePage = () => {
       />
     );
   });
-  const instructions = recipe?.instructions.map((instruction) => {
-    return <li>{instruction}</li>;
+  const instructions = recipe?.instructions.map((instruction, i) => {
+    return <li key={i}>{instruction}</li>;
   });
 
   return (
