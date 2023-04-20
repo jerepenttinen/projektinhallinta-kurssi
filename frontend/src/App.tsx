@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import SignInPage from "./pages/SignInPage";
 import { Protected } from "./components/Protected";
+import { Unauthenticated } from "./components/Unauthenticated";
 
 function App() {
   return (
@@ -28,8 +29,22 @@ function App() {
             </Protected>
           }
         />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/signin" element={<SignInPage />} />
+        <Route
+          path="/signup"
+          element={
+            <Unauthenticated>
+              <SignupPage />
+            </Unauthenticated>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <Unauthenticated>
+              <SignInPage />
+            </Unauthenticated>
+          }
+        />
         <Route
           path="/profile/settings"
           element={
