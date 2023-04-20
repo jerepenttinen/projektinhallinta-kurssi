@@ -1,6 +1,11 @@
 import { api } from "./index";
 import { z } from "zod";
-import { recipeCard, recipeCategory, newRecipe } from "./validators";
+import {
+  recipeCard,
+  recipeCategory,
+  newRecipe,
+  recipePage,
+} from "./validators";
 
 export const getRecipes = async () => {
   const response = await api.get("/api/recipes");
@@ -34,11 +39,6 @@ export const GetUserRecipes = async (uid: string) => {
 };
 
 export const GetRecipeById = async (id: string) => {
-  try {
-    const url = "/api/recipes/" + id;
-    const response = await api.get(url);
-    if (response.data) return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+  const response = await api.get(`/api/recipes/${id}`);
+  return recipePage.parse(response.data);
 };

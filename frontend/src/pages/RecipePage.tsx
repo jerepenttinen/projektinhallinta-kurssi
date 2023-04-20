@@ -10,10 +10,10 @@ import {
 } from "react-bootstrap";
 import ReviewList from "../components/ReviewList";
 import PageContainer from "../components/PageContainer";
-import { useState, useEffect } from "react";
-import { RecipeType, ReviewType } from "../Types";
 import { GetRecipeById } from "../api/Recipes";
 import { GetReviewByRecipeId } from "../api/Reviews";
+import { useQueries } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 interface IngredientRowProps {
   quantity: string;
   name: string;
@@ -33,38 +33,26 @@ const IngredientRow = ({ name, quantity }: IngredientRowProps) => {
 };
 
 const RecipePage = () => {
-  const [recipe, setRecipe] = useState<RecipeType | null>(null);
-  const [reviews, setReviews] = useState<ReviewType[] | null>(null);
+  const { id } = useParams();
 
-  const getId = () => {
-    const siteUrl = window.location.href;
-    const urlArray = siteUrl.split("/");
-    return urlArray[urlArray.length - 1];
-  };
-
-  useEffect(() => {
-    void (async () => {
-      setRecipe(await GetRecipeById(getId()));
-      setReviews(await GetReviewByRecipeId(getId()));
-    })();
-  }, []);
-
-  const ingredientList = recipe?.ingredients.map((ingredient) => {
-    return (
-      <IngredientRow
-        key={ingredient.id}
-        name={ingredient.name}
-        quantity={ingredient.quantity}
-      />
-    );
-  });
-  const instructions = recipe?.instructions.map((instruction, i) => {
-    return <li key={i}>{instruction}</li>;
+  const [recipeQuery, reviewsQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ["recipes", id],
+        queryFn: () => GetRecipeById(id ?? ""),
+        enabled: typeof id === "string",
+      },
+      {
+        queryKey: ["recipes", id, "reviews"],
+        queryFn: () => GetReviewByRecipeId(id ?? ""),
+        enabled: typeof id === "string",
+      },
+    ],
   });
 
   return (
     <PageContainer gap={3}>
-      <h2 className="mb-0">Reseptin nimi</h2>
+      <h2 className="mb-0">{recipeQuery.data?.recipeName}</h2>
       <Stack direction="horizontal" gap={2}>
         <div
           className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
@@ -74,16 +62,10 @@ const RecipePage = () => {
         </div>
         <span>Etunimi Sukunimi</span>
       </Stack>
-      <Stack direction="horizontal" className="justify-content-between">
-        <Stack direction="horizontal" gap={2}>
-          <Badge bg="secondary">Alkuruuat</Badge>
-          <Badge bg="secondary">Alkuruuat</Badge>
-        </Stack>
-        <Button variant="secondary" className="rounded-0">
-          <Stack direction="horizontal" gap={1}>
-            <BsPrinter /> Tulosta
-          </Stack>
-        </Button>
+
+      <Stack direction="horizontal" gap={2}>
+        <Badge bg="secondary">Alkuruuat</Badge>
+        <Badge bg="secondary">Alkuruuat</Badge>
       </Stack>
 
       <Carousel>
@@ -105,8 +87,7 @@ const RecipePage = () => {
         </CarouselItem>
       </Carousel>
 
-      <Stack direction="horizontal" className="justify-content-between">
-        <span>4 annosta | Valmistusaika 1 min</span>
+      {/* <Stack direction="horizontal" className="justify-content-end">
         <Stack direction="horizontal" gap={2}>
           <BsHandThumbsUp />
           <span>1</span>
@@ -114,12 +95,24 @@ const RecipePage = () => {
           <span>1</span>
           <span>50%</span>
         </Stack>
-      </Stack>
+      </Stack> */}
 
       <h3>Raaka-aineet</h3>
-      <div>{ingredientList}</div>
+      <div>
+        {recipeQuery.data?.ingredients.map((ingredient) => (
+          <IngredientRow
+            key={ingredient.id}
+            name={ingredient.ingredient}
+            quantity={ingredient.quantity}
+          />
+        ))}
+      </div>
       <h3>Ohjeet</h3>
-      <ol>{instructions}</ol>
+      <ol>
+        {recipeQuery.data?.instructions.map((instruction, i) => {
+          return <li key={i}>{instruction}</li>;
+        })}
+      </ol>
 
       <h3>Lisää arvostelu</h3>
       <div>
@@ -154,7 +147,7 @@ const RecipePage = () => {
       </div>
 
       <h3>Arvostelut</h3>
-      <ReviewList reviews={reviews} />
+      {/* <ReviewList reviews={reviews} /> */}
     </PageContainer>
   );
 };
