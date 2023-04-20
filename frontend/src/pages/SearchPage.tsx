@@ -5,13 +5,13 @@ import Dropdown from "react-bootstrap/Dropdown";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { RecipeType } from "../Types";
-import { GetRecipes } from "../api/Recipes";
+import { getRecipes } from "../api/Recipes";
 const SearchPage = () => {
   const selectRef = useRef<HTMLSelectElement | null>(null);
   const [recipes, setRecipes] = useState<RecipeType[]>([]);
 
   const updateRecipes = async () => {
-    setRecipes(await GetRecipes());
+    setRecipes(await getRecipes());
   };
 
   useEffect(() => {
