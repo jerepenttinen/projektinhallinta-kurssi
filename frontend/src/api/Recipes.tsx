@@ -1,11 +1,17 @@
 import { api } from "./index";
 import { PostRecipeType } from "../Types";
 import { z } from "zod";
-import { recipeCard } from "./validators";
+import { recipeCard, recipeCategory } from "./validators";
 
 export const getRecipes = async () => {
   const response = await api.get("/api/recipes");
   return z.array(recipeCard).parse(response.data);
+};
+
+export const getCategories = async () => {
+  const response = await api.get("/api/recipes/categories");
+  const data = z.array(recipeCategory).parse(response.data);
+  return data.map((category) => category.name);
 };
 
 export const PostRecipe = async (newRecipe: PostRecipeType) => {

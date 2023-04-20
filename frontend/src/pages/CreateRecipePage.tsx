@@ -10,12 +10,13 @@ import {
 } from "react-icons/bs";
 import DropImages from "../components/DropImages";
 import "./CreateRecipePage.css";
-import { PostRecipe } from "../api/Recipes";
+import { PostRecipe, getCategories } from "../api/Recipes";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { blobToBase64 } from "../utils/blob";
+import { useQuery } from "@tanstack/react-query";
 
 function SortingRow(props: {
   children: React.ReactElement;
@@ -108,8 +109,7 @@ function AddInstruction(props: {
 }
 
 export default function CreateRecipePage() {
-  // TODO: Hae endpoint'ista
-  const categoriesData = ["Pääruuat", "Alkuruuat"];
+  const categoriesQuery = useQuery(["categories"], getCategories);
 
   const { register, control, handleSubmit } = useForm<
     z.infer<typeof createRecipeFormValidator>
@@ -217,8 +217,8 @@ export default function CreateRecipePage() {
           }}
         >
           <option>Lisää kategoria</option>
-          {categoriesData
-            .filter(
+          {categoriesQuery.data
+            ?.filter(
               (category) =>
                 !categories.fields
                   .map((field) => field.category)
