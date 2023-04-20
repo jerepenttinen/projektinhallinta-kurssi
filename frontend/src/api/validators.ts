@@ -46,3 +46,10 @@ export const recipeReview = z.object({
   createdAt: z.coerce.date(),
   content: z.string(),
 });
+
+export const user = z.object({
+  id: z.number(),
+  username: z.string(),
+  image: z.string(),
+  description: z.string(),
+});

@@ -1,55 +1,53 @@
 import CarouselContainer from "../components/CarouselContainer";
-import ReviewList from "../components/ReviewList";
 import RecipeCard from "../components/RecipeCard";
 import PageContainer from "../components/PageContainer";
 import RecipeList from "../components/RecipeList";
 import { Figure } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import { RecipeType, UserType } from "../Types";
+import { Suspense } from "react";
 import { GetUser } from "../api/Users";
 import { GetUserRecipes } from "../api/Recipes";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
-interface ContactProps {
-  name: string | undefined;
-  description: string | undefined;
-}
-const ProfileContacts = ({ name, description }: ContactProps) => {
+const ProfileContactsSection = () => {
+  const { uid } = useParams();
+
+  const userQuery = useQuery({
+    queryKey: ["user", uid],
+    queryFn: () => GetUser(uid ?? ""),
+    enabled: typeof uid === "string",
+  });
+
   return (
-    <div className="d-flex align-items-top">
-      <div className="d-inline-block h-25">
-        <Figure>
-          <Figure.Image
-            src="https://secure.gravatar.com/avatar/5586197d3539ebe07272af21926b496f?s=1920&d=mm&r=g"
-            className="rounded-circle me-4"
-            style={{ height: 128 }}
-          />
-        </Figure>
+    <Suspense>
+      <div className="d-flex align-items-top">
+        <div className="d-inline-block h-25">
+          <Figure>
+            <Figure.Image
+              src="https://secure.gravatar.com/avatar/5586197d3539ebe07272af21926b496f?s=1920&d=mm&r=g"
+              className="rounded-circle me-4"
+              style={{ height: 128 }}
+            />
+          </Figure>
+        </div>
+        <div className="d-inline-block">
+          <h3>{userQuery.data?.username}</h3>
+          <p>{userQuery.data?.description}</p>
+        </div>
       </div>
-      <div className="d-inline-block">
-        <h3>{name}</h3>
-        <p>{description}</p>
-      </div>
-    </div>
+    </Suspense>
   );
 };
 
 const ProfilePage = () => {
-  const [userRecipes, setUserRecipes] = useState<RecipeType[] | null>(null);
-  const [user, setUser] = useState<UserType | null>(null);
-  const getUserId = () => {
-    const siteUrl = window.location.href;
-    const urlArray = siteUrl.split("/");
-    return urlArray[urlArray.length - 1];
-  };
+  const { uid } = useParams();
 
-  const update = async () => {
-    setUser(await GetUser(getUserId()));
-    setUserRecipes(await GetUserRecipes(getUserId()));
-  };
+  const userRecipesQuery = useQuery({
+    queryKey: ["user", uid, "recipes"],
+    queryFn: () => GetUserRecipes(uid ?? ""),
+    enabled: typeof uid === "string",
+  });
 
-  useEffect(() => {
-    update();
-  }, []);
   const recipes = [
     { id: 1, header: "Kinkkukiusaus" },
     { id: 2, header: "Lihamureke" },
@@ -63,9 +61,13 @@ const ProfilePage = () => {
 
   return (
     <PageContainer gap={3}>
-      <ProfileContacts name={user?.username} description={user?.description} />
+      <ProfileContactsSection />
       <h4>Reseptit</h4>
-      <RecipeList recipes={userRecipes} />
+      <Suspense>
+        {userRecipesQuery.data ? (
+          <RecipeList recipes={userRecipesQuery.data} />
+        ) : null}
+      </Suspense>
       <h4>Kokoelmat</h4>
       <h5>Aamupalat</h5>
       <CarouselContainer showDots={true}>
