@@ -1,22 +1,16 @@
 import PageContainer from "../components/PageContainer";
-import { useRef } from "react";
 import RecipeList from "../components/RecipeList";
 import Dropdown from "react-bootstrap/Dropdown";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect, useState } from "react";
-import { RecipeType } from "../Types";
 import { getRecipes } from "../api/Recipes";
+import { useQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
+
 const SearchPage = () => {
-  const selectRef = useRef<HTMLSelectElement | null>(null);
-  const [recipes, setRecipes] = useState<RecipeType[]>([]);
+  const recipesQuery = useQuery(["recipes"], getRecipes, {
+    suspense: true,
+  });
 
-  const updateRecipes = async () => {
-    setRecipes(await getRecipes());
-  };
-
-  useEffect(() => {
-    updateRecipes();
-  }, []);
   return (
     <PageContainer gap={3}>
       <h1>Haku</h1>
@@ -47,7 +41,9 @@ const SearchPage = () => {
           <Dropdown.Item href="#/action-3">Välipalat</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-      <RecipeList recipes={recipes} />
+      <Suspense fallback={<p>Ladataan...</p>}>
+        {recipesQuery.data ? <RecipeList recipes={recipesQuery.data} /> : null}
+      </Suspense>
     </PageContainer>
   );
 };
