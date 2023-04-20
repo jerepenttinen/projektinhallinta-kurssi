@@ -8,7 +8,7 @@ const dummyData = [
   { id: 2, header: "Lihamureke" },
 ];
 const data = dummyData.map((recipe) => (
-  <RecipeCard key={recipe.id} header={recipe.header} />
+  <RecipeCard key={recipe.id} id={recipe.id} header={recipe.header} />
 ));
 describe("Carousel container", () => {
   test("should show carousel container", () => {

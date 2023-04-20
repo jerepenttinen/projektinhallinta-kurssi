@@ -2,23 +2,18 @@ import ReviewList from "../../components/ReviewList";
 import { describe, test, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-const dummyReviewData: {
-  id: number;
-  name: string;
-  comment: string;
-  date: Date;
-}[] = [
+const dummyReviewData = [
   {
     id: 1,
-    name: "Erkki Esimerkki",
-    comment: "Suorastaan herkullista!",
-    date: new Date(2017, 4, 4),
+    userId: 1,
+    content: "Suorastaan herkullista!",
+    createdAt: new Date(2017, 4, 4),
   },
   {
     id: 2,
-    name: "Matti Möttönen",
-    comment: "Suorastaan oksettavaa!",
-    date: new Date(2022, 2, 7),
+    userId: 2,
+    content: "Suorastaan oksettavaa!",
+    createdAt: new Date(2022, 2, 7),
   },
 ];
 
