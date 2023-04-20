@@ -1,13 +1,10 @@
-import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Stack, Button } from "react-bootstrap";
 import { FaBook } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useAuthentication } from "../AuthenticationContext";
 
-type MyNavbarProps = {
-  right?: () => React.ReactElement;
-};
-
-function MyNavbar({ right }: MyNavbarProps) {
+function MyNavbar() {
+  const { user, signOut } = useAuthentication();
   return (
     <Navbar bg="light" className="px-3 shadow" expand="lg" sticky="top">
       <Link to="/" className="navbar-brand brand">
@@ -22,8 +19,26 @@ function MyNavbar({ right }: MyNavbarProps) {
           <Link to="/search" className="nav-link">
             Haku
           </Link>
+          {user ? (
+            <Link to="/recipes/create" className="nav-link">
+              Uusi resepti
+            </Link>
+          ) : null}
         </Nav>
-        <Nav>{right && right()}</Nav>
+        <Nav>
+          {user ? (
+            <Stack direction="horizontal" gap={2}>
+              <span>
+                {user.firstName} {user.lastName}
+              </span>
+              <Button onClick={signOut}>Kirjaudu ulos</Button>
+            </Stack>
+          ) : (
+            <Link to="/signin">
+              <Button>Kirjaudu sisään</Button>
+            </Link>
+          )}
+        </Nav>
       </Navbar.Collapse>
     </Navbar>
   );
