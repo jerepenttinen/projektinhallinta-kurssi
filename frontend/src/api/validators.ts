@@ -40,9 +40,9 @@ export const recipePage = z.object({
   categories: z.array(z.string()),
 });
 
-export const review = z.object({
+export const recipeReview = z.object({
   id: z.number(),
   userId: z.number(),
-  createdAt: z.string().refine((date) => new Date(date)),
+  createdAt: z.coerce.date(),
   content: z.string(),
 });

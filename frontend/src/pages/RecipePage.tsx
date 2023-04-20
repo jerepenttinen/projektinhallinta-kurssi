@@ -1,4 +1,4 @@
-import { BsHandThumbsDown, BsHandThumbsUp, BsPrinter } from "react-icons/bs";
+import { BsHandThumbsDown, BsHandThumbsUp } from "react-icons/bs";
 import {
   Badge,
   Button,
@@ -14,6 +14,8 @@ import { GetRecipeById } from "../api/Recipes";
 import { GetReviewByRecipeId } from "../api/Reviews";
 import { useQueries } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { Suspense } from "react";
+
 interface IngredientRowProps {
   quantity: string;
   name: string;
@@ -41,11 +43,13 @@ const RecipePage = () => {
         queryKey: ["recipes", id],
         queryFn: () => GetRecipeById(id ?? ""),
         enabled: typeof id === "string",
+        suspense: true,
       },
       {
         queryKey: ["recipes", id, "reviews"],
         queryFn: () => GetReviewByRecipeId(id ?? ""),
         enabled: typeof id === "string",
+        suspense: true,
       },
     ],
   });
@@ -147,7 +151,9 @@ const RecipePage = () => {
       </div>
 
       <h3>Arvostelut</h3>
-      {/* <ReviewList reviews={reviews} /> */}
+      <Suspense fallback={<p>Ladataan...</p>}>
+        {reviewsQuery.data ? <ReviewList reviews={reviewsQuery.data} /> : null}
+      </Suspense>
     </PageContainer>
   );
 };

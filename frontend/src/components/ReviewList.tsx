@@ -1,21 +1,15 @@
-import ReviewItem from "./ReviewItem";
+import { Review } from "./ReviewItem";
 import { Stack } from "react-bootstrap";
-import { ReviewType } from "../Types";
+import { z } from "zod";
+import { recipeReview } from "../api/validators";
 
-interface Props {
-  reviews: ReviewType[] | null;
-}
-
-const ReviewList = ({ reviews }: Props) => {
+const ReviewList = (props: { reviews: z.infer<typeof recipeReview>[] }) => {
   return (
-    <>
-      <h4>Kommentit</h4>
-      <Stack direction="vertical" gap={3}>
-        {reviews?.map((review) => {
-          return <ReviewItem key={review.id} review={review} />;
-        })}
-      </Stack>
-    </>
+    <Stack gap={3}>
+      {props.reviews.map((review) => {
+        return <Review key={review.id} review={review} />;
+      })}
+    </Stack>
   );
 };
 

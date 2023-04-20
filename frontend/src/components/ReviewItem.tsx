@@ -1,12 +1,14 @@
 import { Stack } from "react-bootstrap";
-import { BsHandThumbsDown, BsHandThumbsUp, BsPrinter } from "react-icons/bs";
-import { ReviewType } from "../Types";
+import { BsHandThumbsDown, BsHandThumbsUp } from "react-icons/bs";
+import { recipeReview } from "../api/validators";
+import { z } from "zod";
+import dayjs from "dayjs";
 
-export interface Props {
-  review: ReviewType | null;
-}
-
-const ReviewItem = ({ review }: Props) => {
+export const Review = ({
+  review,
+}: {
+  review: z.infer<typeof recipeReview>;
+}) => {
   return (
     <Stack className="w-100" direction="horizontal" gap={2}>
       <div
@@ -18,19 +20,14 @@ const ReviewItem = ({ review }: Props) => {
 
       <Stack gap={2}>
         <Stack direction="horizontal" className="justify-content-between">
-          <span>{review?.userId}</span>
+          <span>{review.userId}</span>
           <Stack className="float-right" direction="horizontal" gap={2}>
             <BsHandThumbsUp />
-            <time>
-              {review?.created.getDate()}.{review?.created.getMonth()}?.
-              {review?.created.getFullYear()}
-            </time>
+            <time>{dayjs(review.createdAt).format("24.12.2023")}</time>
           </Stack>
         </Stack>
-        <span>{review?.content}</span>
+        <span>{review.content}</span>
       </Stack>
     </Stack>
   );
 };
-
-export default ReviewItem;
