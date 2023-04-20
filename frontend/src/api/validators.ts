@@ -50,6 +50,6 @@ export const recipeReview = z.object({
 export const user = z.object({
   id: z.number(),
   username: z.string(),
-  image: z.string(),
-  description: z.string(),
+  image: z.string().nullable(),
+  description: z.string().nullable(),
 });
