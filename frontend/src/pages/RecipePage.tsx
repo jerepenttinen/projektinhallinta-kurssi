@@ -170,9 +170,11 @@ const RecipeSection = () => {
 const RecipePage = () => {
   return (
     <PageContainer gap={3}>
-      <RecipeSection />
-      <CreateReviewSection />
-      <ReviewSection />
+      <Suspense>
+        <RecipeSection />
+        <CreateReviewSection />
+        <ReviewSection />
+      </Suspense>
     </PageContainer>
   );
 };
