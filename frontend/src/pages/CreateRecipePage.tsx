@@ -10,13 +10,14 @@ import {
 } from "react-icons/bs";
 import DropImages from "../components/DropImages";
 import "./CreateRecipePage.css";
-import { PostRecipe, getCategories } from "../api/Recipes";
+import { postNewRecipe, getCategories } from "../api/Recipes";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { blobToBase64 } from "../utils/blob";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 function SortingRow(props: {
   children: React.ReactElement;
@@ -110,6 +111,8 @@ function AddInstruction(props: {
 
 export default function CreateRecipePage() {
   const categoriesQuery = useQuery(["categories"], getCategories);
+  const newRecipeMutation = useMutation(postNewRecipe);
+  const navigate = useNavigate();
 
   const { register, control, handleSubmit } = useForm<
     z.infer<typeof createRecipeFormValidator>
@@ -141,17 +144,24 @@ export default function CreateRecipePage() {
     <Form
       className="py-4 px-3 container vstack gap-3"
       onSubmit={handleSubmit(async (data) => {
-        PostRecipe({
-          recipeName: data.name,
-          categories: data.categories.map((item) => item.category),
-          images: await Promise.all(
-            data.images.map((image) => blobToBase64(image.blob)),
-          ),
-          ingredients: data.ingredients,
-          instructions: data.instructions.map(
-            (instruction) => instruction.instruction,
-          ),
-        });
+        newRecipeMutation.mutate(
+          {
+            recipeName: data.name,
+            categories: data.categories.map((item) => item.category),
+            images: await Promise.all(
+              data.images.map((image) => blobToBase64(image.blob)),
+            ),
+            ingredients: data.ingredients,
+            instructions: data.instructions.map(
+              (instruction) => instruction.instruction,
+            ),
+          },
+          {
+            onSuccess(data) {
+              navigate(`/recipes/${data.id}`);
+            },
+          },
+        );
       })}
     >
       <h2 className="mb-0">Lisää uusi resepti</h2>
