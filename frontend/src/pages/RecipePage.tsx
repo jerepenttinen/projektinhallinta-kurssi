@@ -12,7 +12,7 @@ import ReviewList from "../components/ReviewList";
 import PageContainer from "../components/PageContainer";
 import { GetRecipeById } from "../api/Recipes";
 import { GetReviewByRecipeId } from "../api/Reviews";
-import { useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Suspense } from "react";
 
@@ -34,28 +34,74 @@ const IngredientRow = ({ name, quantity }: IngredientRowProps) => {
   );
 };
 
-const RecipePage = () => {
+const ReviewSection = () => {
   const { id } = useParams();
-
-  const [recipeQuery, reviewsQuery] = useQueries({
-    queries: [
-      {
-        queryKey: ["recipes", id],
-        queryFn: () => GetRecipeById(id ?? ""),
-        enabled: typeof id === "string",
-        suspense: true,
-      },
-      {
-        queryKey: ["recipes", id, "reviews"],
-        queryFn: () => GetReviewByRecipeId(id ?? ""),
-        enabled: typeof id === "string",
-        suspense: true,
-      },
-    ],
+  const reviewsQuery = useQuery({
+    queryKey: ["recipes", id, "reviews"],
+    queryFn: () => GetReviewByRecipeId(id ?? ""),
+    enabled: typeof id === "string",
+    suspense: true,
   });
 
   return (
-    <PageContainer gap={3}>
+    <Stack gap={3} as="section">
+      <h3>Arvostelut</h3>
+      <Suspense fallback={<p>Ladataan...</p>}>
+        {reviewsQuery.data ? <ReviewList reviews={reviewsQuery.data} /> : null}
+      </Suspense>
+    </Stack>
+  );
+};
+
+const CreateReviewSection = () => {
+  return (
+    <Stack gap={3} as="form">
+      <h3 className="mb-0">Lisää arvostelu</h3>
+      <div>
+        <ButtonGroup>
+          <input
+            type="radio"
+            className="btn-check"
+            name="like"
+            id="like"
+            defaultChecked
+          />
+          <label className="btn btn-outline-primary" htmlFor="like">
+            <BsHandThumbsUp /> Tykkäsin
+          </label>
+
+          <input
+            type="radio"
+            className="btn-check"
+            name="dislike"
+            id="dislike"
+          />
+          <label className="btn btn-outline-primary" htmlFor="dislike">
+            <BsHandThumbsDown /> En tykkänyt
+          </label>
+        </ButtonGroup>
+      </div>
+
+      <Form.Control as="textarea" rows={6} />
+      <div>
+        <Button variant="success">Julkaise</Button>
+      </div>
+    </Stack>
+  );
+};
+
+const RecipeSection = () => {
+  const { id } = useParams();
+
+  const recipeQuery = useQuery({
+    queryKey: ["recipes", id],
+    queryFn: () => GetRecipeById(id ?? ""),
+    enabled: typeof id === "string",
+    suspense: true,
+  });
+
+  return (
+    <Stack gap={3} as="section">
       <h2 className="mb-0">{recipeQuery.data?.recipeName}</h2>
       <Stack direction="horizontal" gap={2}>
         <div
@@ -113,47 +159,20 @@ const RecipePage = () => {
       </div>
       <h3>Ohjeet</h3>
       <ol>
-        {recipeQuery.data?.instructions.map((instruction, i) => {
-          return <li key={i}>{instruction}</li>;
-        })}
+        {recipeQuery.data?.instructions.map((instruction, i) => (
+          <li key={i}>{instruction}</li>
+        ))}
       </ol>
+    </Stack>
+  );
+};
 
-      <h3>Lisää arvostelu</h3>
-      <div>
-        <ButtonGroup>
-          {/* TODO: use some component? */}
-          <input
-            type="radio"
-            className="btn-check"
-            name="like"
-            id="like"
-            defaultChecked
-          />
-          <label className="btn btn-outline-primary" htmlFor="like">
-            <BsHandThumbsUp /> Tykkäsin
-          </label>
-
-          <input
-            type="radio"
-            className="btn-check"
-            name="dislike"
-            id="dislike"
-          />
-          <label className="btn btn-outline-primary" htmlFor="dislike">
-            <BsHandThumbsDown /> En tykkänyt
-          </label>
-        </ButtonGroup>
-      </div>
-
-      <Form.Control as="textarea" rows={6} />
-      <div>
-        <Button variant="success">Julkaise</Button>
-      </div>
-
-      <h3>Arvostelut</h3>
-      <Suspense fallback={<p>Ladataan...</p>}>
-        {reviewsQuery.data ? <ReviewList reviews={reviewsQuery.data} /> : null}
-      </Suspense>
+const RecipePage = () => {
+  return (
+    <PageContainer gap={3}>
+      <RecipeSection />
+      <CreateReviewSection />
+      <ReviewSection />
     </PageContainer>
   );
 };
