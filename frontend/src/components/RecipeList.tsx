@@ -1,11 +1,8 @@
 import RecipeCard from "./RecipeCard";
-import { RecipeType } from "../Types";
-import { useState } from "react";
+import { z } from "zod";
+import { recipeCard } from "../api/validators";
 
-interface Props {
-  recipes: RecipeType[] | null;
-}
-const RecipeList = ({ recipes }: Props) => {
+const RecipeList = ({ recipes }: { recipes: z.infer<typeof recipeCard>[] }) => {
   return (
     <div className="row row-cols-3">
       {recipes ? (

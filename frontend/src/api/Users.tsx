@@ -1,12 +1,7 @@
 import { api } from "./index";
+import { user } from "./validators";
 
 export const GetUser = async (id: string) => {
-  try {
-    const url = `/api/users/${id}`;
-    const response = await api.get(url);
-    console.log(response.data);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+  const response = await api.get(`/api/users/${id}`);
+  return user.parse(response.data);
 };

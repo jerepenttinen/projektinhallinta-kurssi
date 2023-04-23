@@ -14,5 +14,5 @@ public class RecipeReply {
     List<String> images;
     List<String> instructions;
     List<IngredientWithQuantityReply> ingredients;
-    List<String> foodGroups;
+    List<String> categories;
 }

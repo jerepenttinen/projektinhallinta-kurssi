@@ -38,7 +38,7 @@ public class RecipeMapperService {
                                 .map(ingredientMapperService::ingredientWithQuantityReplyFromRecipeHasIngredientsDao)
                                 .toList()
                 )
-                .foodGroups(recipeDao.getFoodGroups().stream().map(FoodGroupDao::getName).toList())
+                .categories(recipeDao.getFoodGroups().stream().map(FoodGroupDao::getName).toList())
                 .build();
     }
 

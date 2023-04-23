@@ -1,26 +1,30 @@
 import { api } from "./index";
-import { PostRecipeType } from "../Types";
+import { z } from "zod";
+import {
+  recipeCard,
+  recipeCategory,
+  newRecipe,
+  recipePage,
+} from "./validators";
 
-export const GetRecipes = async () => {
-  const url = "/api/recipes";
-  try {
-    const response = await api.get(url);
-    if (response.data) return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+export const getRecipes = async () => {
+  const response = await api.get("/api/recipes");
+  return z.array(recipeCard).parse(response.data);
 };
 
-export const PostRecipe = async (newRecipe: PostRecipeType) => {
-  // Ei toimi, error code 400?
-  console.log(newRecipe);
-  try {
-    const url = "/api/recipes";
-    const response = await api.post(url, newRecipe);
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-  }
+export const getCategories = async () => {
+  const response = await api.get("/api/recipes/categories");
+  const data = z.array(recipeCategory).parse(response.data);
+  return data.map((category) => category.name);
+};
+
+export const postNewRecipe = async (recipe: z.infer<typeof newRecipe>) => {
+  const response = await api.post("/api/recipes", recipe);
+  return z
+    .object({
+      id: z.number(),
+    })
+    .parse(response.data);
 };
 
 export const GetUserRecipes = async (uid: string) => {
@@ -35,11 +39,6 @@ export const GetUserRecipes = async (uid: string) => {
 };
 
 export const GetRecipeById = async (id: string) => {
-  try {
-    const url = "/api/recipes/" + id;
-    const response = await api.get(url);
-    if (response.data) return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+  const response = await api.get(`/api/recipes/${id}`);
+  return recipePage.parse(response.data);
 };
