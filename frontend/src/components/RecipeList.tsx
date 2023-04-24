@@ -11,6 +11,7 @@ const RecipeList = ({ recipes }: { recipes: z.infer<typeof recipeCard>[] }) => {
             key={recipe.id}
             header={recipe.recipeName}
             id={recipe.id}
+            image={recipe.image}
           />
         ))
       ) : (
