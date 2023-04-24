@@ -22,6 +22,7 @@ const MainPage = () => {
                   key={recipe.id}
                   header={recipe.recipeName}
                   id={recipe.id}
+                  image={recipe.image}
                 />
               );
             })}

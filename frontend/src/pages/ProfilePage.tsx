@@ -72,7 +72,12 @@ const ProfilePage = () => {
       <h5>Aamupalat</h5>
       <CarouselContainer showDots={true}>
         {recipes.map((recipe) => (
-          <RecipeCard key={recipe.id} header={recipe.header} id={recipe.id} />
+          <RecipeCard
+            key={recipe.id}
+            header={recipe.header}
+            id={recipe.id}
+            image={null}
+          />
         ))}
       </CarouselContainer>
     </PageContainer>
