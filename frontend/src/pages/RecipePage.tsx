@@ -15,6 +15,7 @@ import { GetReviewByRecipeId } from "../api/Reviews";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Suspense } from "react";
+import { Base64Image } from "../components/Base64Image";
 
 interface IngredientRowProps {
   quantity: string;
@@ -119,22 +120,19 @@ const RecipeSection = () => {
       </Stack>
 
       <Carousel>
-        <CarouselItem>
-          <div
-            className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
-            style={{ height: 400 }}
-          >
-            <h2>Kuvakaruselli</h2>
-          </div>
-        </CarouselItem>
-        <CarouselItem>
-          <div
-            className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
-            style={{ height: 400 }}
-          >
-            <h2>Toka kuva</h2>
-          </div>
-        </CarouselItem>
+        {recipeQuery.data?.images.map((image, i) => (
+          <CarouselItem>
+            <div
+              className="d-flex w-100 justify-content-center align-items-center"
+              style={{ height: 400 }}
+            >
+              <Base64Image
+                id={recipeQuery.data.id.toString() + i}
+                image={image}
+              />
+            </div>
+          </CarouselItem>
+        ))}
       </Carousel>
 
       {/* <Stack direction="horizontal" className="justify-content-end">
