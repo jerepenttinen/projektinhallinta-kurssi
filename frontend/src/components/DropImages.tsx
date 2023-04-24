@@ -26,7 +26,12 @@ export default function DropImages({ onImageDropped }: Props) {
     [onImageDropped],
   );
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/jpeg": [".jpeg", ".jpg"],
+    },
+  });
 
   return (
     <div
