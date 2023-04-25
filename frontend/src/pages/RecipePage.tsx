@@ -13,10 +13,10 @@ import PageContainer from "../components/PageContainer";
 import { GetRecipeById } from "../api/Recipes";
 import { GetReviewByRecipeId } from "../api/Reviews";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Suspense } from "react";
 import { Base64Image } from "../components/Base64Image";
-import { GetMultipleUsers } from "../api/Users";
+import { GetMultipleUsers, GetUser } from "../api/Users";
 
 interface IngredientRowProps {
   quantity: string;
@@ -112,18 +112,29 @@ const RecipeSection = () => {
     suspense: true,
   });
 
+  const creatorQuery = useQuery({
+    queryKey: ["recipes", id, "creator"],
+    queryFn: () => GetUser(recipeQuery.data!.creatorId.toString()),
+    enabled: typeof recipeQuery.data !== "undefined",
+    suspense: true,
+  });
+
   return (
     <Stack gap={3} as="section">
       <h2 className="mb-0">{recipeQuery.data?.recipeName}</h2>
-      <Stack direction="horizontal" gap={2}>
-        <div
-          className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-          style={{ width: 32, height: 32, fontSize: 10 }}
-        >
-          <span>Kuva</span>
-        </div>
-        <span>Etunimi Sukunimi</span>
-      </Stack>
+      <Suspense>
+        <Stack direction="horizontal" gap={2}>
+          <div
+            className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+            style={{ width: 32, height: 32, fontSize: 10 }}
+          >
+            <span>Kuva</span>
+          </div>
+          <Link to={`/profile/${recipeQuery.data?.creatorId}`}>
+            {creatorQuery.data?.username}
+          </Link>
+        </Stack>
+      </Suspense>
 
       <Stack direction="horizontal" gap={2}>
         {recipeQuery.data?.categories.map((category) => (
