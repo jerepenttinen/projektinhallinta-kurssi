@@ -20,17 +20,22 @@ function MyNavbar() {
             Haku
           </Link>
           {user ? (
-            <Link to="/recipes/create" className="nav-link">
-              Uusi resepti
-            </Link>
+            <>
+              <Link to="/recipes/create" className="nav-link">
+                Uusi resepti
+              </Link>
+              <Link to="/profile/settings" className="nav-link">
+                Asetukset
+              </Link>
+            </>
           ) : null}
         </Nav>
         <Nav>
           {user ? (
             <Stack direction="horizontal" gap={2}>
-              <span>
+              <Link to={`/profile/${user.profileId}`}>
                 {user.firstName} {user.lastName}
-              </span>
+              </Link>
               <Button onClick={signOut}>Kirjaudu ulos</Button>
             </Stack>
           ) : (

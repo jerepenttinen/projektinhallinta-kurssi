@@ -8,6 +8,7 @@ import { GetUser } from "../api/Users";
 import { GetUserRecipes } from "../api/Recipes";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Base64Image } from "../components/Base64Image";
 
 const ProfileContactsSection = () => {
   const { uid } = useParams();
@@ -22,12 +23,16 @@ const ProfileContactsSection = () => {
     <Suspense>
       <div className="d-flex align-items-top">
         <div className="d-inline-block h-25">
-          <Figure>
-            <Figure.Image
-              src="https://secure.gravatar.com/avatar/5586197d3539ebe07272af21926b496f?s=1920&d=mm&r=g"
-              className="rounded-circle me-4"
-              style={{ height: 128 }}
-            />
+          <Figure
+            style={{ height: 128, width: 128 }}
+            className="rounded-circle me-4 bg-primary"
+          >
+            {userQuery.data && userQuery.data.image ? (
+              <Base64Image
+                id={`user-${userQuery.data.id}`}
+                image={userQuery.data.image}
+              />
+            ) : null}
           </Figure>
         </div>
         <div className="d-inline-block">
