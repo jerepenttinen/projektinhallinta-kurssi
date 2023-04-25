@@ -48,11 +48,21 @@ const ReviewSection = () => {
     suspense: true,
   });
 
+  const usersQuery = useQuery({
+    queryKey: ["recipes", id, "reviews", "users"],
+    queryFn: () =>
+      GetMultipleUsers(reviewsQuery.data!.map((review) => review.userId)),
+    enabled:
+      typeof reviewsQuery.data !== "undefined" && reviewsQuery.data?.length > 0,
+  });
+
   return (
     <Stack gap={3} as="section">
       <h3>Arvostelut</h3>
       <Suspense fallback={<p>Ladataan...</p>}>
-        {reviewsQuery.data ? <ReviewList reviews={reviewsQuery.data} /> : null}
+        {reviewsQuery.data && usersQuery.data ? (
+          <ReviewList reviews={reviewsQuery.data} users={usersQuery.data} />
+        ) : null}
       </Suspense>
     </Stack>
   );
@@ -198,22 +208,44 @@ const RecipeSection = () => {
     suspense: true,
   });
 
+  const creatorQuery = useQuery({
+    queryKey: ["recipes", id, "creator"],
+    queryFn: () => GetUser(recipeQuery.data!.creatorId.toString()),
+    enabled: typeof recipeQuery.data !== "undefined",
+    suspense: true,
+  });
+
   return (
     <Stack gap={3} as="section">
       <h2 className="mb-0">{recipeQuery.data?.recipeName}</h2>
-      <Stack direction="horizontal" gap={2}>
-        <div
-          className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-          style={{ width: 32, height: 32, fontSize: 10 }}
-        >
-          <span>Kuva</span>
-        </div>
-        <span>Etunimi Sukunimi</span>
-      </Stack>
+      <Suspense>
+        <Stack direction="horizontal" gap={2}>
+          <div
+            className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+            style={{ width: 32, height: 32, fontSize: 10 }}
+          >
+            {typeof creatorQuery.data !== "undefined" &&
+            creatorQuery.data.image !== null ? (
+              <Base64Image
+                id={`user-${creatorQuery.data.id}`}
+                image={creatorQuery.data.image}
+              />
+            ) : (
+              <span></span>
+            )}
+          </div>
+          <Link to={`/profile/${recipeQuery.data?.creatorId}`}>
+            {creatorQuery.data?.username}
+          </Link>
+        </Stack>
+      </Suspense>
 
       <Stack direction="horizontal" gap={2}>
-        <Badge bg="secondary">Alkuruuat</Badge>
-        <Badge bg="secondary">Alkuruuat</Badge>
+        {recipeQuery.data?.categories.map((category) => (
+          <Badge bg="secondary" key={category}>
+            {category}
+          </Badge>
+        ))}
       </Stack>
 
       <Carousel>
