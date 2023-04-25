@@ -45,6 +45,13 @@ export const recipeReview = z.object({
   userId: z.number(),
   created: z.coerce.date(),
   content: z.string(),
+  upvote: z.boolean(),
+});
+
+export const createRecipeReview = z.object({
+  recipeId: z.number(),
+  upvote: z.boolean(),
+  content: z.string(),
 });
 
 export const user = z.object({

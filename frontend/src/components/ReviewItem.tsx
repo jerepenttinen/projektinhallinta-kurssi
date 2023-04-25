@@ -30,7 +30,7 @@ export const Review = ({
         <Stack direction="horizontal" className="justify-content-between">
           <Link to={`/profile/${review.userId}`}>{reviewer?.username}</Link>
           <Stack className="float-right" direction="horizontal" gap={2}>
-            <BsHandThumbsUp />
+            {review.upvote ? <BsHandThumbsUp /> : <BsHandThumbsDown />}
             <time>{dayjs(review.created).format("DD.MM.YYYY")}</time>
           </Stack>
         </Stack>

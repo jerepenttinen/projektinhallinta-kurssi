@@ -12,6 +12,7 @@ public class ReviewMapperService {
                 .content(review.getContent())
                 .userId(review.getReviewer().getId().intValue())
                 .created(review.getCreatedAt())
+                .upvote(review.getIsUpvote())
                 .build();
     }
 }

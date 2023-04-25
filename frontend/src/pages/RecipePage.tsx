@@ -11,12 +11,15 @@ import {
 import ReviewList from "../components/ReviewList";
 import PageContainer from "../components/PageContainer";
 import { GetRecipeById } from "../api/Recipes";
-import { GetReviewByRecipeId } from "../api/Reviews";
-import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { CreateReviewForRecipe, GetReviewByRecipeId } from "../api/Reviews";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { Suspense } from "react";
 import { Base64Image } from "../components/Base64Image";
-import { GetMultipleUsers, GetUser } from "../api/Users";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 
 interface IngredientRowProps {
   quantity: string;
@@ -65,18 +68,101 @@ const ReviewSection = () => {
   );
 };
 
-const CreateReviewSection = () => {
+const ReviewSummarySection = () => {
+  const { id } = useParams();
+  const reviewsQuery = useQuery({
+    queryKey: ["recipes", id, "reviews"],
+    queryFn: () => GetReviewByRecipeId(id ?? ""),
+    enabled: typeof id === "string",
+  });
+
+  const reviewSummary = reviewsQuery.data?.reduce<{ up: number; down: number }>(
+    (acc, cur) => {
+      return {
+        up: cur.upvote ? acc.up + 1 : acc.up,
+        down: !cur.upvote ? acc.down + 1 : acc.down,
+      };
+    },
+    {
+      up: 0,
+      down: 0,
+    },
+  );
+
+  const total = (reviewSummary?.down ?? 0) + (reviewSummary?.up ?? 0);
+  const percentage =
+    total === 0 ? "0" : (((reviewSummary?.up ?? 0) / total) * 100).toFixed(0);
+
   return (
-    <Stack gap={3} as="form">
+    <Stack direction="horizontal" className="justify-content-end">
+      <Stack direction="horizontal" gap={2}>
+        <BsHandThumbsUp />
+        <span>{reviewSummary?.up ?? 0}</span>
+        <BsHandThumbsDown />
+        <span>{reviewSummary?.down ?? 0}</span>
+        <span>{percentage}%</span>
+      </Stack>
+    </Stack>
+  );
+};
+
+const createReviewFormValidator = z.object({
+  vote: z.enum(["upvote", "downvote"]),
+  content: z.string(),
+});
+
+const CreateReviewSection = () => {
+  const { id } = useParams();
+
+  const { register, handleSubmit, setError, formState } = useForm<
+    z.infer<typeof createReviewFormValidator>
+  >({
+    resolver: zodResolver(createReviewFormValidator),
+  });
+
+  const createReviewMutation = useMutation(CreateReviewForRecipe);
+  const queryClient = useQueryClient();
+
+  if (typeof id !== "string") {
+    return null;
+  }
+
+  return (
+    <Form
+      className="vstack gap-3"
+      onSubmit={handleSubmit((data) => {
+        createReviewMutation.mutate(
+          {
+            recipeId: Number(id),
+            content: data.content,
+            upvote: data.vote === "upvote",
+          },
+          {
+            onError(error) {
+              if (error instanceof AxiosError) {
+                setError("root", {
+                  type: "custom",
+                  message: error.response?.data.message,
+                });
+              }
+            },
+            onSuccess() {
+              queryClient.invalidateQueries(["recipes", id, "reviews"]);
+            },
+          },
+        );
+      })}
+    >
       <h3 className="mb-0">Lisää arvostelu</h3>
       <div>
         <ButtonGroup>
           <input
             type="radio"
             className="btn-check"
-            name="like"
             id="like"
+            value="upvote"
             defaultChecked
+            {...register("vote")}
           />
           <label className="btn btn-outline-primary" htmlFor="like">
             <BsHandThumbsUp /> Tykkäsin
@@ -85,8 +171,9 @@ const CreateReviewSection = () => {
           <input
             type="radio"
             className="btn-check"
-            name="dislike"
             id="dislike"
+            value="downvote"
+            {...register("vote")}
           />
           <label className="btn btn-outline-primary" htmlFor="dislike">
             <BsHandThumbsDown /> En tykkänyt
@@ -94,11 +181,20 @@ const CreateReviewSection = () => {
         </ButtonGroup>
       </div>
 
-      <Form.Control as="textarea" rows={6} />
+      <Form.Control as="textarea" rows={6} {...register("content")} />
+
+      {formState.errors.root && (
+        <span role="alert" className="text-danger">
+          {formState.errors.root.message}
+        </span>
+      )}
+
       <div>
-        <Button variant="success">Julkaise</Button>
+        <Button variant="success" type="submit">
+          Julkaise
+        </Button>
       </div>
-    </Stack>
+    </Form>
   );
 };
 
@@ -154,7 +250,7 @@ const RecipeSection = () => {
 
       <Carousel>
         {recipeQuery.data?.images.map((image, i) => (
-          <CarouselItem>
+          <CarouselItem key={i}>
             <div
               className="d-flex w-100 justify-content-center align-items-center"
               style={{ height: 400 }}
@@ -168,15 +264,7 @@ const RecipeSection = () => {
         ))}
       </Carousel>
 
-      {/* <Stack direction="horizontal" className="justify-content-end">
-        <Stack direction="horizontal" gap={2}>
-          <BsHandThumbsUp />
-          <span>1</span>
-          <BsHandThumbsDown />
-          <span>1</span>
-          <span>50%</span>
-        </Stack>
-      </Stack> */}
+      <ReviewSummarySection />
 
       <h3>Raaka-aineet</h3>
       <div>
