@@ -13,4 +13,5 @@ public class ReviewDto {
     private int userId;
     private Timestamp created;
     private String content;
+    private boolean upvote;
 }
