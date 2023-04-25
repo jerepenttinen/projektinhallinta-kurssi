@@ -43,7 +43,9 @@ export default function DropImages({ onImageDropped }: Props) {
       }}
     >
       <div className="mx-auto vstack py-5 gap-2">
-        <span>Raahaa kuva tai lisää painamalla tästä</span>
+        <span style={{ userSelect: "none" }}>
+          Raahaa kuva tai lisää painamalla tästä
+        </span>
         <input {...getInputProps()} />
       </div>
     </div>

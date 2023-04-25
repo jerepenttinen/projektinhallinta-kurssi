@@ -53,3 +53,9 @@ export const user = z.object({
   image: z.string().nullable(),
   description: z.string().nullable(),
 });
+
+export const updateUserDetails = z.object({
+  id: z.number(),
+  image: z.string(),
+  description: z.string(),
+});
