@@ -1,7 +1,7 @@
 import DropImages from "../components/DropImages";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthentication } from "../AuthenticationContext";
 import { GetUser, UpdateUserDetails } from "../api/Users";
@@ -19,12 +19,15 @@ const ProfileSettingsPage = () => {
   const { user } = useAuthentication();
 
   const updateDetailsMutation = useMutation(UpdateUserDetails);
+  const [image, setImage] = useState<Blob | null>(null);
 
   const onImageDropped = (buffer: Uint8Array) => {
-    setValue("image", new Blob([buffer]));
+    const blob = new Blob([buffer]);
+    setValue("image", blob);
+    setImage(blob);
   };
 
-  const { register, handleSubmit, setValue, getValues } = useForm<
+  const { register, handleSubmit, setValue } = useForm<
     z.infer<typeof profileSettingsFormValidator>
   >({
     resolver: zodResolver(profileSettingsFormValidator),
@@ -36,15 +39,18 @@ const ProfileSettingsPage = () => {
         const details = await GetUser(user.profileId.toString());
         if (details.image) {
           const res = await fetch("data:image/jpeg;base64," + details.image);
-          setValue("image", await res.blob());
+          const blob = await res.blob();
+          setValue("image", blob);
+          setImage(blob);
+        }
+        if (details.description) {
+          setValue("description", details.description);
         }
       })();
     }
   }, [user, setValue]);
 
-  const image = getValues("image");
-  const imageUrl =
-    typeof image !== "undefined" ? URL.createObjectURL(image) : null;
+  const imageUrl = image !== null ? URL.createObjectURL(image) : null;
 
   return (
     <Suspense fallback={<p>Ladataan...</p>}>
@@ -61,17 +67,14 @@ const ProfileSettingsPage = () => {
         >
           <div
             className="my-4 d-flex justify-content-between"
-            style={{ height: 150 }}
             data-testid="top-container"
           >
-            <div
-              className="rounded-circle bg-primary"
-              style={{ width: "150px", height: "150px" }}
-            >
+            <div style={{ width: "150px", height: "150px" }}>
               {imageUrl ? (
                 <img
                   src={imageUrl}
                   alt=""
+                  className="rounded-circle"
                   style={{ height: "100%", width: "100%" }}
                 />
               ) : null}
