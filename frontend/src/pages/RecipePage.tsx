@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Suspense } from "react";
 import { Base64Image } from "../components/Base64Image";
+import { GetMultipleUsers } from "../api/Users";
 
 interface IngredientRowProps {
   quantity: string;
@@ -44,11 +45,21 @@ const ReviewSection = () => {
     suspense: true,
   });
 
+  const usersQuery = useQuery({
+    queryKey: ["recipes", id, "reviews", "users"],
+    queryFn: () =>
+      GetMultipleUsers(reviewsQuery.data!.map((review) => review.userId)),
+    enabled:
+      typeof reviewsQuery.data !== "undefined" && reviewsQuery.data?.length > 0,
+  });
+
   return (
     <Stack gap={3} as="section">
       <h3>Arvostelut</h3>
       <Suspense fallback={<p>Ladataan...</p>}>
-        {reviewsQuery.data ? <ReviewList reviews={reviewsQuery.data} /> : null}
+        {reviewsQuery.data && usersQuery.data ? (
+          <ReviewList reviews={reviewsQuery.data} users={usersQuery.data} />
+        ) : null}
       </Suspense>
     </Stack>
   );

@@ -1,13 +1,16 @@
 import { Stack } from "react-bootstrap";
 import { BsHandThumbsDown, BsHandThumbsUp } from "react-icons/bs";
-import { recipeReview } from "../api/validators";
+import { recipeReview, user } from "../api/validators";
 import { z } from "zod";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 export const Review = ({
   review,
+  reviewer,
 }: {
   review: z.infer<typeof recipeReview>;
+  reviewer?: z.infer<typeof user>;
 }) => {
   return (
     <Stack className="w-100" direction="horizontal" gap={2}>
@@ -20,7 +23,7 @@ export const Review = ({
 
       <Stack gap={2}>
         <Stack direction="horizontal" className="justify-content-between">
-          <span>{review.userId}</span>
+          <Link to={`/profile/${review.userId}`}>{reviewer?.username}</Link>
           <Stack className="float-right" direction="horizontal" gap={2}>
             <BsHandThumbsUp />
             <time>{dayjs(review.created).format("DD.MM.YYYY")}</time>
