@@ -1,13 +1,22 @@
 import { Review } from "./ReviewItem";
 import { Stack } from "react-bootstrap";
 import { z } from "zod";
-import { recipeReview } from "../api/validators";
+import { recipeReview, user } from "../api/validators";
 
-const ReviewList = (props: { reviews: z.infer<typeof recipeReview>[] }) => {
+const ReviewList = (props: {
+  reviews: z.infer<typeof recipeReview>[];
+  users: Record<number, z.infer<typeof user>>;
+}) => {
   return (
     <Stack gap={3}>
       {props.reviews.map((review) => {
-        return <Review key={review.id} review={review} />;
+        return (
+          <Review
+            key={review.id}
+            review={review}
+            reviewer={props.users[review.userId]}
+          />
+        );
       })}
     </Stack>
   );

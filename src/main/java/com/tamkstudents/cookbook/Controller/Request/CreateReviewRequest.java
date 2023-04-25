@@ -12,5 +12,5 @@ public class CreateReviewRequest {
     String content;
 
     @NotNull
-    Boolean isUpvote;
+    Boolean upvote;
 }
