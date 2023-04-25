@@ -4,6 +4,7 @@ import { recipeReview, user } from "../api/validators";
 import { z } from "zod";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import { Base64Image } from "./Base64Image";
 
 export const Review = ({
   review,
@@ -18,7 +19,11 @@ export const Review = ({
         className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
         style={{ width: 48, height: 48, fontSize: 12 }}
       >
-        <span>Kuva</span>
+        {typeof reviewer !== "undefined" && reviewer.image !== null ? (
+          <Base64Image id={`user-${reviewer.id}`} image={reviewer.image} />
+        ) : (
+          <span></span>
+        )}
       </div>
 
       <Stack gap={2}>

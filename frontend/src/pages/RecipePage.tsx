@@ -128,7 +128,15 @@ const RecipeSection = () => {
             className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
             style={{ width: 32, height: 32, fontSize: 10 }}
           >
-            <span>Kuva</span>
+            {typeof creatorQuery.data !== "undefined" &&
+            creatorQuery.data.image !== null ? (
+              <Base64Image
+                id={`user-${creatorQuery.data.id}`}
+                image={creatorQuery.data.image}
+              />
+            ) : (
+              <span></span>
+            )}
           </div>
           <Link to={`/profile/${recipeQuery.data?.creatorId}`}>
             {creatorQuery.data?.username}
