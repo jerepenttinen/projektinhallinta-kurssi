@@ -115,8 +115,11 @@ const RecipeSection = () => {
       </Stack>
 
       <Stack direction="horizontal" gap={2}>
-        <Badge bg="secondary">Alkuruuat</Badge>
-        <Badge bg="secondary">Alkuruuat</Badge>
+        {recipeQuery.data?.categories.map((category) => (
+          <Badge bg="secondary" key={category}>
+            {category}
+          </Badge>
+        ))}
       </Stack>
 
       <Carousel>

@@ -23,7 +23,7 @@ export const Review = ({
           <span>{review.userId}</span>
           <Stack className="float-right" direction="horizontal" gap={2}>
             <BsHandThumbsUp />
-            <time>{dayjs(review.createdAt).format("24.12.2023")}</time>
+            <time>{dayjs(review.created).format("DD.MM.YYYY")}</time>
           </Stack>
         </Stack>
         <span>{review.content}</span>
