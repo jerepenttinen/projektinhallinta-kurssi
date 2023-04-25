@@ -22,8 +22,9 @@ export const Review = ({
         <Stack direction="horizontal" className="justify-content-between">
           <span>{review.userId}</span>
           <Stack className="float-right" direction="horizontal" gap={2}>
-            <BsHandThumbsUp />
-            <time>{dayjs(review.createdAt).format("24.12.2023")}</time>
+            {review.upvote ? <BsHandThumbsUp /> : <BsHandThumbsDown />}
+
+            <time>{dayjs(review.created).format("DD.MM.YYYY")}</time>
           </Stack>
         </Stack>
         <span>{review.content}</span>

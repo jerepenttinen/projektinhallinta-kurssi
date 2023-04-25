@@ -2,6 +2,7 @@ package com.tamkstudents.cookbook.Domain.Dao;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
@@ -31,6 +32,7 @@ public class ReviewDao {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 }

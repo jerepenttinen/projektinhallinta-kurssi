@@ -83,7 +83,7 @@ public class ReviewTests {
 
         var review = CreateReviewRequest.builder()
                 .content(faker.famousLastWords().lastWords())
-                .isUpvote(faker.bool().bool())
+                .upvote(faker.bool().bool())
                 .build();
 
         mvc.perform(post("/api/reviews/" + recipeId)

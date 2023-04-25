@@ -59,7 +59,7 @@ public class ReviewService {
         var reviewDao = ReviewDao.builder()
                 .recipe(recipe)
                 .reviewer(user)
-                .isUpvote(createReviewRequest.getIsUpvote())
+                .isUpvote(createReviewRequest.getUpvote())
                 .content(createReviewRequest.getContent())
                 .build();
 
