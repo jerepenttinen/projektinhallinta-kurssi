@@ -54,6 +54,44 @@ const ReviewSection = () => {
   );
 };
 
+const ReviewSummarySection = () => {
+  const { id } = useParams();
+  const reviewsQuery = useQuery({
+    queryKey: ["recipes", id, "reviews"],
+    queryFn: () => GetReviewByRecipeId(id ?? ""),
+    enabled: typeof id === "string",
+  });
+
+  const reviewSummary = reviewsQuery.data?.reduce<{ up: number; down: number }>(
+    (acc, cur) => {
+      return {
+        up: cur.upvote ? acc.up + 1 : acc.up,
+        down: !cur.upvote ? acc.down + 1 : acc.down,
+      };
+    },
+    {
+      up: 0,
+      down: 0,
+    },
+  );
+
+  const total = (reviewSummary?.down ?? 0) + (reviewSummary?.up ?? 0);
+  const percentage =
+    total === 0 ? "0" : (((reviewSummary?.up ?? 0) / total) * 100).toFixed(0);
+
+  return (
+    <Stack direction="horizontal" className="justify-content-end">
+      <Stack direction="horizontal" gap={2}>
+        <BsHandThumbsUp />
+        <span>{reviewSummary?.up ?? 0}</span>
+        <BsHandThumbsDown />
+        <span>{reviewSummary?.down ?? 0}</span>
+        <span>{percentage}%</span>
+      </Stack>
+    </Stack>
+  );
+};
+
 const CreateReviewSection = () => {
   return (
     <Stack gap={3} as="form">
@@ -135,15 +173,7 @@ const RecipeSection = () => {
         ))}
       </Carousel>
 
-      {/* <Stack direction="horizontal" className="justify-content-end">
-        <Stack direction="horizontal" gap={2}>
-          <BsHandThumbsUp />
-          <span>1</span>
-          <BsHandThumbsDown />
-          <span>1</span>
-          <span>50%</span>
-        </Stack>
-      </Stack> */}
+      <ReviewSummarySection />
 
       <h3>Raaka-aineet</h3>
       <div>
