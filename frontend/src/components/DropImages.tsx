@@ -40,6 +40,7 @@ export default function DropImages({ onImageDropped }: Props) {
       style={{
         border: "1px dashed var(--bs-border-color)",
         borderStyle: "dashed",
+        cursor: "pointer",
       }}
     >
       <div className="mx-auto vstack py-5 gap-2">
