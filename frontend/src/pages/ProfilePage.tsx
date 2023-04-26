@@ -2,13 +2,13 @@ import CarouselContainer from "../components/CarouselContainer";
 import RecipeCard from "../components/RecipeCard";
 import PageContainer from "../components/PageContainer";
 import RecipeList from "../components/RecipeList";
-import { Figure } from "react-bootstrap";
 import { Suspense } from "react";
 import { GetUser } from "../api/Users";
 import { GetUserRecipes } from "../api/Recipes";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Base64Image } from "../components/Base64Image";
+import { Avatar } from "../components/Avatar";
 
 const ProfileContactsSection = () => {
   const { uid } = useParams();
@@ -21,20 +21,15 @@ const ProfileContactsSection = () => {
 
   return (
     <Suspense>
-      <div className="d-flex align-items-top">
-        <div className="d-inline-block h-25">
-          <Figure
-            style={{ height: 128, width: 128 }}
-            className="rounded-circle me-4 bg-primary"
-          >
-            {userQuery.data && userQuery.data.image ? (
-              <Base64Image
-                id={`user-${userQuery.data.id}`}
-                image={userQuery.data.image}
-              />
-            ) : null}
-          </Figure>
-        </div>
+      <div className="hstack gap-3">
+        <Avatar size="l">
+          {userQuery.data && userQuery.data.image ? (
+            <Base64Image
+              id={`user-${userQuery.data.id}`}
+              image={userQuery.data.image}
+            />
+          ) : null}
+        </Avatar>
         <div className="d-inline-block">
           <h3>{userQuery.data?.username}</h3>
           <p>{userQuery.data?.description}</p>

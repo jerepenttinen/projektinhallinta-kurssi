@@ -5,6 +5,7 @@ import { z } from "zod";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { Base64Image } from "./Base64Image";
+import { Avatar } from "./Avatar";
 
 export const Review = ({
   review,
@@ -15,16 +16,11 @@ export const Review = ({
 }) => {
   return (
     <Stack className="w-100" direction="horizontal" gap={2}>
-      <div
-        className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-        style={{ width: 48, height: 48, fontSize: 12 }}
-      >
+      <Avatar size="m">
         {typeof reviewer !== "undefined" && reviewer.image !== null ? (
           <Base64Image id={`user-${reviewer.id}`} image={reviewer.image} />
-        ) : (
-          <span></span>
-        )}
-      </div>
+        ) : null}
+      </Avatar>
 
       <Stack gap={2}>
         <Stack direction="horizontal" className="justify-content-between">

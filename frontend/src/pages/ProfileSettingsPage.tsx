@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { blobToBase64 } from "../utils/blob";
+import { Avatar } from "../components/Avatar";
+import PageContainer from "../components/PageContainer";
 
 const profileSettingsFormValidator = z.object({
   image: z.instanceof(Blob),
@@ -54,9 +56,9 @@ const ProfileSettingsPage = () => {
 
   return (
     <Suspense fallback={<p>Ladataan...</p>}>
-      <div className="m-auto bg-white p-4" style={{ maxWidth: 900 }}>
-        <h2>Asetukset</h2>
+      <PageContainer>
         <Form
+          className="vstack gap-3"
           onSubmit={handleSubmit(async (data) => {
             updateDetailsMutation.mutate({
               id: user!.id,
@@ -65,25 +67,14 @@ const ProfileSettingsPage = () => {
             });
           })}
         >
-          <div
-            className="my-4 d-flex justify-content-between"
-            data-testid="top-container"
-          >
-            <div style={{ width: "150px", height: "150px" }}>
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt=""
-                  className="rounded-circle"
-                  style={{ height: "100%", width: "100%" }}
-                />
-              ) : null}
-            </div>
-            <div className="w-75 h-100" style={{ minHeight: "100%" }}>
-              <DropImages onImageDropped={onImageDropped} />
-            </div>
+          <h2>Asetukset</h2>
+          <div className="hstack gap-3" data-testid="top-container">
+            <Avatar size="l">
+              {imageUrl ? <img src={imageUrl} alt="" /> : null}
+            </Avatar>
+            <DropImages onImageDropped={onImageDropped} />
           </div>
-          <Form.Group className="mb-3" controlId="textArea">
+          <Form.Group controlId="textArea">
             <Form.Control
               as="textarea"
               placeholder="Kuvauksen muokkaus"
@@ -95,7 +86,7 @@ const ProfileSettingsPage = () => {
             Tallenna
           </Button>
         </Form>
-      </div>
+      </PageContainer>
     </Suspense>
   );
 };
