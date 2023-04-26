@@ -251,7 +251,7 @@ const RecipeSection = () => {
         {recipeQuery.data?.images.map((image, i) => (
           <CarouselItem key={i} className="recipe-image">
             <Base64Image
-              id={recipeQuery.data.id.toString() + i}
+              id={`${recipeQuery.data.id.toString()}-${i}`}
               image={image}
             />
           </CarouselItem>
