@@ -23,6 +23,7 @@ import { AxiosError } from "axios";
 import { GetMultipleUsers, GetUser } from "../api/Users";
 import { Avatar } from "../components/Avatar";
 import "./RecipePage.css";
+import { MissingImage } from "../components/MissingImage";
 
 interface IngredientRowProps {
   quantity: string;
@@ -248,15 +249,18 @@ const RecipeSection = () => {
 
       <Carousel className="recipe-image-container">
         {recipeQuery.data?.images.map((image, i) => (
-          <CarouselItem key={i}>
-            <div className="recipe-image" style={{ height: 400 }}>
-              <Base64Image
-                id={recipeQuery.data.id.toString() + i}
-                image={image}
-              />
-            </div>
+          <CarouselItem key={i} className="recipe-image">
+            <Base64Image
+              id={recipeQuery.data.id.toString() + i}
+              image={image}
+            />
           </CarouselItem>
         ))}
+        {recipeQuery.data?.images.length === 0 ? (
+          <CarouselItem className="recipe-image">
+            <MissingImage />
+          </CarouselItem>
+        ) : null}
       </Carousel>
 
       <ReviewSummarySection />
