@@ -248,14 +248,14 @@ const RecipeSection = () => {
       </Stack>
 
       <Carousel className="recipe-image-container">
-        {recipeQuery.data?.images.map((image, i) => (
-          <CarouselItem key={i} className="recipe-image">
-            <Base64Image
-              id={`${recipeQuery.data.id.toString()}-${i}`}
-              image={image}
-            />
-          </CarouselItem>
-        ))}
+        {recipeQuery.data?.images.map((image, i) => {
+          const id = `${recipeQuery.data.id.toString()}-${i}`;
+          return (
+            <CarouselItem key={id} className="recipe-image">
+              <Base64Image id={id} image={image} />
+            </CarouselItem>
+          );
+        })}
         {recipeQuery.data?.images.length === 0 ? (
           <CarouselItem className="recipe-image">
             <MissingImage />
