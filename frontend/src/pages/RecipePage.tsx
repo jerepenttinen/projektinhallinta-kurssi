@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
 import { GetMultipleUsers, GetUser } from "../api/Users";
 import { Avatar } from "../components/Avatar";
+import "./RecipePage.css";
 
 interface IngredientRowProps {
   quantity: string;
@@ -245,13 +246,10 @@ const RecipeSection = () => {
         ))}
       </Stack>
 
-      <Carousel>
+      <Carousel className="recipe-image-container">
         {recipeQuery.data?.images.map((image, i) => (
           <CarouselItem key={i}>
-            <div
-              className="d-flex w-100 justify-content-center align-items-center"
-              style={{ height: 400 }}
-            >
+            <div className="recipe-image" style={{ height: 400 }}>
               <Base64Image
                 id={recipeQuery.data.id.toString() + i}
                 image={image}
