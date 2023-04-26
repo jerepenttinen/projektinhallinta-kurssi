@@ -1,49 +1,53 @@
 import PageContainer from "../components/PageContainer";
 import RecipeList from "../components/RecipeList";
-import Dropdown from "react-bootstrap/Dropdown";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { getRecipes } from "../api/Recipes";
+import { SearchRecipes } from "../api/Recipes";
 import { useQuery } from "@tanstack/react-query";
-import { Suspense } from "react";
+import { useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+
+const searchKey = "q";
+
+function createSearchParams(term: string) {
+  return term.length > 0
+    ? new URLSearchParams([[searchKey, term]])
+    : new URLSearchParams();
+}
 
 const SearchPage = () => {
-  const recipesQuery = useQuery(["recipes"], getRecipes, {
-    suspense: true,
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchBox = useRef<HTMLInputElement | null>(null);
+  const search = searchParams.get(searchKey) ?? "";
+  const recipesQuery = useQuery(["search", search], () =>
+    SearchRecipes(search),
+  );
 
   return (
     <PageContainer gap={3}>
       <h1>Haku</h1>
-      <div className="input-group">
+      <form
+        className="input-group"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const term = searchBox.current!.value;
+          setSearchParams(createSearchParams(term));
+        }}
+      >
         <input
           type="search"
-          className="form-control rounded"
+          className="form-control"
           placeholder="Reseptin nimi"
           aria-label="Search"
           aria-describedby="search-addon"
+          ref={searchBox}
+          defaultValue={search}
         />
-        <button type="button" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary">
           Hae
         </button>
-      </div>
-      <Dropdown>
-        <Dropdown.Toggle
-          split
-          variant="light border border-dark wid text-start"
-          id="dropdown-split-basic"
-        >
-          Kategoria
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Dropdown.Item href="#/action-1">Pääruoat</Dropdown.Item>
-          <Dropdown.Item href="#/action-2">Jälkiruoat</Dropdown.Item>
-          <Dropdown.Item href="#/action-3">Välipalat</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-      <Suspense fallback={<p>Ladataan...</p>}>
+      </form>
+      <>
         {recipesQuery.data ? <RecipeList recipes={recipesQuery.data} /> : null}
-      </Suspense>
+      </>
     </PageContainer>
   );
 };
