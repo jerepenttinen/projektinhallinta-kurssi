@@ -19,7 +19,7 @@ function MyNavbar() {
           <Link to="/search" className="nav-link">
             Haku
           </Link>
-          {user ? (
+          {user !== "loading" && user ? (
             <>
               <Link to="/recipes/create" className="nav-link">
                 Uusi resepti
@@ -31,7 +31,7 @@ function MyNavbar() {
           ) : null}
         </Nav>
         <Nav>
-          {user ? (
+          {user !== "loading" && user ? (
             <Stack direction="horizontal" gap={2}>
               <Link to={`/profile/${user.profileId}`}>
                 {user.firstName} {user.lastName}
