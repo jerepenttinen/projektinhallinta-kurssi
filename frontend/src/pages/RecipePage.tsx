@@ -13,13 +13,17 @@ import PageContainer from "../components/PageContainer";
 import { GetRecipeById } from "../api/Recipes";
 import { CreateReviewForRecipe, GetReviewByRecipeId } from "../api/Reviews";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Suspense } from "react";
 import { Base64Image } from "../components/Base64Image";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
+import { GetMultipleUsers, GetUser } from "../api/Users";
+import { Avatar } from "../components/Avatar";
+import "./RecipePage.css";
+import { MissingImage } from "../components/MissingImage";
 
 interface IngredientRowProps {
   quantity: string;
@@ -220,20 +224,15 @@ const RecipeSection = () => {
       <h2 className="mb-0">{recipeQuery.data?.recipeName}</h2>
       <Suspense>
         <Stack direction="horizontal" gap={2}>
-          <div
-            className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-            style={{ width: 32, height: 32, fontSize: 10 }}
-          >
+          <Avatar size="s">
             {typeof creatorQuery.data !== "undefined" &&
             creatorQuery.data.image !== null ? (
               <Base64Image
                 id={`user-${creatorQuery.data.id}`}
                 image={creatorQuery.data.image}
               />
-            ) : (
-              <span></span>
-            )}
-          </div>
+            ) : null}
+          </Avatar>
           <Link to={`/profile/${recipeQuery.data?.creatorId}`}>
             {creatorQuery.data?.username}
           </Link>
@@ -248,20 +247,20 @@ const RecipeSection = () => {
         ))}
       </Stack>
 
-      <Carousel>
-        {recipeQuery.data?.images.map((image, i) => (
-          <CarouselItem key={i}>
-            <div
-              className="d-flex w-100 justify-content-center align-items-center"
-              style={{ height: 400 }}
-            >
-              <Base64Image
-                id={recipeQuery.data.id.toString() + i}
-                image={image}
-              />
-            </div>
+      <Carousel className="recipe-image-container">
+        {recipeQuery.data?.images.map((image, i) => {
+          const id = `${recipeQuery.data.id.toString()}-${i}`;
+          return (
+            <CarouselItem key={id} className="recipe-image">
+              <Base64Image id={id} image={image} />
+            </CarouselItem>
+          );
+        })}
+        {recipeQuery.data?.images.length === 0 ? (
+          <CarouselItem className="recipe-image">
+            <MissingImage />
           </CarouselItem>
-        ))}
+        ) : null}
       </Carousel>
 
       <ReviewSummarySection />

@@ -5,10 +5,13 @@ import com.tamkstudents.cookbook.Controller.Reply.GetCategoriesReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeCardReply;
 import com.tamkstudents.cookbook.Controller.Reply.RecipeReply;
 import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
+import com.tamkstudents.cookbook.Domain.Dao.ImageDao;
 import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
 import com.tamkstudents.cookbook.Service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +50,7 @@ public class RecipeMapperService {
                 .id(recipeDao.getId())
                 .recipeName(recipeDao.getRecipeName());
 
-        var image = recipeDao.getImages().stream().findFirst();
+        var image = recipeDao.getImages().stream().min(Comparator.comparing(ImageDao::getId));
         image.ifPresent(imageDao -> builder.image(mediaService.imageToBase64(imageDao.getImage())));
 
         return builder.build();

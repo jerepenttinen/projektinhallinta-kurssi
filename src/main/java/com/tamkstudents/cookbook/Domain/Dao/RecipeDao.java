@@ -52,7 +52,7 @@ public class RecipeDao {
             orphanRemoval = true,
             fetch = FetchType.EAGER
     )
-    private List<RecipeHasIngredientDao> ingredients = new ArrayList<>();
+    private Set<RecipeHasIngredientDao> ingredients = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
