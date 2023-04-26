@@ -33,8 +33,10 @@ type SignUpRequest = {
   password: string;
 };
 
+type User = LoginUser | null | "loading";
+
 type AuthenticationContextType = {
-  user: LoginUser | null;
+  user: User;
   signIn: (credentials: SignInRequest) => Promise<void>;
   signUp: (signUpRequest: SignUpRequest) => Promise<void>;
   signOut: () => Promise<void>;
@@ -58,7 +60,7 @@ export function AuthenticationProvider({
 }: {
   children: React.ReactElement;
 }) {
-  const [user, setUser] = useState<LoginUser | null>(null);
+  const [user, setUser] = useState<User>("loading");
   const navigate = useNavigate();
   const fetchCurrentUser = useCallback(async () => {
     try {
