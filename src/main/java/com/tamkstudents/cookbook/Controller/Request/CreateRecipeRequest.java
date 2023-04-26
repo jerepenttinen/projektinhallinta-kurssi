@@ -1,6 +1,6 @@
 package com.tamkstudents.cookbook.Controller.Request;
 
-import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantity;
+import com.tamkstudents.cookbook.Controller.Request.Dto.IngredientWithQuantityRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
@@ -19,7 +19,7 @@ public class CreateRecipeRequest {
     List<String> instructions;
 
     @NotNull
-    List<IngredientWithQuantity> ingredients;
+    List<IngredientWithQuantityRequest> ingredients;
 
     @NotNull
     List<String> categories;

@@ -1,7 +1,7 @@
 import { Stack } from "react-bootstrap";
 
 type Props = {
-  children: React.ReactElement[] | undefined;
+  children: React.ReactElement[] | undefined | React.ReactElement;
   gap?: 0 | 1 | 2 | 3 | 4 | 5;
 };
 

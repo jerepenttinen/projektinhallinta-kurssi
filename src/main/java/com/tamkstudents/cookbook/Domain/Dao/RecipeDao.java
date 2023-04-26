@@ -6,11 +6,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity(name="recipe") @Getter @Setter @NoArgsConstructor
+@Entity(name = "recipe")
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RecipeDao {
@@ -30,22 +34,27 @@ public class RecipeDao {
     @Column(name = "recipe_instruction", nullable = false)
     private List<String> instruction;
 
-    @Column(name = "recipe_img")
-    private byte[] image;
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "recipe_has_ingredients",
+            name = "recipe_has_image",
             joinColumns = {
                     @JoinColumn(name = "recipe_id")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "ingredient_id")
+                    @JoinColumn(name = "image_id")
             }
     )
-    private Set<IngredientDao> ingredients = new HashSet<>();
+    private Set<ImageDao> images = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private Set<RecipeHasIngredientDao> ingredients = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "recipe_has_food_groups",
             joinColumns = {
@@ -57,13 +66,16 @@ public class RecipeDao {
     )
     private Set<FoodGroupDao> foodGroups = new HashSet<>();
 
-    public boolean modify(RecipeDto dto,UserDao user){
-        this.recipeName = dto.getRecipeName();
-        this.creator = user;
-        this.instruction = dto.getInstruction();
-        this.image = dto.getImage();
-        this.ingredients = (HashSet) dto.getIngredients();
-        this.foodGroups = (HashSet) dto.getFoodGroups();
-        return true;
+    public void addIngredient(IngredientDao ingredient, String quantity) {
+        var recipeHasIngredient = new RecipeHasIngredientDao(this, ingredient, quantity);
+        ingredients.add(recipeHasIngredient);
     }
+
+//    public void modify(RecipeDto dto, UserDao user) {
+//        this.recipeName = dto.getRecipeName();
+//        this.creator = user;
+//        this.instruction = dto.getInstruction();
+//        this.ingredients = (HashSet) dto.getIngredients();
+//        this.foodGroups = (HashSet) dto.getFoodGroups();
+//    }
 }

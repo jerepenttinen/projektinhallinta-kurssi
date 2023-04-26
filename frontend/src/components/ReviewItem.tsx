@@ -1,30 +1,37 @@
 import { Stack } from "react-bootstrap";
-import { BsHandThumbsDown, BsHandThumbsUp, BsPrinter } from "react-icons/bs";
+import { BsHandThumbsDown, BsHandThumbsUp } from "react-icons/bs";
+import { recipeReview, user } from "../api/validators";
+import { z } from "zod";
+import dayjs from "dayjs";
+import { Link } from "react-router-dom";
+import { Base64Image } from "./Base64Image";
+import { Avatar } from "./Avatar";
 
-export interface Props{
-    review: {id:number; name: string; comment: string; date: Date; }
-}
-
-const ReviewItem = ({review}: Props) => {
+export const Review = ({
+  review,
+  reviewer,
+}: {
+  review: z.infer<typeof recipeReview>;
+  reviewer?: z.infer<typeof user>;
+}) => {
   return (
     <Stack className="w-100" direction="horizontal" gap={2}>
-      <div className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-           style={{ width: 48, height: 48, fontSize: 12 }}>
-        <span>Kuva</span>
-      </div>
+      <Avatar size="m">
+        {typeof reviewer !== "undefined" && reviewer.image !== null ? (
+          <Base64Image id={`user-${reviewer.id}`} image={reviewer.image} />
+        ) : null}
+      </Avatar>
 
       <Stack gap={2}>
         <Stack direction="horizontal" className="justify-content-between">
-          <span>{review.name}</span>
+          <Link to={`/profile/${review.userId}`}>{reviewer?.username}</Link>
           <Stack className="float-right" direction="horizontal" gap={2}>
-            <BsHandThumbsUp />
-            <time>{review.date.getDate()}.{review.date.getMonth()}.{review.date.getFullYear()}</time>
+            {review.upvote ? <BsHandThumbsUp /> : <BsHandThumbsDown />}
+            <time>{dayjs(review.created).format("DD.MM.YYYY")}</time>
           </Stack>
         </Stack>
-        <span>{review.comment}</span>
+        <span>{review.content}</span>
       </Stack>
     </Stack>
-  )
-}
-
-export default ReviewItem;
+  );
+};

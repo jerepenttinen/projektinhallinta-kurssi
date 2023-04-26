@@ -1,0 +1,15 @@
+INSERT INTO food_group (food_group_name)
+VALUES ('Pääruuat'),
+       ('Alkuruuat'),
+       ('Jälkiruoat'),
+       ('Juomat'),
+       ('Keitot'),
+       ('Pastat ja nuudelit'),
+       ('Pizzat'),
+       ('Pastat ja nuudelit'),
+       ('Makeat leivonnaiset'),
+       ('Välipalat'),
+       ('Salaatit'),
+       ('Leivät ja sämpylät'),
+       ('Suolaiset leivonnaiset'),
+       ('Lisukkeet');

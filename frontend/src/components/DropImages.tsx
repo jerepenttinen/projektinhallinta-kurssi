@@ -26,19 +26,27 @@ export default function DropImages({ onImageDropped }: Props) {
     [onImageDropped],
   );
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/jpeg": [".jpeg", ".jpg"],
+    },
+  });
 
   return (
     <div
       {...getRootProps()}
-      className="rounded vstack mt-3 bg-white"
+      className="rounded vstack bg-white"
       style={{
         border: "1px dashed var(--bs-border-color)",
         borderStyle: "dashed",
+        cursor: "pointer",
       }}
     >
       <div className="mx-auto vstack py-5 gap-2">
-        <span>Raahaa kuva tai lisää painamalla tästä</span>
+        <span style={{ userSelect: "none" }}>
+          Raahaa kuva tai lisää painamalla tästä
+        </span>
         <input {...getInputProps()} />
       </div>
     </div>

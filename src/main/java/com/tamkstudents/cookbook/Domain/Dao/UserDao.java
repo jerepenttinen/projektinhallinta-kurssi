@@ -21,6 +21,12 @@ public class UserDao {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
     private Set<RecipeDao> recipes;
+
+    @ManyToOne
+    @JoinColumn(name = "image", nullable = true)
+    private ImageDao image;
+
+    private String description;
 }

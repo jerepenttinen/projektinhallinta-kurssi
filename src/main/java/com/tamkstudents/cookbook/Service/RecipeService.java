@@ -1,24 +1,20 @@
 package com.tamkstudents.cookbook.Service;
 
 import com.tamkstudents.cookbook.Controller.Request.CreateRecipeRequest;
-import com.tamkstudents.cookbook.Domain.Dao.FoodGroupDao;
-import com.tamkstudents.cookbook.Domain.Dao.IngredientDao;
-import com.tamkstudents.cookbook.Domain.Dao.RecipeDao;
-import com.tamkstudents.cookbook.Domain.Dao.UserDao;
+import com.tamkstudents.cookbook.Domain.Dao.*;
 import com.tamkstudents.cookbook.Domain.Dto.RecipeDto;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.FoodGroupRepository;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.IngredientRepository;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.RecipeRepository;
-import com.tamkstudents.cookbook.Domain.RepositoryInterface.UserRepository;
+import com.tamkstudents.cookbook.Domain.RepositoryInterface.*;
 import com.tamkstudents.cookbook.Service.Exceptions.RecipeNotFoundException;
+import com.tamkstudents.cookbook.Service.Exceptions.UnknownFoodGroupException;
 import com.tamkstudents.cookbook.Service.Exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +24,8 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final FoodGroupRepository foodGroupRepository;
     private final IngredientRepository ingredientRepository;
+    private final ImageRepository imageRepository;
+    private final MediaService mediaService;
 
     public List<RecipeDao> getAllRecipes() {
         return recipeRepository.findAll();
@@ -39,37 +37,47 @@ public class RecipeService {
         return recipeRepository.findAllByCreator(user);
     }
 
+    public List<RecipeDao> search(String term) {
+        return recipeRepository.findRecipeDaosByRecipeNameLikeIgnoreCase(term);
+    }
+
 //    public List<RecipeDao> getFoodGroupRecipes(String foodGroupId) {
 //        return recipeRepository.findAllByFoodGroupsContains(foodGroupRepository.findById(foodGroupId));
 //    }
 
-    @Transactional
-    public RecipeDao createRecipe(CreateRecipeRequest createRecipeRequest, UserDao userDao) {
-        var ingredients = createRecipeRequest.getIngredients().stream().map(it -> {
-            var ingredient = ingredientRepository.findFirstByName(it.getIngredient());
-            if (ingredient != null) {
-                return ingredient;
+    @Transactional(rollbackOn = Exception.class)
+    public RecipeDao createRecipe(CreateRecipeRequest createRecipeRequest, UserDao userDao) throws UnknownFoodGroupException {
+        var foodGroups = new HashSet<FoodGroupDao>();
+        for (var category : createRecipeRequest.getCategories()) {
+            var foodGroup = foodGroupRepository.findFirstByName(category);
+            if (foodGroup == null) {
+                throw new UnknownFoodGroupException(category);
             }
-            return ingredientRepository.save(IngredientDao.builder().name(it.getIngredient()).build());
-        }).collect(Collectors.toSet());
+            foodGroups.add(foodGroup);
+        }
 
-        var foodGroups = createRecipeRequest.getCategories().stream().map(category -> {
-            var ingredient = foodGroupRepository.findFirstByName(category);
-            if (ingredient != null) {
-                return ingredient;
-            }
-            return foodGroupRepository.save(FoodGroupDao.builder().name(category).build());
-        }).collect(Collectors.toSet());
+        var images = new HashSet<>(imageRepository.saveAll(createRecipeRequest
+                .getImages()
+                .stream()
+                .map(mediaService::base64ToImage)
+                .map(image -> ImageDao.builder().image(image).build())
+                .toList()
+        ));
 
-        // TODO: Add image
         var recipeDao = RecipeDao.builder()
                 .recipeName(createRecipeRequest.getRecipeName())
                 .creator(userDao)
                 .instruction(createRecipeRequest.getInstructions())
-                .ingredients(ingredients)
-                .image(new byte[]{})
+                .ingredients(new HashSet<>())
+                .images(images)
                 .foodGroups(foodGroups)
                 .build();
+
+        createRecipeRequest.getIngredients().forEach(it -> {
+            var ingredient = ingredientRepository.findFirstByName(it.getIngredient());
+            ingredient = (ingredient != null) ? ingredient : ingredientRepository.save(IngredientDao.builder().name(it.getIngredient()).build());
+            recipeDao.addIngredient(ingredient, it.getQuantity());
+        });
 
         return recipeRepository.save(recipeDao);
     }
@@ -84,9 +92,11 @@ public class RecipeService {
         Optional<UserDao> userDao = userRepository.findById(recipeDto.getCreatorId());
         if (recipeDao.isPresent() && userDao.isPresent()) {
             try {
-                recipeDao.get().modify(recipeDto, userDao.get());
-                RecipeDao modifiedDao = recipeRepository.save(recipeDao.get());
-                return new RecipeDto(modifiedDao);
+//                recipeDao.get().modify(recipeDto, userDao.get());
+//                RecipeDao modifiedDao = recipeRepository.save(recipeDao.get());
+//                return new RecipeDto(modifiedDao);
+                throw new RuntimeException("TODO");
+
             } catch (Throwable err) {
                 log.error("Error on recipe modification");
                 return null;
@@ -94,5 +104,9 @@ public class RecipeService {
         }
         log.error("User (" + recipeDto.getCreatorId() + ") or Recipe (" + recipeDto.getId() + ") are invalid");
         return null;
+    }
+
+    public List<FoodGroupDao> getRecipeCategories() {
+        return foodGroupRepository.findAll();
     }
 }

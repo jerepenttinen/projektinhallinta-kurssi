@@ -22,7 +22,7 @@ public class RecipeCollectionDao {
     @JoinColumn(name = "creator_id")
     private UserDao creator;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "collection_has_recipes",
             joinColumns = {

@@ -1,56 +1,93 @@
 import DropImages from "../components/DropImages";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useAuthentication } from "../AuthenticationContext";
+import { GetUser, UpdateUserDetails } from "../api/Users";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { blobToBase64 } from "../utils/blob";
+import { Avatar } from "../components/Avatar";
+import PageContainer from "../components/PageContainer";
+
+const profileSettingsFormValidator = z.object({
+  image: z.instanceof(Blob),
+  description: z.string(),
+});
 
 const ProfileSettingsPage = () => {
-  const [image, setImage] = useState<File[]>([]);
-  const [imageUrl, setImageUrl] = useState<string>();
+  const { user } = useAuthentication();
+
+  const updateDetailsMutation = useMutation(UpdateUserDetails);
+  const [image, setImage] = useState<Blob | null>(null);
+
   const onImageDropped = (buffer: Uint8Array) => {
-    console.log(buffer);
     const blob = new Blob([buffer]);
-    setImageUrl(URL.createObjectURL(blob));
-    console.log(blob);
+    setValue("image", blob);
+    setImage(blob);
   };
 
+  const { register, handleSubmit, setValue } = useForm<
+    z.infer<typeof profileSettingsFormValidator>
+  >({
+    resolver: zodResolver(profileSettingsFormValidator),
+  });
+
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        const details = await GetUser(user.profileId.toString());
+        if (details.image) {
+          const res = await fetch("data:image/jpeg;base64," + details.image);
+          const blob = await res.blob();
+          setValue("image", blob);
+          setImage(blob);
+        }
+        if (details.description) {
+          setValue("description", details.description);
+        }
+      })();
+    }
+  }, [user, setValue]);
+
+  const imageUrl = image !== null ? URL.createObjectURL(image) : null;
+
   return (
-    <div className="m-auto bg-white p-4" style={{ width: 900 }}>
-      <h2>Asetukset</h2>
-      <Form className="">
-        <div
-          className="my-4 d-flex justify-content-between "
-          style={{ height: 150 }}
+    <Suspense fallback={<p>Ladataan...</p>}>
+      <PageContainer>
+        <Form
+          className="vstack gap-3"
+          onSubmit={handleSubmit(async (data) => {
+            updateDetailsMutation.mutate({
+              id: user!.id,
+              description: data.description,
+              image: await blobToBase64(data.image),
+            });
+          })}
         >
-          <div style={{ width: "150px", height: "150px" }}>
-            <img
-              src={
-                imageUrl
-                  ? imageUrl
-                  : "https://secure.gravatar.com/avatar/5586197d3539ebe07272af21926b496f?s=1920&d=mm&r=g"
-              }
-              className="rounded-circle"
-              style={{ height: "100%", width: "100%" }}
-            ></img>
-          </div>
-          <div className="w-75 h-100" style={{ minHeight: "100%" }}>
+          <h2>Asetukset</h2>
+          <div className="hstack gap-3" data-testid="top-container">
+            <Avatar size="l">
+              {imageUrl ? <img src={imageUrl} alt="" /> : null}
+            </Avatar>
             <DropImages onImageDropped={onImageDropped} />
           </div>
-        </div>
-        <Form.Group className="mb-3" controlId="textArea">
-          <Form.Control
-            as="textarea"
-            placeholder="Kuvauksen muokkaus"
-            rows={6}
-          />
-        </Form.Group>
-        <Button variant="primary" size="lg">
-          Tallenna
-        </Button>
-      </Form>
-    </div>
+          <Form.Group controlId="textArea">
+            <Form.Control
+              as="textarea"
+              placeholder="Kuvauksen muokkaus"
+              rows={6}
+              {...register("description")}
+            />
+          </Form.Group>
+          <Button variant="primary" size="lg" type="submit">
+            Tallenna
+          </Button>
+        </Form>
+      </PageContainer>
+    </Suspense>
   );
 };
 

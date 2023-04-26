@@ -9,15 +9,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeDto {
-    public RecipeDto(RecipeDao dao){
-        this.id = dao.getId();
-        this.recipeName = dao.getRecipeName();
-        this.creatorId = dao.getCreator().getId();
-        this.image = dao.getImage();
-        this.instruction = dao.getInstruction();
-        this.foodGroups = dao.getFoodGroups().stream().map(FoodGroupDto::new).toList();
-        this.ingredients = dao.getIngredients().stream().map(IngredientDto::new).toList();
-    }
+//    public RecipeDto(RecipeDao dao){
+//        this.id = dao.getId();
+//        this.recipeName = dao.getRecipeName();
+//        this.creatorId = dao.getCreator().getId();
+//        this.image = dao.getImage();
+//        this.instruction = dao.getInstruction();
+//        this.foodGroups = dao.getFoodGroups().stream().map(FoodGroupDto::new).toList();
+//        this.ingredients = dao.getIngredients().stream().map(IngredientDto::new).toList();
+//    }
 
     private long id;
     private String recipeName;

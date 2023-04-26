@@ -1,4 +1,4 @@
-import { BsHandThumbsDown, BsHandThumbsUp, BsPrinter } from "react-icons/bs";
+import { BsHandThumbsDown, BsHandThumbsUp } from "react-icons/bs";
 import {
   Badge,
   Button,
@@ -10,132 +10,164 @@ import {
 } from "react-bootstrap";
 import ReviewList from "../components/ReviewList";
 import PageContainer from "../components/PageContainer";
+import { GetRecipeById } from "../api/Recipes";
+import { CreateReviewForRecipe, GetReviewByRecipeId } from "../api/Reviews";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import { Suspense } from "react";
+import { Base64Image } from "../components/Base64Image";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
+import { GetMultipleUsers, GetUser } from "../api/Users";
+import { Avatar } from "../components/Avatar";
+import "./RecipePage.css";
+import { MissingImage } from "../components/MissingImage";
+import { useAuthentication } from "../AuthenticationContext";
 
-const IngredientRow = () => {
+interface IngredientRowProps {
+  quantity: string;
+  name: string;
+}
+
+const IngredientRow = ({ name, quantity }: IngredientRowProps) => {
   return (
     <Stack gap={2}>
       <Stack direction="horizontal" gap={3}>
         <div style={{ minWidth: 150 }}>
-          <span style={{ float: "right" }}>Määrä</span>
+          <span style={{ float: "right" }}> {quantity} </span>
         </div>
-        <span>Nimi</span>
+        <span>{name}</span>
       </Stack>
     </Stack>
   );
 };
 
-const dummyReviewData: {
-  id: number;
-  name: string;
-  comment: string;
-  date: Date;
-}[] = [
-  {
-    id: 1,
-    name: "Erkki Esimerkki",
-    comment: "Suorastaan herkullista!",
-    date: new Date(2017, 4, 4),
-  },
-  {
-    id: 2,
-    name: "Matti Möttönen",
-    comment: "Suorastaan oksettavaa!",
-    date: new Date(2022, 2, 7),
-  },
-];
+const ReviewSection = () => {
+  const { id } = useParams();
+  const reviewsQuery = useQuery({
+    queryKey: ["recipes", id, "reviews"],
+    queryFn: () => GetReviewByRecipeId(id ?? ""),
+    enabled: typeof id === "string",
+    suspense: true,
+  });
 
-const RecipePage = () => {
+  const usersQuery = useQuery({
+    queryKey: ["recipes", id, "reviews", "users"],
+    queryFn: () =>
+      GetMultipleUsers(reviewsQuery.data!.map((review) => review.userId)),
+    enabled:
+      typeof reviewsQuery.data !== "undefined" && reviewsQuery.data?.length > 0,
+  });
+
   return (
-    <PageContainer gap={3}>
-      <h2 className="mb-0">Reseptin nimi</h2>
+    <Stack gap={3} as="section">
+      <h3>Arvostelut</h3>
+      <Suspense fallback={<p>Ladataan...</p>}>
+        {reviewsQuery.data && usersQuery.data ? (
+          <ReviewList reviews={reviewsQuery.data} users={usersQuery.data} />
+        ) : null}
+      </Suspense>
+    </Stack>
+  );
+};
+
+const ReviewSummarySection = () => {
+  const { id } = useParams();
+  const reviewsQuery = useQuery({
+    queryKey: ["recipes", id, "reviews"],
+    queryFn: () => GetReviewByRecipeId(id ?? ""),
+    enabled: typeof id === "string",
+  });
+
+  const reviewSummary = reviewsQuery.data?.reduce<{ up: number; down: number }>(
+    (acc, cur) => {
+      return {
+        up: cur.upvote ? acc.up + 1 : acc.up,
+        down: !cur.upvote ? acc.down + 1 : acc.down,
+      };
+    },
+    {
+      up: 0,
+      down: 0,
+    },
+  );
+
+  const total = (reviewSummary?.down ?? 0) + (reviewSummary?.up ?? 0);
+  const percentage =
+    total === 0 ? "0" : (((reviewSummary?.up ?? 0) / total) * 100).toFixed(0);
+
+  return (
+    <Stack direction="horizontal" className="justify-content-end">
       <Stack direction="horizontal" gap={2}>
-        <div
-          className="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-          style={{ width: 32, height: 32, fontSize: 10 }}
-        >
-          <span>Kuva</span>
-        </div>
-        <span>Etunimi Sukunimi</span>
+        <BsHandThumbsUp />
+        <span>{reviewSummary?.up ?? 0}</span>
+        <BsHandThumbsDown />
+        <span>{reviewSummary?.down ?? 0}</span>
+        <span>{percentage}%</span>
       </Stack>
-      <Stack direction="horizontal" className="justify-content-between">
-        <Stack direction="horizontal" gap={2}>
-          <Badge bg="secondary">Alkuruuat</Badge>
-          <Badge bg="secondary">Alkuruuat</Badge>
-        </Stack>
-        <Button variant="secondary" className="rounded-0">
-          <Stack direction="horizontal" gap={1}>
-            <BsPrinter /> Tulosta
-          </Stack>
-        </Button>
-      </Stack>
+    </Stack>
+  );
+};
 
-      <Carousel>
-        <CarouselItem>
-          <div
-            className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
-            style={{ height: 400 }}
-          >
-            <h2>Kuvakaruselli</h2>
-          </div>
-        </CarouselItem>
-        <CarouselItem>
-          <div
-            className="d-flex bg-secondary bg-opacity-50 w-100 justify-content-center align-items-center"
-            style={{ height: 400 }}
-          >
-            <h2>Toka kuva</h2>
-          </div>
-        </CarouselItem>
-      </Carousel>
+const createReviewFormValidator = z.object({
+  vote: z.enum(["upvote", "downvote"]),
+  content: z.string(),
+});
 
-      <Stack direction="horizontal" className="justify-content-between">
-        <span>4 annosta | Valmistusaika 1 min</span>
-        <Stack direction="horizontal" gap={2}>
-          <BsHandThumbsUp />
-          <span>1</span>
-          <BsHandThumbsDown />
-          <span>1</span>
-          <span>50%</span>
-        </Stack>
-      </Stack>
+const CreateReviewSection = () => {
+  const { id } = useParams();
 
-      <h3>Raaka-aineet</h3>
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
-      <IngredientRow />
+  const { register, handleSubmit, setError, formState } = useForm<
+    z.infer<typeof createReviewFormValidator>
+  >({
+    resolver: zodResolver(createReviewFormValidator),
+  });
 
-      <h3>Ohjeet</h3>
-      <ol>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et aliqua.
-        </li>
-        <li>
-          Proin fermentum leo vel orci porta non. Id leo in vitae turpis.
-          Fermentum et sollicitudin ac orci phasellus.
-        </li>
-        <li>Tellus at urna condimentum mattis pellentesque id nibh tortor.</li>
-        <li>
-          Nisl tincidunt eget nullam non. Senectus et netus et malesuada fames.
-        </li>
-        <li>Tortor vitae purus faucibus ornare suspendisse.</li>
-        <li>Ut ornare lectus sit amet est placerat in.</li>
-        <li>Sed vulputate odio ut enim blandit volutpat maecenas.</li>
-      </ol>
+  const createReviewMutation = useMutation(CreateReviewForRecipe);
+  const queryClient = useQueryClient();
 
-      <h3>Lisää arvostelu</h3>
+  if (typeof id !== "string") {
+    return null;
+  }
+
+  return (
+    <Form
+      className="vstack gap-3"
+      onSubmit={handleSubmit((data) => {
+        createReviewMutation.mutate(
+          {
+            recipeId: Number(id),
+            content: data.content,
+            upvote: data.vote === "upvote",
+          },
+          {
+            onError(error) {
+              if (error instanceof AxiosError) {
+                setError("root", {
+                  type: "custom",
+                  message: error.response?.data.message,
+                });
+              }
+            },
+            onSuccess() {
+              queryClient.invalidateQueries(["recipes", id, "reviews"]);
+            },
+          },
+        );
+      })}
+    >
+      <h3 className="mb-0">Lisää arvostelu</h3>
       <div>
         <ButtonGroup>
-          {/* TODO: use some component? */}
           <input
             type="radio"
             className="btn-check"
-            name="like"
             id="like"
+            value="upvote"
             defaultChecked
+            {...register("vote")}
           />
           <label className="btn btn-outline-primary" htmlFor="like">
             <BsHandThumbsUp /> Tykkäsin
@@ -144,8 +176,9 @@ const RecipePage = () => {
           <input
             type="radio"
             className="btn-check"
-            name="dislike"
             id="dislike"
+            value="downvote"
+            {...register("vote")}
           />
           <label className="btn btn-outline-primary" htmlFor="dislike">
             <BsHandThumbsDown /> En tykkänyt
@@ -153,13 +186,115 @@ const RecipePage = () => {
         </ButtonGroup>
       </div>
 
-      <Form.Control as="textarea" rows={6} />
-      <div>
-        <Button variant="success">Julkaise</Button>
-      </div>
+      <Form.Control as="textarea" rows={6} {...register("content")} />
 
-      <h3>Arvostelut</h3>
-      <ReviewList reviews={dummyReviewData} />
+      {formState.errors.root && (
+        <span role="alert" className="text-danger">
+          {formState.errors.root.message}
+        </span>
+      )}
+
+      <div>
+        <Button variant="success" type="submit">
+          Julkaise
+        </Button>
+      </div>
+    </Form>
+  );
+};
+
+const RecipeSection = () => {
+  const { id } = useParams();
+
+  const recipeQuery = useQuery({
+    queryKey: ["recipes", id],
+    queryFn: () => GetRecipeById(id ?? ""),
+    enabled: typeof id === "string",
+    suspense: true,
+  });
+
+  const creatorQuery = useQuery({
+    queryKey: ["recipes", id, "creator"],
+    queryFn: () => GetUser(recipeQuery.data!.creatorId.toString()),
+    enabled: typeof recipeQuery.data !== "undefined",
+    suspense: true,
+  });
+
+  return (
+    <Stack gap={3} as="section">
+      <h2 className="mb-0">{recipeQuery.data?.recipeName}</h2>
+      <Suspense>
+        <Stack direction="horizontal" gap={2}>
+          <Avatar size="s">
+            {typeof creatorQuery.data !== "undefined" &&
+            creatorQuery.data.image !== null ? (
+              <Base64Image
+                id={`user-${creatorQuery.data.id}`}
+                image={creatorQuery.data.image}
+              />
+            ) : null}
+          </Avatar>
+          <Link to={`/profile/${recipeQuery.data?.creatorId}`}>
+            {creatorQuery.data?.username}
+          </Link>
+        </Stack>
+      </Suspense>
+
+      <Stack direction="horizontal" gap={2}>
+        {recipeQuery.data?.categories.map((category) => (
+          <Badge bg="secondary" key={category}>
+            {category}
+          </Badge>
+        ))}
+      </Stack>
+
+      <Carousel className="recipe-image-container">
+        {recipeQuery.data?.images.map((image, i) => {
+          const id = `${recipeQuery.data.id.toString()}-${i}`;
+          return (
+            <CarouselItem key={id} className="recipe-image">
+              <Base64Image id={id} image={image} />
+            </CarouselItem>
+          );
+        })}
+        {recipeQuery.data?.images.length === 0 ? (
+          <CarouselItem className="recipe-image">
+            <MissingImage />
+          </CarouselItem>
+        ) : null}
+      </Carousel>
+
+      <ReviewSummarySection />
+
+      <h3>Raaka-aineet</h3>
+      <div>
+        {recipeQuery.data?.ingredients.map((ingredient) => (
+          <IngredientRow
+            key={ingredient.id}
+            name={ingredient.ingredient}
+            quantity={ingredient.quantity}
+          />
+        ))}
+      </div>
+      <h3>Ohjeet</h3>
+      <ol>
+        {recipeQuery.data?.instructions.map((instruction, i) => (
+          <li key={i}>{instruction}</li>
+        ))}
+      </ol>
+    </Stack>
+  );
+};
+
+const RecipePage = () => {
+  const { user } = useAuthentication();
+  return (
+    <PageContainer gap={3}>
+      <Suspense>
+        <RecipeSection />
+        {user !== "loading" && user ? <CreateReviewSection /> : null}
+        <ReviewSection />
+      </Suspense>
     </PageContainer>
   );
 };

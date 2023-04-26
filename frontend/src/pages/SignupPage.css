@@ -1,6 +1,4 @@
-.signupFormContainer{
-    width: 500px;
+.narrow-container{
+    width: 512px;
     margin: auto;
-    background-color: white;
-    padding: 50px;
 }

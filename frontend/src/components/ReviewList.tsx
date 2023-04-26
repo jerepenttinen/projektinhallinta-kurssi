@@ -1,20 +1,24 @@
-import ReviewItem from "./ReviewItem";
+import { Review } from "./ReviewItem";
 import { Stack } from "react-bootstrap";
+import { z } from "zod";
+import { recipeReview, user } from "../api/validators";
 
-interface Props {
-  reviews: { id: number; name: string; comment: string; date: Date }[];
-}
-
-const ReviewList = ({ reviews }: Props) => {
+const ReviewList = (props: {
+  reviews: z.infer<typeof recipeReview>[];
+  users: Record<number, z.infer<typeof user>>;
+}) => {
   return (
-    <>
-      <h4>Kommentit</h4>
-      <Stack direction="vertical" gap={3}>
-        {reviews.map((review) => {
-          return <ReviewItem key={review.id} review={review} />;
-        })}
-      </Stack>
-    </>
+    <Stack gap={3}>
+      {props.reviews.map((review) => {
+        return (
+          <Review
+            key={review.id}
+            review={review}
+            reviewer={props.users[review.userId]}
+          />
+        );
+      })}
+    </Stack>
   );
 };
 
