@@ -16,15 +16,15 @@ function MyNavbar() {
           <Link to="/" className="nav-link">
             Etusivu
           </Link>
-          <Link to="/search" className="nav-link">
+          <Link to="/search" className="nav-link" id="search-link">
             Haku
           </Link>
           {user !== "loading" && user ? (
             <>
-              <Link to="/recipes/create" className="nav-link">
+              <Link to="/recipes/create" className="nav-link" id="new-recipe-link">
                 Uusi resepti
               </Link>
-              <Link to="/profile/settings" className="nav-link">
+              <Link to="/profile/settings" className="nav-link" id="edit-profile-link">
                 Asetukset
               </Link>
             </>
@@ -33,7 +33,7 @@ function MyNavbar() {
         <Nav>
           {user !== "loading" && user ? (
             <Stack direction="horizontal" gap={2}>
-              <Link to={`/profile/${user.profileId}`}>
+              <Link to={`/profile/${user.profileId}`} id="profile-link">
                 {user.firstName} {user.lastName}
               </Link>
               <Button onClick={signOut}>Kirjaudu ulos</Button>

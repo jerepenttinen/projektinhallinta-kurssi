@@ -40,8 +40,9 @@ const SearchPage = () => {
           aria-describedby="search-addon"
           ref={searchBox}
           defaultValue={search}
+          id="search-input"
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary" id="search-submit">
           Hae
         </button>
       </form>

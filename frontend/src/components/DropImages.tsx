@@ -37,6 +37,7 @@ export default function DropImages({ onImageDropped }: Props) {
     <div
       {...getRootProps()}
       className="rounded vstack bg-white"
+      id="recipe-image"
       style={{
         border: "1px dashed var(--bs-border-color)",
         borderStyle: "dashed",

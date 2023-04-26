@@ -12,7 +12,7 @@ export interface Props {
 
 const RecipeCard = ({ header, id, image }: Props) => {
   return (
-    <Link to={`/recipes/${id}`} className="text-decoration-none text-reset">
+    <Link to={`/recipes/${id}`} className="text-decoration-none text-reset" id="recipe-link">
       <Figure className="mb-0 recipe-card">
         {image ? (
           <Base64Image id={id.toString()} image={image} />

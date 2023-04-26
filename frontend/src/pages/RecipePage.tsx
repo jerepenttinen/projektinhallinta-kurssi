@@ -186,7 +186,7 @@ const CreateReviewSection = () => {
         </ButtonGroup>
       </div>
 
-      <Form.Control as="textarea" rows={6} {...register("content")} />
+      <Form.Control as="textarea" rows={6} {...register("content")} id="review-textarea"/>
 
       {formState.errors.root && (
         <span role="alert" className="text-danger">
@@ -195,7 +195,7 @@ const CreateReviewSection = () => {
       )}
 
       <div>
-        <Button variant="success" type="submit">
+        <Button variant="success" type="submit" id="submit-review">
           Julkaise
         </Button>
       </div>
