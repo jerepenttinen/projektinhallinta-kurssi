@@ -4,7 +4,7 @@ import { recipeCard } from "../api/validators";
 
 const RecipeList = ({ recipes }: { recipes: z.infer<typeof recipeCard>[] }) => {
   return (
-    <div className="row row-cols-3">
+    <div className="row row-cols-3" id="recipe-list">
       {recipes ? (
         recipes.map((recipe) => (
           <RecipeCard

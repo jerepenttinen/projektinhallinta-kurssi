@@ -30,7 +30,7 @@ const ProfileContactsSection = () => {
         </Avatar>
         <div className="d-inline-block">
           <h3>{userQuery.data?.username}</h3>
-          <p>{userQuery.data?.description}</p>
+          <p id="user-description">{userQuery.data?.description}</p>
         </div>
       </div>
     </Suspense>

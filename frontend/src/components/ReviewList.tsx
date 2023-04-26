@@ -8,7 +8,7 @@ const ReviewList = (props: {
   users: Record<number, z.infer<typeof user>>;
 }) => {
   return (
-    <Stack gap={3}>
+    <Stack gap={3} id="review-list">
       {props.reviews.map((review) => {
         return (
           <Review

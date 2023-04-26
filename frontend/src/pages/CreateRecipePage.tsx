@@ -71,11 +71,12 @@ function AddIngredient(props: {
 
   return (
     <Stack direction="horizontal" gap={2}>
-      <Form.Control type="text" placeholder="Raaka-aine" ref={ingredient} />
-      <Form.Control type="text" placeholder="Määrä" ref={quantity} />
+      <Form.Control type="text" placeholder="Raaka-aine" ref={ingredient} id="recipe-ingredient"/>
+      <Form.Control type="text" placeholder="Määrä" ref={quantity} id="recipe-quantity"/>
       <Button
         variant="success"
         className="hstack"
+        id="recipe-submit-ingredient"
         onClick={() => {
           props.onAdd({
             ingredient: ingredient.current!.value,
@@ -100,6 +101,7 @@ function AddInstruction(props: {
       <Button
         variant="success"
         className="hstack gap-1"
+        id="recipe-submit-instruction"
         onClick={() => {
           props.onAdd({ instruction: instruction.current!.value });
         }}
@@ -124,6 +126,7 @@ export default function CreateRecipePage() {
   const ingredients = useFieldArray({
     control,
     name: "ingredients",
+    
   });
 
   const instructions = useFieldArray({
@@ -167,7 +170,7 @@ export default function CreateRecipePage() {
         })}
       >
         <h2 className="mb-0">Lisää uusi resepti</h2>
-        <Form.Group>
+        <Form.Group controlId="recipe-name">
           <Form.Label>Reseptin nimi</Form.Label>
           <Form.Control
             type="text"
@@ -175,7 +178,7 @@ export default function CreateRecipePage() {
             {...register("name")}
           />
         </Form.Group>
-        <Form.Group>
+        <Form.Group controlId="recipe-ingredients">
           <Form.Label>Raaka-aineet</Form.Label>
           <Stack gap={3}>
             <SortableList
@@ -196,7 +199,7 @@ export default function CreateRecipePage() {
             <AddIngredient onAdd={(item) => ingredients.append(item)} />
           </Stack>
         </Form.Group>
-        <Form.Group>
+        <Form.Group controlId="recipe-instructions">
           <Form.Label>Ohjeet</Form.Label>
           <Stack gap={3} as="ol" className="ps-0">
             <SortableList
@@ -215,9 +218,10 @@ export default function CreateRecipePage() {
             <AddInstruction onAdd={(item) => instructions.append(item)} />
           </Stack>
         </Form.Group>
-        <Form.Group>
+        <Form.Group controlId="recipe-categories">
           <Form.Label>Kategoriat</Form.Label>
           <Form.Select
+            id="recipe-category"
             onChange={(e) => {
               const select = e.currentTarget;
               if (select.selectedIndex === 0) {
@@ -255,7 +259,7 @@ export default function CreateRecipePage() {
             ))}
           </Stack>
         </Form.Group>
-        <Form.Group>
+        <Form.Group controlId="recipe-images">
           <Form.Label>Kuvat</Form.Label>
           <Stack direction="horizontal" gap={3} className="mb-3">
             <SortableList
@@ -293,7 +297,7 @@ export default function CreateRecipePage() {
           />
         </Form.Group>
         <div>
-          <Button variant="success" size="lg" type="submit">
+          <Button variant="success" size="lg" type="submit" id="recipe-submit">
             Julkaise
           </Button>
         </div>

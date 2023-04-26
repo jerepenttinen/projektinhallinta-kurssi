@@ -82,7 +82,7 @@ const ProfileSettingsPage = () => {
               {...register("description")}
             />
           </Form.Group>
-          <Button variant="primary" size="lg" type="submit">
+          <Button variant="primary" size="lg" type="submit" id="profile-submit">
             Tallenna
           </Button>
         </Form>
