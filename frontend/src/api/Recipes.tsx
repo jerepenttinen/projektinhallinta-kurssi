@@ -42,3 +42,9 @@ export const GetRecipeById = async (id: string) => {
   const response = await api.get(`/api/recipes/${id}`);
   return recipePage.parse(response.data);
 };
+
+export const SearchRecipes = async (term: string) => {
+  const params = new URLSearchParams([["q", term]]);
+  const response = await api.get(`/api/recipes/search`, { params });
+  return z.array(recipeCard).parse(response.data);
+};

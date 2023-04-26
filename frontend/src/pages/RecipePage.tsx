@@ -24,6 +24,7 @@ import { GetMultipleUsers, GetUser } from "../api/Users";
 import { Avatar } from "../components/Avatar";
 import "./RecipePage.css";
 import { MissingImage } from "../components/MissingImage";
+import { useAuthentication } from "../AuthenticationContext";
 
 interface IngredientRowProps {
   quantity: string;
@@ -286,11 +287,12 @@ const RecipeSection = () => {
 };
 
 const RecipePage = () => {
+  const { user } = useAuthentication();
   return (
     <PageContainer gap={3}>
       <Suspense>
         <RecipeSection />
-        <CreateReviewSection />
+        {user !== "loading" && user ? <CreateReviewSection /> : null}
         <ReviewSection />
       </Suspense>
     </PageContainer>
